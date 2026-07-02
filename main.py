@@ -111,6 +111,10 @@ def download_worker(url, fmt, api_key):
 @app.get('/test-health')
 async def health(): return {"status": "healthy", "ffmpeg": subprocess.run(['ffmpeg', '-version'], capture_output=True).returncode == 0}
 
+@app.get('/', response_class=HTMLResponse)
+async def root():
+    return "<meta http-equiv='refresh' content='0; url=/static/login.html'>"
+
 @app.get('/info')
 async def get_info(url: str):
     try:
