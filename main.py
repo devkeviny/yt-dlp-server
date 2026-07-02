@@ -74,7 +74,12 @@ def save_history(entry):
 
 def serve_html(name):
     try:
-        with open(f'static/{name}.html', encoding='utf-8') as f: return f.read()
+        with open(f'static/{name}.html', encoding='utf-8') as f: 
+            html = f.read()
+        # Dynamic replacements
+        now = __import__('datetime').datetime.now()
+        html = html.replace('<!--YEAR-->', str(now.year))
+        return HTMLResponse(html)
     except Exception:
         return HTMLResponse('not found', status_code=404)
 
