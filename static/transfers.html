@@ -3,7 +3,7 @@
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Lulu Converter | Transfers</title>
+<title>Downloads | Lulu Converter</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;600&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -18,7 +18,7 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .cyan-glow {
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.15);
         }
         .progress-pulse {
             animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
@@ -135,7 +135,7 @@
 <body class="bg-background text-on-surface min-h-screen selection:bg-primary-container selection:text-on-primary-container"><div class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 h-16" style="background:rgba(19,19,19,0.8);backdrop-filter:blur(20px);border-bottom:1px solid rgba(59,73,75,0.3)"><div class="flex items-center gap-3"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%23ff69b4'/%3E%3Ctext x='20' y='27' text-anchor='middle' font-size='24'%3E%F0%9F%90%B1%3C/text%3E%3C/svg%3E" class="w-8 h-8 rounded-full" style="box-shadow:0 0 12px rgba(255,105,180,0.3)"/><span class="text-lg font-bold" style="color:#ffb6c1">Lulu Converter</span></div><div class="flex items-center gap-4"><a href="/dashboard" class="px-3 py-1.5 rounded-lg text-xs" style="color:#b9cacb;">Dashboard</a><a href="/transfers" class="px-3 py-1.5 rounded-lg text-xs" style="color:#ff69b4;font-weight:700;border-bottom:2px solid #ff69b4">Transfers</a><a href="/storage" class="px-3 py-1.5 rounded-lg text-xs" style="color:#b9cacb;">Storage</a><a href="/system" class="px-3 py-1.5 rounded-lg text-xs" style="color:#b9cacb;">System</a></div><a href="/" onclick="document.cookie='session=;max-age=0';return true" class="text-xs" style="color:#b9cacb">✕</a></div>
 <!-- Top Navigation Bar -->
 <nav class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-desktop h-20 bg-surface/60 backdrop-blur-md border-b border-white/10 shadow-[0_0_20px_rgba(0,240,255,0.05)]">
-<div class="font-headline-lg text-headline-lg font-bold text-primary tracking-tighter"></div>
+<div class="font-headline-lg text-headline-lg font-bold text-primary tracking-tighter">Lulu Converter</div>
 <div class="hidden md:flex items-center gap-8">
 <a class="font-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Dashboard</a>
 <a class="font-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Transfers</a>
@@ -397,27 +397,33 @@
 <a class="font-label-sm text-label-sm text-on-surface-variant/60 hover:text-on-surface transition-colors" href="#">System Status</a>
 <a class="font-label-sm text-label-sm text-on-surface-variant/60 hover:text-on-surface transition-colors" href="#">Report Issue</a>
 </div>
-<div class="font-label-sm text-label-sm text-on-surface-variant/60">© 2024 Lulu Converter. v2.4.1-stable</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant/60">© 2026 Lulu Converter. v2.4.1-stable</div>
 </footer>
-<script>
-        // Micro-interaction for row clicks or hover effects
-        document.querySelectorAll('tr').forEach(row => {
-            row.addEventListener('click', () => {
-                // Subtle click interaction
-                row.style.transform = 'scale(0.995)';
-                setTimeout(() => {
-                    row.style.transform = 'scale(1)';
-                }, 100);
-            });
-        });
 
-        // Simulating bandwidth updates
-        setInterval(() => {
-            const speedElement = document.querySelector('.text-tertiary-container');
-            if(speedElement) {
-                const currentSpeed = (Math.random() * (86.5 - 82.1) + 82.1).toFixed(1);
-                speedElement.textContent = currentSpeed + ' MB/s';
-            }
-        }, 3000);
-    </script>
+
+<script>
+// Transfers - load history
+async function loadHistory() {
+    try {
+        const r = await fetch('/api/history');
+        const data = await r.json();
+        const tbody = document.querySelector('tbody') || document.getElementById('history-table');
+        if (!tbody) return;
+        if (data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-on-surface-variant/40">Nenhum download realizado</td></tr>';
+            return;
+        }
+        tbody.innerHTML = data.map(h => `
+            <tr class="border-b border-white/5 text-sm">
+                <td class="py-3 px-4">${h.title || h.url?.slice(0,50) || 'N/A'}</td>
+                <td class="py-3 px-4">${h.format || '-'}</td>
+                <td class="py-3 px-4">${h.size ? (h.size/1048576).toFixed(1)+' MB' : '-'}</td>
+                <td class="py-3 px-4"><span class="text-green-400">${h.status || 'completed'}</span></td>
+                <td class="py-3 px-4 text-on-surface-variant/60">${h.time ? new Date(h.time).toLocaleString('pt-BR') : '-'}</td>
+            </tr>`).join('');
+    } catch(e) { console.log('History:', e.message); }
+}
+document.addEventListener('DOMContentLoaded', loadHistory);
+</script>
+<script>document.querySelectorAll(".year-js").forEach(e=>e.textContent=new Date().getFullYear())</script>
 </body></html>
