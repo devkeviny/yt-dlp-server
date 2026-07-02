@@ -3,7 +3,7 @@
 <html class="dark" lang="pt-BR"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Login</title>
+<title>Lulu Converter | Login</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
@@ -143,10 +143,9 @@
 <!-- Brand Identity -->
 <div class="text-center mb-stack-xl">
 <h1 class="font-headline-lg text-headline-lg md:text-headline-lg font-bold text-primary tracking-tighter mb-2">
-                Lulu Converter
-            </h1>
+                </h1>
 <p class="font-label-sm text-label-sm text-on-surface-variant/60 tracking-widest uppercase">
-                Servidor de MÃ­dia de Alta Performance
+                Servidor de Mídia de Alta Performance
             </p>
 </div>
 <!-- Glassmorphism Card -->
@@ -160,7 +159,7 @@
 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/40 group-focus-within:text-primary-container transition-colors">
                             lock
                         </span>
-<input class="w-full bg-surface-variant/20 border border-white/5 rounded-lg py-4 pl-12 pr-4 text-on-surface placeholder:text-on-surface-variant/20 focus:outline-none neon-glow transition-all duration-300 font-stats-lg text-stats-lg" id="password" placeholder="â¢â¢â¢â¢â¢â¢â¢â¢" required="" type="password"/>
+<input class="w-full bg-surface-variant/20 border border-white/5 rounded-lg py-4 pl-12 pr-4 text-on-surface placeholder:text-on-surface-variant/20 focus:outline-none neon-glow transition-all duration-300 font-stats-lg text-stats-lg" id="password" placeholder="••••••••" required="" type="password"/>
 </div>
 </div>
 <button class="w-full bg-primary-container text-on-primary-fixed font-bold py-4 rounded-lg flex items-center justify-center gap-2 hover:bg-primary-fixed-dim active:scale-[0.98] transition-all duration-200 group" type="submit">
@@ -181,7 +180,7 @@
                     </p>
 </div>
 <p class="font-label-sm text-[10px] text-on-surface-variant/40">
-                    Utilize o cabeÃ§alho <code class="text-secondary-fixed-dim">X-API-Key</code> para autenticaÃ§Ã£o programÃ¡tica.
+                    Utilize o cabeçalho <code class="text-secondary-fixed-dim">X-API-Key</code> para autenticação programática.
                 </p>
 </div>
 </div>
@@ -189,11 +188,11 @@
 <!-- Footer Identity from JSON Context -->
 <footer class="fixed bottom-0 w-full py-6 px-margin-desktop flex justify-between items-center bg-transparent pointer-events-none">
 <p class="font-label-sm text-label-sm text-on-surface-variant/40">
-            Â© 2024 Lulu Converter. v2.4.1-stable
+            © 2024 Lulu Converter. v2.4.1-stable
         </p>
 <div class="hidden md:flex gap-gutter pointer-events-auto">
 <a class="font-label-sm text-label-sm text-on-surface-variant/40 hover:text-primary transition-colors" href="#">STATUS DO SISTEMA</a>
-<a class="font-label-sm text-label-sm text-on-surface-variant/40 hover:text-primary transition-colors" href="#">DOCUMENTAÃÃO API</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant/40 hover:text-primary transition-colors" href="#">DOCUMENTAÇÃO API</a>
 </div>
 </footer>
 <script>
@@ -221,7 +220,7 @@
                         <span class="material-symbols-outlined">check_circle</span>
                         <span>SUCESSO</span>
                     `;
-                    console.log('Login attempt recorded for Lulu Converter');
+                    console.log('Login attempt recorded for ');
                 } else {
                     btn.innerHTML = originalContent;
                     btn.classList.remove('opacity-80', 'cursor-not-allowed');
@@ -239,18 +238,5 @@
         });
     </script>
 
-<script>
-document.querySelector('form')?.addEventListener('submit', async e => {
-    e.preventDefault();
-    const pw = document.querySelector('input[type="password"]')?.value || document.querySelector('input')?.value || '';
-    const btn = e.target.querySelector('button') || e.target.closest('button');
-    if(btn){btn.disabled=true;btn.textContent='...'}
-    try {
-        const r = await fetch('/auth',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pw})});
-        if(r.ok) window.location.href='/dashboard';
-        else alert('Wrong password');
-    } catch(e){alert('Connection error')}
-    finally{if(btn){btn.disabled=false;btn.textContent='Access'}}
-});
-</script>
+<script>document.querySelector("form")?.addEventListener("submit",async e=>{e.preventDefault();const pw=document.querySelector('input[type="password"]')?.value||"";try{const r=await fetch("/auth",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({password:pw})});if(r.ok)window.location.href="/dashboard";else alert("Wrong password")}catch(e){alert("Error")}});</script>
 </body></html>
