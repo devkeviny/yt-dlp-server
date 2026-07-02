@@ -1,6 +1,6 @@
 import os, json, time, psutil, asyncio, subprocess, logging
-from fastapi import FastAPI, HTTPException, Request, Depends, BackgroundTasks
-from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
+from fastapi import FastAPI, HTTPException, Request, Depends, BackgroundTasks, Form
+from fastapi.responses import HTMLResponse, JSONResponse, FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -114,6 +114,14 @@ async def health(): return {"status": "healthy", "ffmpeg": subprocess.run(['ffmp
 @app.get('/')
 async def root():
     return HTMLResponse(content="<meta http-equiv='refresh' content='0; url=/static/login.html'>")
+
+@app.post('/login')
+async def login(password: str = Form(...)):
+    if password == APP_PASSWORD:
+        response = JSONResponse(content={"status": "success", "message": "Authenticated"})
+        response.set_cookie(key="auth_session", value="authenticated", httponly=True)
+        return response
+    raise HTTPException(status_code=401, detail="Invalid Password")
 
 @app.get('/info')
 async def get_info(url: str):
