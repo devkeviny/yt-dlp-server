@@ -3,7 +3,7 @@
 <html class="dark" lang="pt-BR"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Lulu Converter | Dashboard</title>
+<title>Download Dashboard</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
@@ -18,7 +18,7 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
         .neon-glow {
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.15);
         }
         .shimmer {
             background: linear-gradient(90deg, #1A1A1A 25%, #252525 50%, #1A1A1A 75%);
@@ -135,7 +135,7 @@
 <!-- TopNavBar -->
 <header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-desktop h-20 bg-surface/60 backdrop-blur-md border-b border-white/10 shadow-[0_0_20px_rgba(0,240,255,0.05)]">
 <div class="flex items-center gap-base">
-<span class="font-headline-lg text-headline-lg font-bold text-primary tracking-tighter"></span>
+<span class="font-headline-lg text-headline-lg font-bold text-primary tracking-tighter">Lulu Converter</span>
 </div>
 <nav class="hidden md:flex items-center gap-gutter">
 <a class="font-body-md text-primary border-b-2 border-primary pb-1 transition-colors duration-200" href="#">Dashboard</a>
@@ -336,7 +336,7 @@
 <a class="hover:text-on-surface transition-colors cursor-pointer" href="#">Report Issue</a>
 </div>
 <div class="mt-4 md:mt-0 font-label-sm text-label-sm text-on-surface-variant/40">
-            © 2024 Lulu Converter. v2.4.1-stable
+            © 2026 Lulu Converter. v2.4.1-stable
         </div>
 </footer>
 <script>
@@ -388,4 +388,36 @@
             mainInput.parentElement.parentElement.classList.remove('shadow-primary-container/10');
         });
     </script>
+
+<script>
+// Dashboard - video info & download
+document.getElementById('downloadForm')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const url = document.getElementById('url')?.value || document.querySelector('input[type="url"]')?.value;
+    if (!url) return;
+    const btn = this.querySelector('button');
+    const results = document.getElementById('results');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Analisando...';
+    try {
+        const r = await fetch('/info?url=' + encodeURIComponent(url));
+        if (!r.ok) { throw new Error('Falha na análise'); }
+        const data = await r.json();
+        if (results) results.innerHTML = `
+            <div class="glass-card p-4 rounded-xl">
+                <img src="${data.thumbnail || ''}" class="w-full rounded-lg mb-3"/>
+                <h3 class="text-lg font-bold">${data.title || 'Sem título'}</h3>
+                <p class="text-sm text-on-surface-variant/60 mt-1">Duração: ${data.duration || 'N/A'}</p>
+                <button onclick="downloadVideo('${encodeURIComponent(url)}')" class="mt-3 w-full bg-primary-container py-3 rounded-lg font-bold text-sm hover:opacity-90">
+                    <span class="material-symbols-outlined align-middle">download</span> Baixar MP4
+                </button>
+            </div>`;
+    } catch(e) { alert('Erro: ' + e.message); }
+    btn.disabled = false; btn.innerHTML = 'Analisar URL';
+});
+async function downloadVideo(url) {
+    window.location.href = '/download?url=' + url;
+}
+</script>
+<script>document.querySelectorAll(".year-js").forEach(e=>e.textContent=new Date().getFullYear())</script>
 </body></html>
