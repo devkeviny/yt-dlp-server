@@ -127,16 +127,14 @@
     </div>
 </main>
 
-<footer class="w-full py-8 px-6 md:px-12 flex flex-col md:flex-row justify-between items-center bg-surface-dim border-t border-white/10 mt-auto">
-    <div class="font-stats text-primary font-bold mb-4 md:mb-0">Sleek Media Downloader</div>
+<footer class="w-full py-8 px-6 md:px-12 flex justify-between items-center bg-surface-dim border-t border-white/10 mt-auto">
+    <div class="font-stats text-primary font-bold">Sleek Media Downloader</div>
     <div class="flex gap-6 text-on-surface-variant/60 text-xs font-stats">
         <a class="hover:text-primary transition-colors" href="#">API Docs</a>
         <a class="hover:text-primary transition-colors" href="#">Status</a>
         <a class="hover:text-primary transition-colors" href="#">Support</a>
     </div>
-    <div class="mt-4 md:mt-0 text-xs text-on-surface-variant/40 font-stats">
-        © 2026 Sleek Media. v3.0.0-stable
-    </div>
+    <div class="text-xs text-on-surface-variant/40 font-stats">© 2026 Sleek Media. v3.0.0-stable</div>
 </footer>
 
 <script>
@@ -149,7 +147,6 @@
     let currentFormat = 'mp4';
     let currentNet = 'auto';
 
-    // Format and Network toggles
     document.getElementById('fmt-mp4').onclick = () => { currentFormat = 'mp4'; updateToggle('fmt-mp4', 'fmt-mp3'); };
     document.getElementById('fmt-mp3').onclick = () => { currentFormat = 'mp3'; updateToggle('fmt-mp3', 'fmt-mp4'); };
     document.getElementById('net-auto').onclick = () => { currentNet = 'auto'; updateToggle('net-auto', 'net-global'); };
