@@ -92,8 +92,38 @@ class ProxyManager:
         if r: r.setex(f'blocked:{platform}:{proxy}', 1800, '1')
         self.blocked_count += 1
 
-proxy_manager = ProxyManager()
-app = FastAPI(docs_url='/api/docs')
+class StatsManager:
+    def __init__(self):
+        self.net_file = '/data/network_stats.json'
+        self.sys_file = '/data/system_metrics.json'
+        self.init_files()
+
+    def init_files(self):
+        for f in [self.net_file, self.sys_file]:
+            if not os.path.exists(f):
+                with open(f, 'w') as wf: json.dump({}, wf)
+
+    def update_net(self, sent, recv):
+        try:
+            with open(self.net_file, 'r+') as f:
+                data = json.load(f)
+                data['total_sent'] = data.get('total_sent', 0) + sent
+                data['total_recv'] = data.get('total_recv', 0) + recv
+                f.seek(0); json.dump(data, f); f.truncate()
+        except: pass
+
+    def log_metrics(self, cpu, mem):
+        try:
+            with open(self.sys_file, 'r+') as f:
+                data = json.load(f)
+                history = data.get('history', [])
+                history.append({'t': time.time(), 'c': cpu, 'm': mem})
+                if len(history) > 1000: history = history[-1000:]
+                data['history'] = history
+                f.seek(0); json.dump(data, f); f.truncate()
+        except: pass
+
+stats_manager = StatsManager()
 
 # --- AUTH ---
 def verify_auth(request: Request):
