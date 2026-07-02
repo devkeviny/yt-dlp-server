@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Transfers | MEDIA_CORE_V1</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
+.glass-card{background:rgba(19,19,19,0.6);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1)}
+.progress-pulse{animation:pulse 2s cubic-bezier(0.4,0,0.6,1) infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.7}}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:#0e0e0e}
+::-webkit-scrollbar-thumb{background:#3b494b;border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#00f0ff}
+</style>
+<script>tailwind.config={darkMode:"class",theme:{extend:{colors:{"primary":"#dbfcff","primary-container":"#00f0ff","on-primary-fixed":"#002022","primary-fixed-dim":"#00dbe9","surface":"#131313","background":"#131313","on-surface":"#e5e2e1","on-surface-variant":"#b9cacb","surface-dim":"#131313","surface-container-lowest":"#0e0e0e","surface-container-low":"#1c1b1b","surface-container":"#201f1f","surface-container-high":"#2a2a2a","surface-container-highest":"#353534","surface-bright":"#3a3939","tertiary-container":"#00f990","on-tertiary":"#00391d","error":"#ffb4ab","error-container":"#93000a","secondary-container":"#7000ff","outline":"#849495","outline-variant":"#3b494b"}}}}}</script>
+</head>
+<body class="bg-background text-on-surface font-body-md min-h-screen">
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-6 md:px-16 h-20 bg-surface/60 backdrop-blur-md border-b border-white/10">
+<a href="/dashboard" class="text-2xl font-bold text-primary tracking-tighter">MEDIA_CORE_V1</a>
+<div class="hidden md:flex items-center gap-8">
+<a href="/dashboard" class="text-sm text-on-surface-variant hover:text-primary transition-colors">Dashboard</a>
+<a href="/transfers" class="text-sm text-primary border-b-2 border-primary pb-1">Transfers</a>
+<a href="/storage" class="text-sm text-on-surface-variant hover:text-primary transition-colors">Storage</a>
+<a href="/system" class="text-sm text-on-surface-variant hover:text-primary transition-colors">System</a>
+</div>
+<div class="flex items-center gap-4">
+<a class="text-xs text-on-surface-variant/60 hover:text-error transition-colors cursor-pointer" onclick="fetch('/api/history',{method:'DELETE'}).then(()=>location.reload())">Clear</a>
+</div>
+</nav>
+<main class="pt-24 pb-16 px-6 md:px-16">
+<div class="max-w-7xl mx-auto">
+<div class="flex justify-between items-start mb-10">
+<div>
+<h1 class="text-4xl font-bold text-primary mb-2">Transfers</h1>
+<p class="text-on-surface-variant">Download history and active streams</p>
+</div>
+<div class="flex gap-4">
+<div class="glass-card px-6 py-3 rounded-2xl text-center">
+<span class="text-[10px] text-on-surface-variant uppercase tracking-widest">History</span>
+<span class="text-xl font-bold text-primary block" id="historyCount">--</span>
+</div>
+</div>
+</div>
+<div class="glass-card rounded-3xl overflow-hidden">
+<div class="px-8 py-4 border-b border-white/10 bg-white/5 text-sm text-on-surface-variant uppercase tracking-widest">Archive (Last 100)</div>
+<table class="w-full text-left border-collapse">
+<thead><tr class="text-xs text-on-surface-variant uppercase border-b border-white/5">
+<th class="px-6 py-4 font-medium">Title</th><th class="px-6 py-4 font-medium">Format</th><th class="px-6 py-4 font-medium">Size</th><th class="px-6 py-4 font-medium">Date</th><th class="px-6 py-4 font-medium">Status</th>
+</tr></thead>
+<tbody id="historyBody" class="divide-y divide-white/5 text-sm">
+<tr><td colspan="5" class="px-6 py-8 text-center text-on-surface-variant/40">Loading...</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</main>
+<script>
+async function loadHistory() {
+    try {
+        const r = await fetch('/api/history');
+        const data = await r.json();
+        document.getElementById('historyCount').textContent = data.length;
+        const tbody = document.getElementById('historyBody');
+        if (data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-on-surface-variant/40">No downloads yet</td></tr>';
+            return;
+        }
+        tbody.innerHTML = data.map(item => `<tr class="hover:bg-white/5 transition-colors">
+            <td class="px-6 py-4"><div class="flex items-center gap-3"><span class="material-symbols-outlined text-primary-container text-sm">video_library</span><span class="truncate max-w-[250px]">${item.title || item.url}</span></div></td>
+            <td class="px-6 py-4"><span class="px-2 py-1 rounded bg-surface-container-highest text-xs uppercase">${item.format || '-'}</span></td>
+            <td class="px-6 py-4 font-mono text-xs">${item.size ? (item.size / 1e6).toFixed(1) + ' MB' : '-'}</td>
+            <td class="px-6 py-4 text-on-surface-variant text-xs">${item.time ? new Date(item.time).toLocaleString() : '-'}</td>
+            <td class="px-6 py-4"><span class="px-2 py-1 rounded bg-tertiary-container/10 text-tertiary-container text-[10px] uppercase">${item.status || 'completed'}</span></td>
+        </tr>`).join('');
+    } catch(e) { console.error('History error:', e); }
+}
+loadHistory();
+</script>
+</body></html>
