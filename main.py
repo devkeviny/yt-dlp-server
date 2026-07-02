@@ -12,13 +12,15 @@ MAX_HISTORY = 100
 os.makedirs('/data', exist_ok=True)
 os.makedirs('/downloads', exist_ok=True)
 
-APP_PASSWORD = os.environ.get('APP_PASSWORD', 'admin')
-API_KEY = os.environ.get('API_KEY', 'secret')
+APP_PASSWORD = os.getenv('APP_PASSWORD', 'admin123')
+API_KEY = os.getenv('API_KEY', 'default_key_123')
 REDIS_URL = os.getenv('REDIS_URL', 'redis://default:***@localhost:6379/0')
 
+print("Sleek Media Server starting up...")
 try:
     r = redis.from_url(REDIS_URL)
-except Exception:
+except Exception as e:
+    print(f"Redis connection failed: {e}")
     r = None
 
 executor = ThreadPoolExecutor(max_workers=10)
