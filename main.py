@@ -119,7 +119,7 @@ async def get_info(url: str):
             return info
     except Exception as e: raise HTTPException(status_code=400, detail=str(e))
 
-@app.get('/download')
+@app.api_route('/download', methods=['GET', 'POST'])
 async def download(url: str, fmt: str = 'mp4', api_key: str = None):
     if api_key != API_KEY: raise HTTPException(status_code=403, detail="Invalid API Key")
     loop = asyncio.get_event_loop()
