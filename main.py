@@ -254,6 +254,20 @@ async def download_video(url: str = Query(...), fmt: str = 'mp4', net: str = 'au
             continue
     raise HTTPException(status_code=500, detail='Download failure')
 
+@app.get('/test-health')
+def test_health():
+    try:
+        import yt_dlp
+        ffmpeg_check = subprocess.run(['ffmpeg', '-version'], capture_output=True)
+        return {
+            'status': 'operational',
+            'yt_dlp_version': yt_dlp.__version__,
+            'ffmpeg': 'installed' if ffmpeg_check.returncode == 0 else 'missing',
+            'proxy_count': len(proxy_manager.br_all) + len(proxy_manager.global_all)
+        }
+    except Exception as e:
+        return {'status': 'error', 'detail': str(e)}
+
 @app.get('/health')
 def health():
     return {'status':'healthy','br':len(proxy_manager.br_all),'gl':len(proxy_manager.global_all)}
