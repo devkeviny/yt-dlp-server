@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Storage | MEDIA_CORE_V1</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
+.glass-panel{background:rgba(19,19,19,0.6);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:#0e0e0e}::-webkit-scrollbar-thumb{background:#353534;border-radius:10px}
+</style>
+<script>tailwind.config={darkMode:"class",theme:{extend:{colors:{"primary":"#dbfcff","primary-container":"#00f0ff","on-primary":"#00363a","on-primary-fixed":"#002022","primary-fixed-dim":"#00dbe9","surface":"#131313","background":"#131313","on-surface":"#e5e2e1","on-surface-variant":"#b9cacb","surface-dim":"#131313","surface-container-lowest":"#0e0e0e","surface-container-highest":"#353534","tertiary-container":"#00f990","secondary":"#d1bcff","secondary-container":"#7000ff","error":"#ffb4ab"}}}}}</script>
+</head>
+<body class="bg-background text-on-surface font-body-md min-h-screen">
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-6 md:px-16 h-20 bg-surface/60 backdrop-blur-md border-b border-white/10">
+<a href="/dashboard" class="text-2xl font-bold text-primary tracking-tighter">MEDIA_CORE_V1</a>
+<div class="hidden md:flex items-center gap-8">
+<a href="/dashboard" class="text-sm text-on-surface-variant hover:text-primary transition-colors">Dashboard</a>
+<a href="/transfers" class="text-sm text-on-surface-variant hover:text-primary transition-colors">Transfers</a>
+<a href="/storage" class="text-sm text-primary border-b-2 border-primary pb-1">Storage</a>
+<a href="/system" class="text-sm text-on-surface-variant hover:text-primary transition-colors">System</a>
+</div>
+</nav>
+<main class="pt-24 pb-16 px-6 md:px-16">
+<div class="max-w-7xl mx-auto">
+<h1 class="text-4xl font-bold text-primary mb-2">Storage & System</h1>
+<p class="text-on-surface-variant mb-8">Real-time memory, CPU, disk and network monitoring</p>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+<div class="glass-panel p-6 rounded-xl">
+<div class="flex justify-between items-start mb-4"><div class="text-xs text-on-surface-variant uppercase tracking-wider">CPU</div><span class="material-symbols-outlined text-primary">memory</span></div>
+<div class="text-4xl font-bold text-primary mb-2" id="cpuVal">--<span class="text-base opacity-60">%</span></div>
+<div class="w-full bg-white/5 h-1.5 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-primary to-secondary-container rounded-full transition-all duration-500" id="cpuBar" style="width:0%"></div></div>
+<div class="mt-2 text-[10px] text-on-surface-variant/40 flex justify-between"><span id="cpuCores">- cores</span><span id="cpuTemp">-</span></div>
+</div>
+<div class="glass-panel p-6 rounded-xl">
+<div class="flex justify-between items-start mb-4"><div class="text-xs text-on-surface-variant uppercase tracking-wider">RAM</div><span class="material-symbols-outlined text-primary">memory</span></div>
+<div class="text-4xl font-bold text-primary mb-2"><span id="ramUsed">--</span><span class="text-base opacity-60">GB</span></div>
+<div class="w-full bg-white/5 h-1.5 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-primary to-secondary-container rounded-full transition-all duration-500" id="ramBar" style="width:0%"></div></div>
+<div class="mt-2 text-[10px] text-on-surface-variant/40"><span id="ramTotal">-</span> GB total</div>
+</div>
+<div class="glass-panel p-6 rounded-xl">
+<div class="flex justify-between items-start mb-4"><div class="text-xs text-on-surface-variant uppercase tracking-wider">DISK</div><span class="material-symbols-outlined text-primary">storage</span></div>
+<div class="text-4xl font-bold text-primary mb-2"><span id="diskUsed">--</span><span class="text-base opacity-60">GB</span></div>
+<div class="w-full bg-white/5 h-1.5 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-primary to-secondary-container rounded-full transition-all duration-500" id="diskBar" style="width:0%"></div></div>
+<div class="mt-2 text-[10px] text-on-surface-variant/40"><span id="diskTotal">-</span> GB total</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="glass-panel p-6 rounded-xl">
+<h3 class="text-xs text-on-surface-variant uppercase tracking-wider mb-4 flex items-center gap-2"><span class="material-symbols-outlined text-primary">swap_vert</span> Network Traffic</h3>
+<div class="space-y-4">
+<div class="flex justify-between"><span class="text-xs text-on-surface-variant/60">Total Sent</span><span class="text-lg font-bold text-primary" id="netSent">-- GB</span></div>
+<div class="flex justify-between"><span class="text-xs text-on-surface-variant/60">Total Received</span><span class="text-lg font-bold text-primary" id="netRecv">-- GB</span></div>
+</div>
+</div>
+<div class="glass-panel p-6 rounded-xl">
+<h3 class="text-xs text-on-surface-variant uppercase tracking-wider mb-4 flex items-center gap-2"><span class="material-symbols-outlined text-primary">sensors</span> Uptime & Health</h3>
+<div class="space-y-4">
+<div class="flex justify-between"><span class="text-xs text-on-surface-variant/60">Uptime</span><span class="text-lg font-bold text-primary" id="uptimeVal">-- hours</span></div>
+<div class="flex justify-between"><span class="text-xs text-on-surface-variant/60">Redis</span><span class="text-lg font-bold" id="redisStatus">checking...</span></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+async function loadStats() {
+    try {
+        const r = await fetch('/api/system/stats');
+        const s = await r.json();
+        document.getElementById('cpuVal').textContent = s.cpu.percent;
+        document.getElementById('cpuBar').style.width = s.cpu.percent + '%';
+        document.getElementById('cpuCores').textContent = s.cpu.cores + ' cores';
+        document.getElementById('cpuTemp').textContent = s.temp + '°C';
+        document.getElementById('ramUsed').textContent = s.memory.used_gb;
+        document.getElementById('ramBar').style.width = s.memory.percent + '%';
+        document.getElementById('ramTotal').textContent = s.memory.total_gb;
+        document.getElementById('diskUsed').textContent = s.disk.used_gb;
+        document.getElementById('diskBar').style.width = s.disk.percent + '%';
+        document.getElementById('diskTotal').textContent = s.disk.total_gb;
+        document.getElementById('netSent').textContent = s.network.sent_mb + ' MB';
+        document.getElementById('netRecv').textContent = s.network.recv_mb + ' MB';
+        document.getElementById('uptimeVal').textContent = s.uptime_hours + ' hours';
+    } catch(e) { console.error('Stats error:', e); }
+}
+async function loadHealth() {
+    try {
+        const r = await fetch('/health');
+        const h = await r.json();
+        document.getElementById('redisStatus').textContent = h.redis;
+        document.getElementById('redisStatus').className = h.redis === 'connected' ? 'text-lg font-bold text-tertiary-container' : 'text-lg font-bold text-error';
+    } catch(e) {}
+}
+loadStats();
+loadHealth();
+setInterval(loadStats, 5000);
+</script>
+</body></html>
