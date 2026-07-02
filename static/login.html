@@ -3,7 +3,7 @@
 <html class="dark" lang="pt-BR"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Lulu Converter | Login</title>
+<title>Login</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
@@ -17,11 +17,11 @@
             background: rgba(19, 19, 19, 0.6);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 0 40px rgba(0, 240, 255, 0.05);
+            box-shadow: 0 0 40px rgba(255, 105, 180, 0.05);
         }
 
         .neon-glow:focus {
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.3);
             border-color: #ff69b4;
         }
 
@@ -143,14 +143,15 @@
 <!-- Brand Identity -->
 <div class="text-center mb-stack-xl">
 <h1 class="font-headline-lg text-headline-lg md:text-headline-lg font-bold text-primary tracking-tighter mb-2">
-                </h1>
+                Lulu Converter
+            </h1>
 <p class="font-label-sm text-label-sm text-on-surface-variant/60 tracking-widest uppercase">
                 Servidor de Mídia de Alta Performance
             </p>
 </div>
 <!-- Glassmorphism Card -->
 <div class="glass-card p-base md:p-gutter rounded-xl">
-<form class="space-y-stack-md" id="loginForm">
+<form class="space-y-stack-md" id="loginForm" action="/auth" method="POST">
 <div class="space-y-2">
 <label class="font-label-sm text-label-sm text-on-surface-variant block ml-1" for="password">
                         SENHA DO SISTEMA
@@ -188,55 +189,39 @@
 <!-- Footer Identity from JSON Context -->
 <footer class="fixed bottom-0 w-full py-6 px-margin-desktop flex justify-between items-center bg-transparent pointer-events-none">
 <p class="font-label-sm text-label-sm text-on-surface-variant/40">
-            © 2024 Lulu Converter. v2.4.1-stable
+            © 2026 Lulu Converter. v2.4.1-stable
         </p>
 <div class="hidden md:flex gap-gutter pointer-events-auto">
 <a class="font-label-sm text-label-sm text-on-surface-variant/40 hover:text-primary transition-colors" href="#">STATUS DO SISTEMA</a>
 <a class="font-label-sm text-label-sm text-on-surface-variant/40 hover:text-primary transition-colors" href="#">DOCUMENTAÇÃO API</a>
 </div>
 </footer>
+
+
 <script>
-        // Micro-interaction for form submission
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const btn = this.querySelector('button');
-            const originalContent = btn.innerHTML;
-            
-            // Visual feedback
-            btn.innerHTML = `
-                <span class="material-symbols-outlined animate-spin">sync</span>
-                <span>AUTENTICANDO...</span>
-            `;
-            btn.classList.add('opacity-80', 'cursor-not-allowed');
-            
-            // Simulate server lag
-            setTimeout(() => {
-                const password = document.getElementById('password').value;
-                if(password.length > 0) {
-                    // Success state
-                    btn.classList.remove('bg-primary-container');
-                    btn.classList.add('bg-tertiary-container');
-                    btn.innerHTML = `
-                        <span class="material-symbols-outlined">check_circle</span>
-                        <span>SUCESSO</span>
-                    `;
-                    console.log('Login attempt recorded for ');
-                } else {
-                    btn.innerHTML = originalContent;
-                    btn.classList.remove('opacity-80', 'cursor-not-allowed');
-                }
-            }, 1200);
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = this.querySelector('button[type="submit"]');
+    const pw = this.querySelector('input[type="password"]').value;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Verificando...';
+    try {
+        const r = await fetch('/auth', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({password: pw})
         });
-
-        // Atmospheric mouse track
-        document.addEventListener('mousemove', (e) => {
-            const x = e.clientX / window.innerWidth;
-            const y = e.clientY / window.innerHeight;
-            
-            document.body.style.setProperty('--mouse-x', x);
-            document.body.style.setProperty('--mouse-y', y);
-        });
-    </script>
-
-<script>document.querySelector("form")?.addEventListener("submit",async e=>{e.preventDefault();const pw=document.querySelector('input[type="password"]')?.value||"";try{const r=await fetch("/auth",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({password:pw})});if(r.ok)window.location.href="/dashboard";else alert("Wrong password")}catch(e){alert("Error")}});</script>
+        if (r.ok) {
+            window.location.href = '/dashboard';
+        } else {
+            alert('Senha incorreta!');
+        }
+    } catch(e) {
+        alert('Erro de conexão');
+    }
+    btn.disabled = false;
+    btn.innerHTML = 'Acessar Sistema';
+});
+</script>
+<script>document.querySelectorAll(".year-js").forEach(e=>e.textContent=new Date().getFullYear())</script>
 </body></html>
