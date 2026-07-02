@@ -1,51 +1,443 @@
 <!DOCTYPE html>
+
 <html class="dark" lang="en"><head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Transfers | Lulu Converter</title>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Downloads | Lulu Converter</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <style>
-.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
-.glass-card{background:rgba(19,19,19,0.6);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1)}
-.progress-pulse{animation:pulse 2s cubic-bezier(0.4,0,0.6,1) infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.7}}
-::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:#0e0e0e}::-webkit-scrollbar-thumb{background:#3b494b;border-radius:3px}
-</style>
-<script>tailwind.config={darkMode:"class",theme:{extend:{colors:{
-"primary":"#ffb6c1","primary-container":"#ff69b4","on-primary-fixed":"#3a0020","primary-fixed-dim":"#ff1493",
-"surface":"#131313","background":"#131313","on-surface":"#e5e2e1","on-surface-variant":"#b9cacb",
-"surface-dim":"#131313","surface-container-lowest":"#0e0e0e","surface-container-low":"#1c1b1b",
-"surface-container":"#201f1f","surface-container-high":"#2a2a2a","surface-container-highest":"#353534",
-"tertiary-container":"#00f990","on-tertiary":"#00391d","error":"#ffb4ab","error-container":"#93000a",
-"secondary-container":"#c71585","outline":"#849495","outline-variant":"#3b494b"
-}}}}}</script>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(19, 19, 19, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .cyan-glow {
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
+        }
+        .progress-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .7; }
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0e0e0e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3b494b;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff69b4;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "error-container": "#93000a",
+                      "on-primary": "#5c0033",
+                      "outline": "#849495",
+                      "secondary": "#d1bcff",
+                      "primary": "#ffb6c1",
+                      "tertiary-container": "#00f990",
+                      "surface-dim": "#131313",
+                      "secondary-fixed-dim": "#d1bcff",
+                      "on-secondary-container": "#ddcdff",
+                      "surface-container-highest": "#353534",
+                      "surface-bright": "#3a3939",
+                      "on-tertiary": "#00391d",
+                      "secondary-container": "#7000ff",
+                      "surface-container-lowest": "#0e0e0e",
+                      "on-tertiary-container": "#006d3c",
+                      "on-surface": "#e5e2e1",
+                      "on-tertiary-fixed-variant": "#00522c",
+                      "primary-fixed": "#7df4ff",
+                      "error": "#ffb4ab",
+                      "on-primary-fixed": "#3a0020",
+                      "tertiary-fixed": "#5bffa1",
+                      "surface-container-high": "#2a2a2a",
+                      "surface-container": "#201f1f",
+                      "on-primary-container": "#c71585",
+                      "surface": "#131313",
+                      "background": "#131313",
+                      "on-secondary": "#3c0090",
+                      "secondary-fixed": "#e9ddff",
+                      "surface-tint": "#ff1493",
+                      "on-tertiary-fixed": "#00210e",
+                      "tertiary": "#dcffe2",
+                      "primary-fixed-dim": "#ff1493",
+                      "tertiary-fixed-dim": "#00e383",
+                      "on-secondary-fixed": "#23005b",
+                      "on-error": "#690005",
+                      "outline-variant": "#3b494b",
+                      "on-primary-fixed-variant": "#004f54",
+                      "inverse-surface": "#e5e2e1",
+                      "surface-variant": "#353534",
+                      "inverse-on-surface": "#313030",
+                      "on-error-container": "#ffdad6",
+                      "on-secondary-fixed-variant": "#5700c9",
+                      "primary-container": "#ff69b4",
+                      "on-background": "#e5e2e1",
+                      "surface-container-low": "#1c1b1b",
+                      "on-surface-variant": "#b9cacb",
+                      "inverse-primary": "#c71585"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "24px",
+                      "margin-mobile": "20px",
+                      "base": "8px",
+                      "stack-xs": "4px",
+                      "stack-xl": "48px",
+                      "margin-desktop": "64px",
+                      "container-max": "1440px",
+                      "stack-md": "16px"
+              },
+              "fontFamily": {
+                      "body-md": ["Inter"],
+                      "stats-lg": ["JetBrains Mono"],
+                      "headline-lg": ["Inter"],
+                      "label-sm": ["JetBrains Mono"],
+                      "headline-lg-mobile": ["Inter"],
+                      "display-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "body-md": ["16px", {"lineHeight": "1.6", "letterSpacing": "0em", "fontWeight": "400"}],
+                      "stats-lg": ["20px", {"lineHeight": "1.0", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "label-sm": ["12px", {"lineHeight": "1.0", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                      "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+      </script>
 </head>
-<body class="bg-background text-on-surface font-body-md min-h-screen">
-<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-6 md:px-16 h-20 bg-surface/60 backdrop-blur-md border-b border-white/10">
-<div class="flex items-center gap-3"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%23ff69b4'/%3E%3Ctext x='20' y='27' text-anchor='middle' font-size='24'%3E%F0%9F%90%B1%3C/text%3E%3C/svg%3E" alt="Lulu" class="w-8 h-8 rounded-full shadow-[0_0_12px_rgba(255,105,180,0.3)]"/><a href="/dashboard" class="text-xl font-bold text-primary tracking-tighter">Lulu Converter</a></div>
+<body class="bg-background text-on-surface min-h-screen selection:bg-primary-container selection:text-on-primary-container"><div class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 h-16 bg-[#131313]/80 backdrop-blur-xl border-b border-[#3b494b]/30" style="background:rgba(19,19,19,0.8);backdrop-filter:blur(20px);border-bottom:1px solid rgba(59,73,75,0.3)">
+<div class="flex items-center gap-3">
+<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%23ff69b4'/%3E%3Ctext x='20' y='27' text-anchor='middle' font-size='24'%3E%F0%9F%90%B1%3C/text%3E%3C/svg%3E" class="w-8 h-8 rounded-full shadow-[0_0_12px_rgba(255,105,180,0.3)]"/>
+<span class="text-lg font-bold" style="color:#ffb6c1">Lulu Converter</span>
+</div>
+<div class="flex items-center gap-4 text-xs">
+<a href="/dashboard" class="px-3 py-1.5 rounded-lg transition-all" style="color:#b9cacb;">Dashboard</a><a href="/transfers" class="px-3 py-1.5 rounded-lg transition-all font-bold" style="color:#ff69b4; border-bottom:2px solid #ff69b4">Transfers</a><a href="/storage" class="px-3 py-1.5 rounded-lg transition-all" style="color:#b9cacb;">Storage</a><a href="/system" class="px-3 py-1.5 rounded-lg transition-all" style="color:#b9cacb;">System</a>
+</div>
+<a href="/" onclick="document.cookie='session=;max-age=0';return true" class="text-xs" style="color:#b9cacb">✕</a>
+</div>
+<!-- Top Navigation Bar -->
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-desktop h-20 bg-surface/60 backdrop-blur-md border-b border-white/10 shadow-[0_0_20px_rgba(0,240,255,0.05)]">
+<div class="font-headline-lg text-headline-lg font-bold text-primary tracking-tighter">Lulu Converter</div>
 <div class="hidden md:flex items-center gap-8">
-<a href="/dashboard" class="text-sm text-on-surface-variant hover:text-primary transition-colors">Dashboard</a>
-<a href="/transfers" class="text-sm text-primary border-b-2 border-primary pb-1">Transfers</a>
-<a href="/storage" class="text-sm text-on-surface-variant hover:text-primary transition-colors">Storage</a>
-<a href="/system" class="text-sm text-on-surface-variant hover:text-primary transition-colors">System</a>
+<a class="font-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Dashboard</a>
+<a class="font-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Transfers</a>
+<a class="font-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Library</a>
+<a class="font-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Settings</a>
 </div>
-<div class="flex items-center gap-4"><a class="text-xs text-on-surface-variant/60 hover:text-error transition-colors cursor-pointer" onclick="fetch('/api/history',{method:'DELETE'}).then(()=>location.reload())">Clear</a></div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex h-10 w-64 glass-card rounded-full items-center px-4 gap-3">
+<span class="material-symbols-outlined text-outline-variant text-sm">search</span>
+<input class="bg-transparent border-none text-on-surface font-label-sm focus:ring-0 placeholder:text-outline-variant w-full" placeholder="Search downloads..." type="text"/>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">sensors</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">network_check</button>
+<div class="w-10 h-10 rounded-full border border-primary/20 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A futuristic professional avatar of a software engineer, rendered in a cinematic 3D style with cool blue neon lighting. The character wears a sleek dark technical jacket. The background is a blurred high-tech server room with glowing fiber optic cables, maintaining the dark minimalist and glassmorphism aesthetic of the Lulu Converter platform." src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%23ff69b4'/%3E%3Ctext x='20' y='27' text-anchor='middle' font-size='24'%3E%F0%9F%90%B1%3C/text%3E%3C/svg%3E.com/aida-public/AB6AXuASU6QNwH3FgurVIwHbHLtBSJFIZ2xYJZQXw6GN6Z3YnQiWBqY_MbGJhxt1_NK9Ewu5jT11QwDIc3vXT7GNYGtbTT61-dejL9DOB_KxWSRmY5uQ4cRNd5r38O2tz93t7FfMd9BB1GIl8LBV2Ls9SIo8jKMCGmWZ2uNermfRqi0jlM0OecQzrqZ6YI81smo0mrkPJEMZEU2HMsUr7n-80EEbqkk7KFAmj22h5pRxSsc37ILK-6qQkMvb"/>
+</div>
+</div>
 </nav>
-<main class="pt-24 pb-16 px-6 md:px-16">
-<div class="max-w-7xl mx-auto">
-<div class="flex justify-between items-start mb-10">
-<div><h1 class="text-4xl font-bold text-primary mb-2">Transfers</h1><p class="text-on-surface-variant">Download history and active streams</p></div>
-<div class="flex gap-4"><div class="glass-card px-6 py-3 rounded-2xl text-center"><span class="text-[10px] text-on-surface-variant uppercase tracking-widest">History</span><span class="text-xl font-bold text-primary block" id="historyCount">--</span></div></div>
+<!-- Side Navigation -->
+<aside class="fixed left-0 top-0 h-full pt-20 flex flex-col bg-surface-container-lowest/80 backdrop-blur-xl border-r border-white/10 shadow-2xl w-64 hidden lg:flex">
+<div class="p-6">
+<div class="flex items-center gap-3 mb-8">
+<div class="w-8 h-8 rounded-lg bg-primary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">terminal</span>
 </div>
+<div>
+<div class="font-label-sm text-label-sm text-primary">NODE_01</div>
+<div class="text-[10px] text-on-surface-variant uppercase tracking-widest">Online â¢ 1.2 Gbps</div>
+</div>
+</div>
+<nav class="space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-variant/30 hover:translate-x-1 transition-all duration-300 font-label-sm text-label-sm" href="#">
+<span class="material-symbols-outlined">dashboard</span> Home
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary-container/20 text-primary border-r-4 border-primary font-label-sm text-label-sm" href="#">
+<span class="material-symbols-outlined">download</span> Downloads
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-variant/30 hover:translate-x-1 transition-all duration-300 font-label-sm text-label-sm" href="#">
+<span class="material-symbols-outlined">database</span> Storage
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-variant/30 hover:translate-x-1 transition-all duration-300 font-label-sm text-label-sm" href="#">
+<span class="material-symbols-outlined">terminal</span> System
+                </a>
+</nav>
+</div>
+<div class="mt-auto p-6">
+<button class="w-full py-4 glass-card border-primary/30 text-primary font-label-sm text-label-sm rounded-xl hover:bg-primary/10 transition-all flex items-center justify-center gap-2 active:scale-95">
+<span class="material-symbols-outlined text-sm">add</span> Add New Link
+            </button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="lg:pl-64 pt-20 pb-16 min-h-screen">
+<div class="max-w-7xl mx-auto px-6 py-10">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-6">
+<div>
+<h1 class="font-display-lg text-display-lg text-primary mb-2">Transfers</h1>
+<p class="font-body-md text-on-surface-variant max-w-xl">Monitor your server's data ingestion in real-time. Manage global bandwidth and file lifecycle across all nodes.</p>
+</div>
+<div class="flex gap-4">
+<div class="glass-card px-6 py-3 rounded-2xl flex flex-col gap-1">
+<span class="text-[10px] text-on-surface-variant uppercase tracking-widest">Active Jobs</span>
+<span class="font-stats-lg text-stats-lg text-primary">04</span>
+</div>
+<div class="glass-card px-6 py-3 rounded-2xl flex flex-col gap-1">
+<span class="text-[10px] text-on-surface-variant uppercase tracking-widest">Global Speed</span>
+<span class="font-stats-lg text-stats-lg text-tertiary-container">84.2 MB/s</span>
+</div>
+</div>
+</div>
+<!-- Download Grid/Bento Layout -->
+<div class="grid grid-cols-1 xl:grid-cols-4 gap-6">
+<!-- Active Queue -->
+<div class="xl:col-span-3 space-y-4">
+<h2 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+                        Active Stream
+                    </h2>
+<!-- Active Item 1 -->
+<div class="glass-card p-6 rounded-3xl group hover:border-primary/40 transition-all duration-500 relative overflow-hidden">
+<div class="flex flex-col md:flex-row items-center gap-6 relative z-10">
+<div class="w-full md:w-48 aspect-video rounded-2xl overflow-hidden relative border border-white/5">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="A high-resolution cinematic thumbnail showing a close-up of a complex obsidian and neon cyan architectural structure. The lighting is moody and directional, highlighting textures of matte metal and glowing light panels. Professional dark photography aesthetic with deep shadows and high-tech elegance." src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%23ff69b4'/%3E%3Ctext x='20' y='27' text-anchor='middle' font-size='24'%3E%F0%9F%90%B1%3C/text%3E%3C/svg%3E.com/aida-public/AB6AXuB7NNKe5KDmx5fEMmx2QzKrruqnjc78Pioj6qmzpM57ig3d7jlZ6lCR79VezIX5kTH2sLZaZjvVlYIlqhyy2ezJUNAa1cCsemN0EKsfaZooNumXfQRvDUd6jm2_87pQ8l6YpfpSxGocdR4CTXLzm9fiP-DGTIsK8rqvodR-sT8lSLRpVkSfe8pU3hdGVkBtVokGo-cQuUPJiQcVa7cuJWpFHyL3139bmNiKucvVJT2F42mcLsJjsWne"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+<div class="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-black/60 backdrop-blur text-[10px] font-label-sm text-primary uppercase tracking-widest border border-white/10">YouTube</div>
+</div>
+<div class="flex-1 w-full">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h3 class="font-stats-lg text-stats-lg text-on-surface mb-1 truncate">Architectural_Visions_Vol_4_4K.mp4</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">4.2 GB â¢ 84.2 MB/s â¢ 12s remaining</p>
+</div>
+<div class="flex gap-2">
+<button class="p-2 glass-card rounded-xl hover:text-primary transition-colors"><span class="material-symbols-outlined">pause</span></button>
+<button class="p-2 glass-card rounded-xl hover:text-error transition-colors"><span class="material-symbols-outlined">close</span></button>
+</div>
+</div>
+<div class="w-full h-2 bg-white/5 rounded-full mt-4 overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary-container to-secondary-container w-[78%] progress-pulse rounded-full relative">
+<div class="absolute inset-0 bg-[linear-gradient(45deg,rgba(255,255,255,0.2)_25%,transparent_25%,transparent_50%,rgba(255,255,255,0.2)_50%,rgba(255,255,255,0.2)_75%,transparent_75%,transparent)] bg-[length:16px_16px] animate-[move-bg_1s_linear_infinite]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Active Item 2 -->
+<div class="glass-card p-6 rounded-3xl group hover:border-primary/40 transition-all duration-500 relative overflow-hidden">
+<div class="flex flex-col md:flex-row items-center gap-6 relative z-10">
+<div class="w-full md:w-48 aspect-video rounded-2xl overflow-hidden relative border border-white/5">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="A lush tropical garden at dusk, illuminated by artificial bioluminescent plants that glow in soft shades of purple and teal. The scene is shot with a shallow depth of field, creating a dreamy, high-end lifestyle mood. The color palette is rich and saturated, leaning into the dark minimalist vibe of a luxury media interface." src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%23ff69b4'/%3E%3Ctext x='20' y='27' text-anchor='middle' font-size='24'%3E%F0%9F%90%B1%3C/text%3E%3C/svg%3E.com/aida-public/AB6AXuBe22Sv-QsGfXcxJx47HuT4mCXfX9AsKFSBeXSjBZlWu0DPxGTMC3zmaKBm-U3x_608Lt99S4vj4KG_v6bsRWttkXQZekSO0zFzkWdQEgN9yyjmKVCVa8FhOFYzgr_VIHFZFAtGcWiWrN7X-45ncR3xXhoXkLoRKkLkeQROSFCbvHCk7fSTlnFXrIyMs4AYL5ZDSV8n2oGe-WkiRato3vnhmj50GEDnRaz3Ecuw9NOipyQdl0csrYUZ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+<div class="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-black/60 backdrop-blur text-[10px] font-label-sm text-primary uppercase tracking-widest border border-white/10">Instagram</div>
+</div>
+<div class="flex-1 w-full">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h3 class="font-stats-lg text-stats-lg text-on-surface mb-1">Reels_Travel_Compilation_2024.zip</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">856 MB â¢ 12.4 MB/s â¢ 2m remaining</p>
+</div>
+<div class="flex gap-2">
+<button class="p-2 glass-card rounded-xl hover:text-primary transition-colors"><span class="material-symbols-outlined">pause</span></button>
+<button class="p-2 glass-card rounded-xl hover:text-error transition-colors"><span class="material-symbols-outlined">close</span></button>
+</div>
+</div>
+<div class="w-full h-2 bg-white/5 rounded-full mt-4 overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary-container to-secondary-container w-[42%] rounded-full opacity-60"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Completed Table -->
+<div class="mt-12">
+<h2 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-[0.2em] mb-6">Archive</h2>
 <div class="glass-card rounded-3xl overflow-hidden">
-<div class="px-8 py-4 border-b border-white/10 bg-white/5 text-sm text-on-surface-variant uppercase tracking-widest">Archive (Last 100)</div>
-<table class="w-full text-left border-collapse"><thead><tr class="text-xs text-on-surface-variant uppercase border-b border-white/5">
-<th class="px-6 py-4 font-medium">Title</th><th class="px-6 py-4 font-medium">Format</th><th class="px-6 py-4 font-medium">Size</th><th class="px-6 py-4 font-medium">Date</th><th class="px-6 py-4 font-medium">Status</th></tr></thead>
-<tbody id="historyBody" class="divide-y divide-white/5 text-sm"><tr><td colspan="5" class="px-6 py-8 text-center text-on-surface-variant/40">Loading...</td></tr></tbody></table>
-</div></div>
+<table class="w-full text-left border-collapse">
+<thead class="bg-white/5">
+<tr>
+<th class="px-6 py-4 font-label-sm text-label-sm text-outline-variant uppercase tracking-widest">File Name</th>
+<th class="px-6 py-4 font-label-sm text-label-sm text-outline-variant uppercase tracking-widest">Size</th>
+<th class="px-6 py-4 font-label-sm text-label-sm text-outline-variant uppercase tracking-widest">Status</th>
+<th class="px-6 py-4 font-label-sm text-label-sm text-outline-variant uppercase tracking-widest text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/5">
+<!-- Row 1 -->
+<tr class="hover:bg-white/5 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-container text-sm">video_library</span>
+<span class="font-body-md text-on-surface truncate max-w-[200px]">Node_Tutorial_Final_1080p.mkv</span>
+</div>
+</td>
+<td class="px-6 py-4 font-label-sm text-on-surface-variant">2.1 GB</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 rounded-full bg-tertiary-container/10 text-tertiary-container font-label-sm text-[10px] uppercase tracking-widest">Completed</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="material-symbols-outlined text-outline-variant hover:text-primary transition-colors text-sm" title="Open Folder">folder_open</button>
+<button class="material-symbols-outlined text-outline-variant hover:text-primary transition-colors text-sm" title="Redownload">refresh</button>
+<button class="material-symbols-outlined text-outline-variant hover:text-error transition-colors text-sm" title="Delete">delete</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-white/5 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-error text-sm">warning</span>
+<span class="font-body-md text-on-surface truncate max-w-[200px]">Data_Dump_Secure_Alpha.enc</span>
+</div>
+</td>
+<td class="px-6 py-4 font-label-sm text-on-surface-variant">14.8 GB</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 rounded-full bg-error-container/20 text-error font-label-sm text-[10px] uppercase tracking-widest">Failed</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="material-symbols-outlined text-outline-variant hover:text-primary transition-colors text-sm" title="Open Folder">folder_open</button>
+<button class="material-symbols-outlined text-outline-variant hover:text-primary transition-colors text-sm" title="Redownload">refresh</button>
+<button class="material-symbols-outlined text-outline-variant hover:text-error transition-colors text-sm" title="Delete">delete</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-white/5 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-container text-sm">image</span>
+<span class="font-body-md text-on-surface truncate max-w-[200px]">Asset_Pack_v2.zip</span>
+</div>
+</td>
+<td class="px-6 py-4 font-label-sm text-on-surface-variant">154 MB</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 rounded-full bg-tertiary-container/10 text-tertiary-container font-label-sm text-[10px] uppercase tracking-widest">Completed</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="material-symbols-outlined text-outline-variant hover:text-primary transition-colors text-sm" title="Open Folder">folder_open</button>
+<button class="material-symbols-outlined text-outline-variant hover:text-primary transition-colors text-sm" title="Redownload">refresh</button>
+<button class="material-symbols-outlined text-outline-variant hover:text-error transition-colors text-sm" title="Delete">delete</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Stats & Contextual Info -->
+<div class="space-y-6">
+<h2 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-[0.2em] mb-4">Diagnostics</h2>
+<div class="glass-card p-6 rounded-3xl">
+<div class="text-[10px] text-outline-variant uppercase tracking-widest mb-4">Storage Capacity</div>
+<div class="flex items-center justify-between mb-2">
+<span class="font-stats-lg text-stats-lg text-on-surface">1.2 <span class="text-xs font-normal">TB</span></span>
+<span class="text-xs text-on-surface-variant">74% used</span>
+</div>
+<div class="w-full h-1 bg-white/5 rounded-full">
+<div class="h-full bg-primary-container w-[74%] rounded-full shadow-[0_0_10px_rgba(0,240,255,0.5)]"></div>
+</div>
+</div>
+<div class="glass-card p-6 rounded-3xl overflow-hidden relative">
+<div class="absolute inset-0 opacity-10 pointer-events-none">
+
+</div>
+<div class="relative z-10">
+<div class="text-[10px] text-outline-variant uppercase tracking-widest mb-4">Network Load</div>
+<div class="flex items-end gap-1 h-12 mb-4">
+<div class="w-1 bg-primary-container h-[40%] rounded-full"></div>
+<div class="w-1 bg-primary-container h-[60%] rounded-full"></div>
+<div class="w-1 bg-primary-container h-[90%] rounded-full"></div>
+<div class="w-1 bg-primary-container h-[50%] rounded-full"></div>
+<div class="w-1 bg-primary-container h-[30%] rounded-full"></div>
+<div class="w-1 bg-primary-container h-[70%] rounded-full"></div>
+<div class="w-1 bg-primary-container h-[85%] rounded-full"></div>
+<div class="w-1 bg-primary-container h-[45%] rounded-full"></div>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Stable peer connection across 8 distributed nodes.</p>
+</div>
+</div>
+<div class="glass-card p-6 rounded-3xl border-dashed border-white/20 bg-transparent flex flex-col items-center justify-center text-center py-12">
+<div class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-outline-variant">cloud_upload</span>
+</div>
+<h4 class="font-label-sm text-label-sm text-on-surface mb-2">Drag &amp; Drop</h4>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-widest">or click to import bulk URLs</p>
+</div>
+</div>
+</div>
+</div>
 </main>
+<!-- Footer -->
+<footer class="lg:pl-64 w-full py-4 px-margin-desktop flex flex-col md:flex-row justify-between items-center bg-surface-dim border-t border-white/10">
+<div class="font-stats-lg text-stats-lg text-primary mb-4 md:mb-0">Lulu Converter</div>
+<div class="flex gap-8 mb-4 md:mb-0">
+<a class="font-label-sm text-label-sm text-on-surface-variant/60 hover:text-on-surface transition-colors" href="#">API Docs</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant/60 hover:text-on-surface transition-colors" href="#">System Status</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant/60 hover:text-on-surface transition-colors" href="#">Report Issue</a>
+</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant/60">Â© 2024 Lulu Converter. v2.4.1-stable</div>
+</footer>
 <script>
-async function loadHistory(){try{const r=await fetch('/api/history');const data=await r.json();document.getElementById('historyCount').textContent=data.length;const tbody=document.getElementById('historyBody');if(data.length===0){tbody.innerHTML='<tr><td colspan="5" class="px-6 py-8 text-center text-on-surface-variant/40">No downloads yet</td></tr>';return}tbody.innerHTML=data.map(i=>'<tr class="hover:bg-white/5 transition-colors"><td class="px-6 py-4"><div class="flex items-center gap-3"><span class="material-symbols-outlined text-primary-container text-sm">video_library</span><span class="truncate max-w-[250px]">'+(i.title||i.url)+'</span></div></td><td class="px-6 py-4"><span class="px-2 py-1 rounded bg-surface-container-highest text-xs uppercase">'+(i.format||'-')+'</span></td><td class="px-6 py-4 font-mono text-xs">'+(i.size?(i.size/1e6).toFixed(1)+' MB':'-')+'</td><td class="px-6 py-4 text-on-surface-variant text-xs">'+(i.time?new Date(i.time).toLocaleString():'-')+'</td><td class="px-6 py-4"><span class="px-2 py-1 rounded bg-tertiary-container/10 text-tertiary-container text-[10px] uppercase">'+(i.status||'completed')+'</span></td></tr>').join('')}catch(e){console.error('History:',e)}}
+        // Micro-interaction for row clicks or hover effects
+        document.querySelectorAll('tr').forEach(row => {
+            row.addEventListener('click', () => {
+                // Subtle click interaction
+                row.style.transform = 'scale(0.995)';
+                setTimeout(() => {
+                    row.style.transform = 'scale(1)';
+                }, 100);
+            });
+        });
+
+        // Simulating bandwidth updates
+        setInterval(() => {
+            const speedElement = document.querySelector('.text-tertiary-container');
+            if(speedElement) {
+                const currentSpeed = (Math.random() * (86.5 - 82.1) + 82.1).toFixed(1);
+                speedElement.textContent = currentSpeed + ' MB/s';
+            }
+        }, 3000);
+    </script>
+
+<script>
+async function loadHistory(){
+    try{
+        const r=await fetch('/api/history');const data=await r.json();
+        const tbl=document.querySelector('table tbody')||document.querySelector('[class*="list"]');
+        if(tbl) tbl.innerHTML=data.map(i=>'<tr><td>'+(i.title||i.url||'-')+'</td><td>'+(i.format||'-')+'</td><td>'+(i.time?new Date(i.time).toLocaleString():'-')+'</td></tr>').join('');
+    }catch(e){}
+}
 loadHistory();
 </script>
 </body></html>
