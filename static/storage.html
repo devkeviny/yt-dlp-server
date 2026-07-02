@@ -3,7 +3,7 @@
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Lulu Converter | Storage</title>
+<title>Storage Management | Lulu Converter</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
@@ -18,7 +18,7 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .cyan-glow {
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.05);
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.05);
         }
         @keyframes pulse-cyan {
             0%, 100% { opacity: 1; }
@@ -136,7 +136,7 @@
 <!-- TopNavBar -->
 <nav class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-desktop h-20 bg-surface/60 backdrop-blur-md border-b border-white/10 shadow-[0_0_20px_rgba(0,240,255,0.05)]">
 <div class="flex items-center gap-8">
-<span class="font-headline-lg text-headline-lg font-bold text-primary tracking-tighter"></span>
+<span class="font-headline-lg text-headline-lg font-bold text-primary tracking-tighter">Lulu Converter</span>
 <div class="hidden md:flex items-center gap-6">
 <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Dashboard</a>
 <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Transfers</a>
@@ -380,7 +380,7 @@
 <footer class="w-full py-4 px-margin-desktop flex justify-between items-center bg-surface-dim border-t border-white/10 lg:pl-[calc(256px+64px)]">
 <div class="flex items-center gap-8">
 <span class="font-stats-lg text-stats-lg text-primary tracking-tighter">Lulu Converter</span>
-<span class="font-label-sm text-label-sm text-on-surface-variant/60">© 2024 Lulu Converter. v2.4.1-stable</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant/60">© 2026 Lulu Converter. v2.4.1-stable</span>
 </div>
 <div class="flex gap-6">
 <a class="font-label-sm text-label-sm text-on-surface-variant/60 hover:text-on-surface transition-colors" href="#">API Docs</a>
@@ -392,83 +392,34 @@
 <button class="fixed bottom-8 right-8 w-16 h-16 bg-primary-container rounded-full flex items-center justify-center text-on-primary-container shadow-[0_0_20px_rgba(0,240,255,0.3)] hover:scale-110 active:scale-95 transition-all z-40">
 <span class="material-symbols-outlined font-bold text-2xl">cloud_upload</span>
 </button>
+
+
 <script>
-        // Micro-interaction for the "Clear Cache" button
-        document.getElementById('clearCacheBtn').addEventListener('click', function() {
-            const btn = this;
-            const originalContent = btn.innerHTML;
-            
-            btn.disabled = true;
-            btn.innerHTML = `
-                <span class="material-symbols-outlined animate-spin">sync</span>
-                Optimizing...
-            `;
-            btn.classList.add('opacity-50');
-
-            setTimeout(() => {
-                btn.innerHTML = `
-                    <span class="material-symbols-outlined">check_circle</span>
-                    Cache Purged!
-                `;
-                btn.classList.remove('border-primary');
-                btn.classList.add('border-tertiary-container', 'text-tertiary-container');
-                
-                setTimeout(() => {
-                    btn.innerHTML = originalContent;
-                    btn.disabled = false;
-                    btn.classList.remove('opacity-50', 'border-tertiary-container', 'text-tertiary-container');
-                    btn.classList.add('border-primary', 'text-primary');
-                }, 2000);
-            }, 1500);
-        });
-
-        // Background Atmosphere Script
-        const canvas = document.createElement('canvas');
-        document.body.appendChild(canvas);
-        canvas.style.position = 'fixed';
-        canvas.style.top = '0';
-        canvas.style.left = '0';
-        canvas.style.width = '100%';
-        canvas.style.height = '100%';
-        canvas.style.zIndex = '-1';
-        canvas.style.pointerEvents = 'none';
-        canvas.style.opacity = '0.2';
-
-        const ctx = canvas.getContext('2d');
-        let width, height, particles;
-
-        function init() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-            particles = [];
-            for (let i = 0; i < 50; i++) {
-                particles.push({
-                    x: Math.random() * width,
-                    y: Math.random() * height,
-                    size: Math.random() * 2 + 1,
-                    speedX: Math.random() * 0.5 - 0.25,
-                    speedY: Math.random() * 0.5 - 0.25
-                });
-            }
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, width, height);
-            ctx.fillStyle = '#ff1493';
-            particles.forEach(p => {
-                p.x += p.speedX;
-                p.y += p.speedY;
-                if (p.x < 0 || p.x > width) p.speedX *= -1;
-                if (p.y < 0 || p.y > height) p.speedY *= -1;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fill();
-            });
-            requestAnimationFrame(animate);
-        }
-
-        window.addEventListener('resize', init);
-        init();
-        animate();
-    </script>
+// Storage - system stats
+async function loadStats() {
+    try {
+        const r = await fetch('/api/system/stats');
+        const d = await r.json();
+        
+        // Update CPU
+        document.querySelectorAll('[data-stat="cpu"]').forEach(el => { el.textContent = d.cpu?.percent + '%'; });
+        // Memory
+        document.querySelectorAll('[data-stat="memory"]').forEach(el => { el.textContent = d.memory?.used_gb + ' / ' + d.memory?.total_gb + ' GB'; });
+        document.querySelectorAll('[data-stat="mem-percent"]').forEach(el => { el.textContent = d.memory?.percent + '%'; });
+        // Disk
+        document.querySelectorAll('[data-stat="disk"]').forEach(el => { el.textContent = d.disk?.used_gb + ' / ' + d.disk?.total_gb + ' GB'; });
+        document.querySelectorAll('[data-stat="disk-percent"]').forEach(el => { el.textContent = d.disk?.percent + '%'; });
+        // Network
+        document.querySelectorAll('[data-stat="network-sent"]').forEach(el => { el.textContent = d.network?.sent_mb + ' MB'; });
+        document.querySelectorAll('[data-stat="network-recv"]').forEach(el => { el.textContent = d.network?.recv_mb + ' MB'; });
+        // Uptime
+        document.querySelectorAll('[data-stat="uptime"]').forEach(el => { el.textContent = d.uptime_hours + 'h'; });
+        // Temp
+        document.querySelectorAll('[data-stat="temp"]').forEach(el => { el.textContent = d.temp + '°C'; });
+    } catch(e) { console.log('Stats:', e.message); }
+}
+document.addEventListener('DOMContentLoaded', loadStats);
+setInterval(loadStats, 10000);
+</script>
+<script>document.querySelectorAll(".year-js").forEach(e=>e.textContent=new Date().getFullYear())</script>
 </body></html>
