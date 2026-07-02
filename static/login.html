@@ -1,66 +1,256 @@
 <!DOCTYPE html>
+
 <html class="dark" lang="pt-BR"><head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Lulu Converter | Login</title>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Login</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..900&display=swap" rel="stylesheet"/>
 <style>
-.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
-.glass-card{background:rgba(19,19,19,0.6);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.08);box-shadow:0 0 40px rgba(255,105,180,0.08)}
-.neon-glow:focus{box-shadow:0 0 20px rgba(255,105,180,0.3);border-color:#ff69b4}
-@keyframes pulse-pink{0%{opacity:0.4}50%{opacity:0.8}100%{opacity:0.4}}
-.animate-pulse-pink{animation:pulse-pink 4s ease-in-out infinite}
-body::-webkit-scrollbar{width:0}body{scrollbar-width:none}
-</style>
-<script>tailwind.config={darkMode:"class",theme:{extend:{colors:{
-"surface-container-low":"#1c1b1b","surface-container-lowest":"#0e0e0e","surface-dim":"#131313",
-"on-surface":"#e5e2e1","background":"#131313","surface":"#131313",
-"primary":"#ffb6c1","primary-container":"#ff69b4","on-primary-container":"#5c0033",
-"on-primary-fixed":"#3a0020","primary-fixed-dim":"#ff1493","on-surface-variant":"#b9cacb",
-"secondary-container":"#c71585"
-}}}}</script>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        .glass-card {
+            background: rgba(19, 19, 19, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 40px rgba(0, 240, 255, 0.05);
+        }
+
+        .neon-glow:focus {
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+            border-color: #ff69b4;
+        }
+
+        @keyframes pulse-cyan {
+            0% { opacity: 0.4; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0.4; }
+        }
+
+        .animate-pulse-cyan {
+            animation: pulse-cyan 4s ease-in-out infinite;
+        }
+
+        /* Hide Scrollbar */
+        body::-webkit-scrollbar { width: 0px; }
+        body { scrollbar-width: none; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-low": "#1c1b1b",
+                      "surface-container-lowest": "#0e0e0e",
+                      "secondary-fixed-dim": "#d1bcff",
+                      "surface-dim": "#131313",
+                      "on-surface": "#e5e2e1",
+                      "on-secondary-fixed": "#23005b",
+                      "outline-variant": "#3b494b",
+                      "on-primary-container": "#c71585",
+                      "inverse-on-surface": "#313030",
+                      "background": "#131313",
+                      "surface-bright": "#3a3939",
+                      "surface-variant": "#353534",
+                      "on-tertiary": "#00391d",
+                      "inverse-primary": "#c71585",
+                      "surface-container-highest": "#353534",
+                      "secondary-container": "#7000ff",
+                      "on-error": "#690005",
+                      "surface": "#131313",
+                      "secondary": "#d1bcff",
+                      "on-secondary-fixed-variant": "#5700c9",
+                      "on-secondary": "#3c0090",
+                      "outline": "#849495",
+                      "on-tertiary-fixed-variant": "#00522c",
+                      "surface-container-high": "#2a2a2a",
+                      "tertiary-container": "#00f990",
+                      "on-primary": "#5c0033",
+                      "on-surface-variant": "#b9cacb",
+                      "secondary-fixed": "#e9ddff",
+                      "on-error-container": "#ffdad6",
+                      "on-tertiary-fixed": "#00210e",
+                      "on-secondary-container": "#ddcdff",
+                      "on-primary-fixed-variant": "#004f54",
+                      "tertiary-fixed": "#5bffa1",
+                      "primary-fixed": "#7df4ff",
+                      "error": "#ffb4ab",
+                      "error-container": "#93000a",
+                      "primary-container": "#ff69b4",
+                      "tertiary-fixed-dim": "#00e383",
+                      "inverse-surface": "#e5e2e1",
+                      "on-primary-fixed": "#3a0020",
+                      "on-tertiary-container": "#006d3c",
+                      "primary-fixed-dim": "#ff1493",
+                      "primary": "#ffb6c1",
+                      "surface-container": "#201f1f",
+                      "tertiary": "#dcffe2",
+                      "on-background": "#e5e2e1",
+                      "surface-tint": "#ff1493"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-desktop": "64px",
+                      "gutter": "24px",
+                      "base": "8px",
+                      "stack-xs": "4px",
+                      "stack-xl": "48px",
+                      "margin-mobile": "20px",
+                      "container-max": "1440px",
+                      "stack-md": "16px"
+              },
+              "fontFamily": {
+                      "headline-lg": ["Inter"],
+                      "body-md": ["Inter"],
+                      "stats-lg": ["JetBrains Mono"],
+                      "headline-lg-mobile": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "label-sm": ["JetBrains Mono"]
+              },
+              "fontSize": {
+                      "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "letterSpacing": "0em", "fontWeight": "400"}],
+                      "stats-lg": ["20px", {"lineHeight": "1.0", "fontWeight": "600"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                      "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-sm": ["12px", {"lineHeight": "1.0", "letterSpacing": "0.05em", "fontWeight": "500"}]
+              }
+            },
+          },
+        }
+    </script>
 </head>
 <body class="bg-surface-container-lowest text-on-surface font-body-md min-h-screen flex flex-col items-center justify-center overflow-hidden">
+<!-- Background Atmospheric Effect -->
 <div class="fixed inset-0 z-0 pointer-events-none">
-<div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary-container/10 rounded-full blur-[120px] animate-pulse-pink"></div>
-<div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary-container/10 rounded-full blur-[120px]"></div>
-<div class="absolute inset-0 opacity-[0.03]" style="background-image:radial-gradient(#ff69b4 1px,transparent 1px);background-size:32px 32px"></div>
+<div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary-container/5 rounded-full blur-[120px] animate-pulse-cyan"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary-container/5 rounded-full blur-[120px]"></div>
+<!-- Grid Pattern Overlay -->
+<div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(#ffb6c1 1px, transparent 1px); background-size: 32px 32px;"></div>
 </div>
-<main class="relative z-10 w-full max-w-md px-6 md:px-0">
-<div class="text-center mb-12">
-<div class="flex justify-center mb-4"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%23ff69b4'/%3E%3Ctext x='20' y='27' text-anchor='middle' font-size='24'%3E%F0%9F%90%B1%3C/text%3E%3C/svg%3E" alt="Lulu" class="w-20 h-20 rounded-full shadow-[0_0_25px_rgba(255,105,180,0.4)]"/></div>
-<h1 class="text-3xl md:text-4xl font-bold text-primary tracking-tighter mb-2">Lulu Converter</h1>
-<p class="text-xs text-on-surface-variant/60 tracking-widest uppercase">Conversor de Mídia de Alta Performance</p>
+<!-- Login Shell -->
+<main class="relative z-10 w-full max-w-md px-margin-mobile md:px-0">
+<!-- Brand Identity -->
+<div class="text-center mb-stack-xl">
+<h1 class="font-headline-lg text-headline-lg md:text-headline-lg font-bold text-primary tracking-tighter mb-2">
+                Lulu Converter
+            </h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant/60 tracking-widest uppercase">
+                Servidor de MÃ­dia de Alta Performance
+            </p>
 </div>
-<div class="glass-card p-6 md:p-8 rounded-xl">
-<form class="space-y-6" id="loginForm">
+<!-- Glassmorphism Card -->
+<div class="glass-card p-base md:p-gutter rounded-xl">
+<form class="space-y-stack-md" id="loginForm">
 <div class="space-y-2">
-<label class="text-xs text-on-surface-variant block ml-1">SENHA DO SISTEMA</label>
+<label class="font-label-sm text-label-sm text-on-surface-variant block ml-1" for="password">
+                        SENHA DO SISTEMA
+                    </label>
 <div class="relative group">
-<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/40 group-focus-within:text-primary-container transition-colors">lock</span>
-<input class="w-full bg-surface-variant/20 border border-white/5 rounded-lg py-4 pl-12 pr-4 text-on-surface placeholder:text-on-surface-variant/20 focus:outline-none neon-glow transition-all font-mono" id="password" placeholder="••••••••" required type="password"/>
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/40 group-focus-within:text-primary-container transition-colors">
+                            lock
+                        </span>
+<input class="w-full bg-surface-variant/20 border border-white/5 rounded-lg py-4 pl-12 pr-4 text-on-surface placeholder:text-on-surface-variant/20 focus:outline-none neon-glow transition-all duration-300 font-stats-lg text-stats-lg" id="password" placeholder="â¢â¢â¢â¢â¢â¢â¢â¢" required="" type="password"/>
 </div>
 </div>
-<button class="w-full bg-primary-container text-white font-bold py-4 rounded-lg flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.98] transition-all group" type="submit" id="loginBtn">
-<span>ACESSAR</span>
-<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+<button class="w-full bg-primary-container text-on-primary-fixed font-bold py-4 rounded-lg flex items-center justify-center gap-2 hover:bg-primary-fixed-dim active:scale-[0.98] transition-all duration-200 group" type="submit">
+<span>ACESSAR TERMINAL</span>
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">
+                        arrow_forward
+                    </span>
 </button>
-<div id="loginError" class="hidden text-error text-xs text-center mt-2"></div>
 </form>
 </div>
+<!-- Headless API Info -->
+<div class="mt-stack-xl text-center">
+<div class="inline-flex flex-col items-center gap-2 px-6 py-3 rounded-full bg-surface-container-low/50 border border-white/5 backdrop-blur-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px] text-primary">sensors</span>
+<p class="font-label-sm text-label-sm text-on-surface-variant/80">
+                        ACESSO API HEADLESS ATIVO
+                    </p>
+</div>
+<p class="font-label-sm text-[10px] text-on-surface-variant/40">
+                    Utilize o cabeÃ§alho <code class="text-secondary-fixed-dim">X-API-Key</code> para autenticaÃ§Ã£o programÃ¡tica.
+                </p>
+</div>
+</div>
 </main>
+<!-- Footer Identity from JSON Context -->
+<footer class="fixed bottom-0 w-full py-6 px-margin-desktop flex justify-between items-center bg-transparent pointer-events-none">
+<p class="font-label-sm text-label-sm text-on-surface-variant/40">
+            Â© 2024 Lulu Converter. v2.4.1-stable
+        </p>
+<div class="hidden md:flex gap-gutter pointer-events-auto">
+<a class="font-label-sm text-label-sm text-on-surface-variant/40 hover:text-primary transition-colors" href="#">STATUS DO SISTEMA</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant/40 hover:text-primary transition-colors" href="#">DOCUMENTAÃÃO API</a>
+</div>
+</footer>
 <script>
-document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        // Micro-interaction for form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button');
+            const originalContent = btn.innerHTML;
+            
+            // Visual feedback
+            btn.innerHTML = `
+                <span class="material-symbols-outlined animate-spin">sync</span>
+                <span>AUTENTICANDO...</span>
+            `;
+            btn.classList.add('opacity-80', 'cursor-not-allowed');
+            
+            // Simulate server lag
+            setTimeout(() => {
+                const password = document.getElementById('password').value;
+                if(password.length > 0) {
+                    // Success state
+                    btn.classList.remove('bg-primary-container');
+                    btn.classList.add('bg-tertiary-container');
+                    btn.innerHTML = `
+                        <span class="material-symbols-outlined">check_circle</span>
+                        <span>SUCESSO</span>
+                    `;
+                    console.log('Login attempt recorded for Lulu Converter');
+                } else {
+                    btn.innerHTML = originalContent;
+                    btn.classList.remove('opacity-80', 'cursor-not-allowed');
+                }
+            }, 1200);
+        });
+
+        // Atmospheric mouse track
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            document.body.style.setProperty('--mouse-x', x);
+            document.body.style.setProperty('--mouse-y', y);
+        });
+    </script>
+
+<script>
+document.querySelector('form')?.addEventListener('submit', async e => {
     e.preventDefault();
-    const btn = document.getElementById('loginBtn'); const pw = document.getElementById('password').value;
-    const err = document.getElementById('loginError'); btn.disabled = true;
-    btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> AUTENTICANDO...'; err.classList.add('hidden');
+    const pw = document.querySelector('input[type="password"]')?.value || document.querySelector('input')?.value || '';
+    const btn = e.target.querySelector('button') || e.target.closest('button');
+    if(btn){btn.disabled=true;btn.textContent='...'}
     try {
-        const r = await fetch('/auth', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pw})});
+        const r = await fetch('/auth',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pw})});
         if(r.ok) window.location.href='/dashboard';
-        else { err.textContent='Senha Incorreta'; err.classList.remove('hidden'); }
-    } catch(e) { err.textContent='Erro de conexão'; err.classList.remove('hidden'); }
-    finally { btn.disabled=false; btn.innerHTML='ACESSAR <span class="material-symbols-outlined">arrow_forward</span>'; }
+        else alert('Wrong password');
+    } catch(e){alert('Connection error')}
+    finally{if(btn){btn.disabled=false;btn.textContent='Access'}}
 });
 </script>
 </body></html>
