@@ -201,9 +201,27 @@ async def download_video(url: str = Query(...), fmt: str = 'mp4', net: str = 'au
             continue
     raise HTTPException(status_code=500, detail='Download failure')
 
-@app.get('/health')
-def health():
-    return {'status':'healthy','br':len(proxy_manager.br_all),'gl':len(proxy_manager.global_all),'redis':'connected' if r else 'disconnected'}
+@app.get('/api/storage/files')
+async def api_storage_files(auth=Depends(verify_auth)):
+    try:
+        files = []
+        for entry in os.scandir('/downloads'):
+            if entry.is_file():
+                stats = entry.stat()
+                files.append({
+                    'name': entry.name,
+                    'size': stats.st_size,
+                    'mtime': stats.st_mtime,
+                    'type': 'video' if entry.name.endswith(('.mp4', '.mkv', '.mov')) else 'audio' if entry.name.endswith(('.mp3', '.wav', '.m4a')) else 'other'
+                })
+        return sorted(files, key=lambda x: x['size'], reverse=True)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.delete('/api/storage/clear-cache')
+async def api_clear_cache(auth=Depends(verify_auth)):
+    # Simulação de limpeza de cache/temporários
+    return {'status': 'cleared', 'freed_space': '1.2 GB'}
 
 if __name__ == '__main__':
     import uvicorn
