@@ -1,156 +1,121 @@
 <!DOCTYPE html>
 <html class="dark" lang="pt-BR"><head>
-<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>MEDIA_CORE_V1 | Dashboard</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..900&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <style>
-    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-    .glass-panel { background: rgba(19, 19, 19, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
-    .shimmer { background: linear-gradient(90deg, #1A1A1A 25%, #252525 50%, #1A1A1A 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
-    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
+.glass-panel{background:rgba(19,19,19,0.6);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.05)}
+.neon-glow{box-shadow:0 0 20px rgba(0,240,255,0.15)}
+.shimmer{background:linear-gradient(90deg,#1A1A1A 25%,#252525 50%,#1A1A1A 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.progress-pulse{background:linear-gradient(90deg,#00f0ff,#7000ff);background-size:200% 200%;animation:pulse-gradient 2s ease infinite}
+@keyframes pulse-gradient{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 </style>
-<script>
-    tailwind.config = {
-        darkMode: "class",
-        theme: {
-            extend: {
-                "colors": { "surface-container-low": "#1c1b1b", "surface-container-lowest": "#0e0e0e", "surface-dim": "#131313", "on-surface": "#e5e2e1", "background": "#131313", "surface": "#131313", "primary": "#dbfcff", "primary-container": "#00f0ff", "on-primary-fixed": "#002022", "primary-fixed-dim": "#00dbe9", "on-surface-variant": "#b9cacb" }
-                }
-            }
-        }
-    }
-</script>
+<script>tailwind.config={darkMode:"class",theme:{extend:{colors:{"primary":"#dbfcff","primary-container":"#00f0ff","on-primary-fixed":"#002022","primary-fixed-dim":"#00dbe9","on-primary":"#00363a","surface":"#131313","background":"#131313","on-surface":"#e5e2e1","surface-dim":"#131313","surface-container-lowest":"#0e0e0e","surface-container-low":"#1c1b1b","surface-container":"#201f1f","surface-container-high":"#2a2a2a","surface-container-highest":"#353534","on-surface-variant":"#b9cacb","secondary":"#d1bcff","secondary-container":"#7000ff","tertiary-container":"#00f990","error":"#ffb4ab","error-container":"#93000a","outline":"#849495","outline-variant":"#3b494b"}}}}}</script>
 </head>
 <body class="bg-background text-on-surface font-body-md min-h-screen">
 <header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 md:px-16 h-20 bg-surface/60 backdrop-blur-md border-b border-white/10">
-    <span class="text-2xl font-bold text-primary tracking-tighter">MEDIA_CORE_V1</span>
-    <div class="flex items-center gap-4">
-        <div class="hidden md:flex h-10 px-4 glass-panel rounded-full items-center gap-3">
-            <span class="material-symbols-outlined text-primary">sensors</span>
-            <span class="text-xs font-mono">NODE_01: ONLINE</span>
-        </div>
-        <img class="w-10 h-10 rounded-full border-2 border-primary/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwkkUUo8pPkIhm0ZrKi97IXee06AY8hwMem-aNKyaK6XV0ViF0UvXdKY9trRgrQjDw588HhXtHsMx4WC9PM8_M6SfQBX_eUul5616hrTqIpBjrtni6rCQ_i1ZB4CWh-UZKU9u-KSWl9My6KeHOp-zREEPBTN1Sy3lED3Sqw4KsCWi0x9EqvrnYoMqk6AVFWrIAlxorKRT6JHmB-QS2kw-b3JSDCwF83Y35szHiGMwHzA6NoXKSqt9d"/>
-    </div>
+<span class="text-2xl font-bold text-primary tracking-tighter">MEDIA_CORE_V1</span>
+<nav class="hidden md:flex items-center gap-8">
+<a href="/dashboard" class="text-sm text-primary border-b-2 border-primary pb-1">Dashboard</a>
+<a href="/transfers" class="text-sm text-on-surface-variant hover:text-primary transition-colors">Transfers</a>
+<a href="/storage" class="text-sm text-on-surface-variant hover:text-primary transition-colors">Storage</a>
+<a href="/system" class="text-sm text-on-surface-variant hover:text-primary transition-colors">System</a>
+</nav>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary">sensors</span>
+<a href="/" onclick="document.cookie='session=;max-age=0';" class="material-symbols-outlined text-on-surface-variant hover:text-error transition-colors">logout</a>
+</div>
 </header>
 <main class="pt-24 pb-20 px-6 md:px-16 min-h-screen">
-    <section class="flex flex-col items-center text-center space-y-8 py-12">
-        <div class="space-y-4">
-            <h1 class="text-5xl font-bold tracking-tighter text-on-surface">Captura de Mídia Profissional</h1>
-            <p class="text-on-surface-variant max-w-2xl mx-auto">Insira a URL do vídeo para processar o download via nós globais.</p>
-        </div>
-        <div class="w-full max-w-3xl glass-panel p-4 rounded-2xl flex flex-col md:flex-row gap-4 items-stretch">
-            <div class="flex-1 relative flex items-center">
-                <span class="material-symbols-outlined absolute left-4 text-primary">link</span>
-                <input id="url-input" class="w-full bg-surface-container-high border-0 rounded-xl pl-12 pr-12 py-5 text-on-surface focus:ring-2 focus:ring-primary-container/50 transition-all placeholder:text-on-surface-variant/40" placeholder="Cole a URL aqui..." type="text"/>
-            </div>
-            <button id="analyze-btn" class="bg-primary-container text-on-primary-fixed font-bold px-10 py-5 rounded-xl hover:bg-primary-fixed-dim transition-all flex items-center justify-center gap-2">
-                Analisar <span class="material-symbols-outlined">analytics</span>
-            </button>
-        </div>
-    </section>
-    <div id="content-area" class="w-full max-w-5xl mx-auto space-y-8">
-        <div id="skeleton" class="hidden grid grid-cols-1 md:grid-cols-12 gap-8 glass-panel p-6 rounded-3xl opacity-50">
-            <div class="md:col-span-5 h-64 shimmer rounded-2xl"></div>
-            <div class="md:col-span-7 space-y-6 flex flex-col justify-center">
-                <div class="h-8 w-3/4 shimmer rounded-lg"></div>
-                <div class="h-14 shimmer rounded-xl"></div>
-            </div>
-        </div>
-        <article id="preview-card" class="hidden grid grid-cols-1 md:grid-cols-12 gap-8 glass-panel p-8 rounded-3xl transition-all">
-            <div class="md:col-span-5">
-                <div class="aspect-video rounded-2xl overflow-hidden border border-white/5 relative">
-                    <img id="thumb" class="w-full h-full object-cover" src=""/>
-                </div>
-            </div>
-            <div class="md:col-span-7 flex flex-col justify-between space-y-6">
-                <div>
-                    <h2 id="title" class="text-3xl font-bold text-on-surface leading-tight">Carregando...</h2>
-                    <p id="duration" class="text-sm text-on-surface-variant"></p>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div class="space-y-2">
-                        <label class="text-xs text-on-surface-variant/60 block">FORMATO</label>
-                        <div class="flex bg-surface-container-high p-1 rounded-xl border border-white/5">
-                            <button id="fmt-mp4" class="flex-1 py-2 rounded-lg bg-primary-container text-on-primary-fixed font-bold text-sm">MP4</button>
-                            <button id="fmt-mp3" class="flex-1 py-2 rounded-lg text-on-surface-variant hover:text-on-surface transition-colors text-sm">MP3</button>
-                        </div>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-xs text-on-surface-variant/60 block">REDE</label>
-                        <div class="flex bg-surface-container-high p-1 rounded-xl border border-white/5">
-                            <button id="net-auto" class="flex-1 py-2 rounded-lg bg-primary-container text-on-primary-fixed font-bold text-sm">Auto</button>
-                            <button id="net-global" class="flex-1 py-2 rounded-lg text-on-surface-variant hover:text-on-surface transition-colors text-sm">Global</button>
-                        </div>
-                    </div>
-                </div>
-                <button id="download-btn" class="w-full py-5 bg-primary-container text-on-primary-fixed font-bold rounded-xl flex items-center justify-center gap-3 hover:bg-primary-fixed-dim transition-all">
-                    INICIAR DOWNLOAD <span class="material-symbols-outlined">download</span>
-                </button>
-            </div>
-        </article>
-    </div>
+<div class="max-w-5xl mx-auto">
+<section class="text-center py-12">
+<h1 class="text-4xl md:text-5xl font-bold tracking-tighter text-on-surface mb-4">Captura de Mídia</h1>
+<p class="text-on-surface-variant max-w-xl mx-auto">Insira a URL do vídeo para analisar e baixar.</p>
+<div class="max-w-3xl mx-auto mt-8 glass-panel p-4 rounded-2xl flex flex-col md:flex-row gap-4">
+<div class="flex-1 relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary">link</span>
+<input id="urlInput" class="w-full bg-surface-container-high border-0 rounded-xl pl-12 pr-4 py-5 text-on-surface focus:ring-2 focus:ring-primary-container/50 transition-all" placeholder="URL do YouTube, Vimeo..." type="text"/>
+</div>
+<button id="analyzeBtn" class="bg-primary-container text-on-primary-fixed font-bold px-10 py-5 rounded-xl hover:bg-primary-fixed-dim active:scale-95 transition-all flex items-center justify-center gap-2 neon-glow">
+Analisar <span class="material-symbols-outlined">analytics</span>
+</button>
+</div>
+</section>
+<div id="resultArea" class="space-y-6 hidden">
+<div class="glass-panel p-8 rounded-3xl grid grid-cols-1 md:grid-cols-12 gap-8">
+<div class="md:col-span-5">
+<div class="aspect-video rounded-2xl overflow-hidden border border-white/5 bg-surface-container-high">
+<img id="thumb" class="w-full h-full object-cover" src="" alt="Thumbnail"/>
+</div>
+</div>
+<div class="md:col-span-7 flex flex-col justify-between space-y-4">
+<div>
+<h2 id="vidTitle" class="text-2xl font-bold leading-tight">--</h2>
+<p id="vidDuration" class="text-sm text-on-surface-variant"></p>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div><label class="text-xs text-on-surface-variant/60 block mb-1">FORMATO</label>
+<div class="flex bg-surface-container-high p-1 rounded-xl">
+<button id="fmtMp4" class="flex-1 py-2 rounded-lg bg-primary-container text-on-primary-fixed font-bold text-sm">MP4</button>
+<button id="fmtMp3" class="flex-1 py-2 rounded-lg text-on-surface-variant text-sm">MP3</button>
+</div></div>
+<div><label class="text-xs text-on-surface-variant/60 block mb-1">REDE</label>
+<div class="flex bg-surface-container-high p-1 rounded-xl">
+<button id="netAuto" class="flex-1 py-2 rounded-lg bg-primary-container text-on-primary-fixed font-bold text-sm">Auto</button>
+<button id="netGlobal" class="flex-1 py-2 rounded-lg text-on-surface-variant text-sm">Global</button>
+</div></div>
+</div>
+<button id="downloadBtn" class="w-full py-4 bg-primary-container text-on-primary-fixed font-bold rounded-xl flex items-center justify-center gap-2 hover:bg-primary-fixed-dim transition-all">
+INICIAR DOWNLOAD <span class="material-symbols-outlined">download</span>
+</button>
+</div>
+</div>
+</div>
+</div>
 </main>
 <script>
-    const analyzeBtn = document.getElementById('analyze-btn');
-    const skeleton = document.getElementById('skeleton');
-    const previewCard = document.getElementById('preview-card');
-    
-    let currentFormat = 'mp4';
-    let currentNet = 'auto';
-
-    document.getElementById('fmt-mp4').onclick = () => {
-        currentFormat = 'mp4';
-        document.getElementById('fmt-mp4').className = 'flex-1 py-2 rounded-lg bg-primary-container text-on-primary-fixed font-bold text-sm';
-        document.getElementById('fmt-mp3').className = 'flex-1 py-2 rounded-lg text-on-surface-variant hover:text-on-surface transition-colors text-sm';
-    };
-    document.getElementById('fmt-mp3').onclick = () => {
-        currentFormat = 'mp3';
-        document.getElementById('fmt-mp3').className = 'flex-1 py-2 rounded-lg bg-primary-container text-on-primary-fixed font-bold text-sm';
-        document.getElementById('fmt-mp4').className = 'flex-1 py-2 rounded-lg text-on-surface-variant hover:text-on-surface transition-colors text-sm';
-    };
-    document.getElementById('net-auto').onclick = () => {
-        currentNet = 'auto';
-        document.getElementById('net-auto').className = 'flex-1 py-2 rounded-lg bg-primary-container text-on-primary-fixed font-bold text-sm';
-        document.getElementById('net-global').className = 'flex-1 py-2 rounded-lg text-on-surface-variant hover:text-on-surface transition-colors text-sm';
-    };
-    document.getElementById('net-global').onclick = () => {
-        currentNet = 'global';
-        document.getElementById('net-global').className = 'flex-1 py-2 rounded-lg bg-primary-container text-on-primary-fixed font-bold text-sm';
-        document.getElementById('net-auto').className = 'flex-1 py-2 rounded-lg text-on-surface-variant hover:text-on-surface transition-colors text-sm';
-    };
-
-    analyzeBtn.onclick = async () => {
-        const url = document.getElementById('url-input').value;
-        if(!url) return alert('Insira uma URL');
-        
-        analyzeBtn.disabled = true;
-        analyzeBtn.innerHTML = 'Analisando...';
-        previewCard.classList.add('hidden');
-        skeleton.classList.remove('hidden');
-
-        try {
-            const res = await fetch(`/info?url=${encodeURIComponent(url)}&net=${currentNet}`);
-            const data = await res.json();
-            if(res.ok) {
-                document.getElementById('title').innerText = data.title;
-                document.getElementById('duration').innerText = 'Duração: ' + data.duration;
-                document.getElementById('thumb').src = data.thumbnail || 'https://via.placeholder.com/640x360';
-                previewCard.classList.remove('hidden');
-            } else {
-                alert(data.detail || 'Erro ao analisar');
-            }
-        } catch(e) { alert('Erro na conexão'); }
-        finally {
-            skeleton.classList.add('hidden');
-            analyzeBtn.disabled = false;
-            analyzeBtn.innerHTML = 'Analisar <span class="material-symbols-outlined">analytics</span>';
-        }
-    };
-
-    document.getElementById('download-btn').onclick = () => {
-        const url = document.getElementById('url-input').value;
-        window.location.href = `/download?url=${encodeURIComponent(url)}&format=${currentFormat}&net=${currentNet}`;
-    };
+let currentFmt = 'mp4', currentNet = 'auto';
+document.getElementById('fmtMp4').onclick = function() {
+    currentFmt = 'mp4';
+    document.querySelectorAll('[id^=fmt]').forEach(b => {b.className = 'flex-1 py-2 rounded-lg text-on-surface-variant text-sm';});
+    this.className = 'flex-1 py-2 rounded-lg bg-primary-container text-on-primary-fixed font-bold text-sm';
+};
+document.getElementById('fmtMp3').onclick = function() {
+    currentFmt = 'mp3';
+    document.querySelectorAll('[id^=fmt]').forEach(b => {b.className = 'flex-1 py-2 rounded-lg text-on-surface-variant text-sm';});
+    this.className = 'flex-1 py-2 rounded-lg bg-primary-container text-on-primary-fixed font-bold text-sm';
+};
+document.getElementById('netAuto').onclick = function() {
+    currentNet = 'auto';
+    document.querySelectorAll('[id^=net]').forEach(b => {b.className = 'flex-1 py-2 rounded-lg text-on-surface-variant text-sm';});
+    this.className = 'flex-1 py-2 rounded-lg bg-primary-container text-on-primary-fixed font-bold text-sm';
+};
+document.getElementById('netGlobal').onclick = function() {
+    currentNet = 'global';
+    document.querySelectorAll('[id^=net]').forEach(b => {b.className = 'flex-1 py-2 rounded-lg text-on-surface-variant text-sm';});
+    this.className = 'flex-1 py-2 rounded-lg bg-primary-container text-on-primary-fixed font-bold text-sm';
+};
+document.getElementById('analyzeBtn').onclick = async function() {
+    const url = document.getElementById('urlInput').value;
+    if(!url) return alert('Insira uma URL');
+    this.disabled = true; this.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Analisando...';
+    try {
+        const r = await fetch(`/info?url=${encodeURIComponent(url)}&net=${currentNet}`);
+        const d = await r.json();
+        if(r.ok) {
+            document.getElementById('vidTitle').textContent = d.title;
+            document.getElementById('vidDuration').textContent = d.duration || '';
+            document.getElementById('thumb').src = d.thumbnail || 'https://via.placeholder.com/640x360';
+            document.getElementById('resultArea').classList.remove('hidden');
+            document.getElementById('downloadBtn').onclick = function() {
+                window.location.href = `/download?url=${encodeURIComponent(url)}&fmt=${currentFmt}&net=${currentNet}`;
+            };
+        } else { alert(d.detail || 'Erro'); }
+    } catch(e) { alert('Erro de conexão'); }
+    finally { this.disabled = false; this.innerHTML = 'Analisar <span class="material-symbols-outlined">analytics</span>'; }
+};
 </script>
 </body></html>
