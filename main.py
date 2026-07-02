@@ -94,14 +94,18 @@ class ProxyManager:
 
 class StatsManager:
     def __init__(self):
-        self.net_file = '/data/network_stats.json'
-        self.sys_file = '/data/system_metrics.json'
+        # Usando caminhos relativos para evitar dependência de volumes externos no startup
+        self.net_file = 'network_stats.json'
+        self.sys_file = 'system_metrics.json'
         self.init_files()
 
     def init_files(self):
-        for f in [self.net_file, self.sys_file]:
-            if not os.path.exists(f):
-                with open(f, 'w') as wf: json.dump({}, wf)
+        try:
+            for f in [self.net_file, self.sys_file]:
+                if not os.path.exists(f):
+                    with open(f, 'w') as wf: json.dump({}, wf)
+        except Exception as e:
+            print(f"Stats Init Error: {e}")
 
     def update_net(self, sent, recv):
         try:
@@ -110,7 +114,7 @@ class StatsManager:
                 data['total_sent'] = data.get('total_sent', 0) + sent
                 data['total_recv'] = data.get('total_recv', 0) + recv
                 f.seek(0); json.dump(data, f); f.truncate()
-        except: pass
+        except Exception: pass
 
     def log_metrics(self, cpu, mem):
         try:
@@ -121,9 +125,13 @@ class StatsManager:
                 if len(history) > 1000: history = history[-1000:]
                 data['history'] = history
                 f.seek(0); json.dump(data, f); f.truncate()
-        except: pass
+        except Exception: pass
 
-stats_manager = StatsManager()
+try:
+    stats_manager = StatsManager()
+except Exception as e:
+    print(f"StatsManager Critical Failure: {e}")
+    stats_manager = None
 
 # --- AUTH ---
 def verify_auth(request: Request):
