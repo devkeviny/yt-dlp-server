@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>System | MEDIA_CORE_V1</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
+.glass-panel{background:rgba(19,19,19,0.6);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.06)}
+.terminal-grid{background-image:radial-gradient(rgba(0,240,255,0.05) 1px,transparent 1px);background-size:24px 24px}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:#0e0e0e}::-webkit-scrollbar-thumb{background:#353534;border-radius:10px}
+</style>
+<script>tailwind.config={darkMode:"class",theme:{extend:{colors:{"primary":"#dbfcff","primary-container":"#00f0ff","on-primary":"#00363a","on-primary-fixed":"#002022","primary-fixed-dim":"#00dbe9","surface":"#131313","surface-dim":"#131313","background":"#131313","on-surface":"#e5e2e1","on-surface-variant":"#b9cacb","surface-container-lowest":"#0e0e0e","surface-container-highest":"#353534","secondary":"#d1bcff","secondary-container":"#7000ff","tertiary-container":"#00f990","tertiary":"#dcffe2","on-tertiary":"#00391d","error":"#ffb4ab","error-container":"#93000a","outline":"#849495","outline-variant":"#3b494b"}}}}}</script>
+</head>
+<body class="bg-background text-on-surface font-body-md min-h-screen terminal-grid">
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-6 md:px-16 h-20 bg-surface/60 backdrop-blur-md border-b border-white/10">
+<a href="/dashboard" class="text-2xl font-bold text-primary tracking-tighter">MEDIA_CORE_V1</a>
+<div class="hidden md:flex items-center gap-8">
+<a href="/dashboard" class="text-sm text-on-surface-variant hover:text-primary transition-colors">Dashboard</a>
+<a href="/transfers" class="text-sm text-on-surface-variant hover:text-primary transition-colors">Transfers</a>
+<a href="/storage" class="text-sm text-on-surface-variant hover:text-primary transition-colors">Storage</a>
+<a href="/system" class="text-sm text-primary border-b-2 border-primary pb-1">System</a>
+</div>
+</nav>
+<main class="pt-24 pb-16 px-6 md:px-16">
+<div class="max-w-7xl mx-auto">
+<h1 class="text-4xl font-bold text-primary mb-2">System Core</h1>
+<p class="text-on-surface-variant mb-8">Proxy matrix, settings, and diagnostics</p>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Proxy Matrix -->
+<div class="md:col-span-8 glass-panel rounded-xl overflow-hidden">
+<div class="px-6 py-4 border-b border-white/5 flex justify-between items-center">
+<h3 class="text-xs font-bold uppercase tracking-widest flex items-center gap-2"><span class="material-symbols-outlined text-primary">hub</span> Proxy Rotation Matrix</h3>
+<div class="flex gap-2 text-[10px]">
+<span class="px-2 py-1 bg-tertiary-container/10 text-tertiary-container rounded border border-tertiary-container/20"><span id="proxyBrCount">-</span> BR</span>
+<span class="px-2 py-1 bg-primary-container/10 text-primary rounded border border-primary/20"><span id="proxyGlCount">-</span> Global</span>
+<span class="px-2 py-1 bg-error-container/20 text-error rounded border border-error/20"><span id="proxyBlockedCount">-</span> Blocked</span>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left text-xs">
+<thead><tr class="text-on-surface-variant/40 border-b border-white/5">
+<th class="px-6 py-3 font-normal">Source</th><th class="px-6 py-3 font-normal">Available</th><th class="px-6 py-3 font-normal">Sample</th>
+</tr></thead>
+<tbody id="proxyBody" class="divide-y divide-white/5">
+<tr><td colspan="3" class="px-6 py-8 text-center text-on-surface-variant/40">Loading...</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- System Settings -->
+<div class="md:col-span-4 glass-panel p-6 rounded-xl">
+<h3 class="text-xs font-bold uppercase tracking-widest mb-6">System Overrides</h3>
+<div class="space-y-6">
+<div class="flex items-center justify-between"><div><div class="text-sm">Auto-Global Failover</div><div class="text-[10px] text-on-surface-variant/60">Dynamic region switching</div></div>
+<div class="w-12 h-6 rounded-full bg-primary-container p-1 flex"><div class="w-4 h-4 rounded-full bg-on-surface translate-x-6 transition"></div></div></div>
+<div class="flex items-center justify-between"><div><div class="text-sm">Streaming Mode</div><div class="text-[10px] text-on-surface-variant/60">RAM-only, no disk writes</div></div>
+<div class="w-12 h-6 rounded-full bg-primary-container p-1 flex"><div class="w-4 h-4 rounded-full bg-on-surface translate-x-6 transition"></div></div></div>
+<div class="flex items-center justify-between"><div><div class="text-sm">Headless API</div><div class="text-[10px] text-on-surface-variant/60">X-API-Key access active</div></div>
+<div class="w-12 h-6 rounded-full bg-primary-container p-1 flex"><div class="w-4 h-4 rounded-full bg-on-surface translate-x-6 transition"></div></div></div>
+</div>
+<a href="/api/docs" target="_blank" class="mt-8 block w-full text-center py-3 border border-primary/30 text-primary text-xs rounded-lg hover:bg-primary/5 transition-all">API Documentation</a>
+</div>
+</div>
+</div>
+</main>
+<script>
+async function loadProxies() {
+    try {
+        const r = await fetch('/api/proxies');
+        const p = await r.json();
+        document.getElementById('proxyBrCount').textContent = p.br_count;
+        document.getElementById('proxyGlCount').textContent = p.global_count;
+        document.getElementById('proxyBlockedCount').textContent = p.blocked_count;
+        const body = document.getElementById('proxyBody');
+        body.innerHTML = '';
+        if (p.br_pool && p.br_pool.length > 0) {
+            body.innerHTML += `<tr class="hover:bg-white/5"><td class="px-6 py-4 text-primary font-mono">BR</td><td class="px-6 py-4">${p.br_count}</td><td class="px-6 py-4 text-on-surface-variant">${p.br_pool.slice(0,3).join(', ')}</td></tr>`;
+        }
+        if (p.global_pool && p.global_pool.length > 0) {
+            body.innerHTML += `<tr class="hover:bg-white/5"><td class="px-6 py-4 text-primary font-mono">Global</td><td class="px-6 py-4">${p.global_count}</td><td class="px-6 py-4 text-on-surface-variant">${p.global_pool.slice(0,3).join(', ')}</td></tr>`;
+        }
+    } catch(e) { console.error('Proxy error:', e); }
+}
+loadProxies();
+setInterval(loadProxies, 30000);
+</script>
+</body></html>
