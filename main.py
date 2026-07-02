@@ -17,7 +17,14 @@ os.makedirs(DATA_DIR, exist_ok=True)
 app = FastAPI()
 executor = ThreadPoolExecutor(max_workers=10)
 
-# --- PERSISTENCE (Circular Buffer 100) ---
+# Redis is optional to prevent startup crashes
+try:
+    import redis
+    REDIS_URL = os.getenv('REDIS_URL', 'redis://default:***@localhost:6379/0')
+    r = redis.from_url(REDIS_URL)
+except Exception as e:
+    print(f"Redis disabled: {e}")
+    r = None
 class StatsManager:
     def __init__(self):
         self.history_file = os.path.join(DATA_DIR, 'history.json')
