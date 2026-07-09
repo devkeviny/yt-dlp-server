@@ -3,6 +3,5 @@ uvicorn
 yt-dlp
 requests
 pydantic
-redis
 psutil
 python-multipart
