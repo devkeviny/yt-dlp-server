@@ -9,12 +9,27 @@ import yt_dlp
 APP_PASSWORD = os.getenv('APP_PASSWORD', 'admin123')
 API_KEY = os.getenv('API_KEY', 'default_key_123')
 PROXY_URL = os.getenv('PROXY_URL')
+STITCH_API_KEY = os.getenv('STITCH_API_KEY', '')
 DOWNLOAD_DIR = '/downloads'
 DATA_DIR = '/data'
 os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 os.makedirs(DATA_DIR, exist_ok=True)
 
 app = FastAPI()
+
+def _serve_page(filename):
+    """Serve static HTML injecting STITCH_API_KEY from env (keeps secret out of git)."""
+    path = os.path.join("static", filename)
+    with open(path, "r") as f:
+        html = f.read()
+    html = html.replace("STITCH_API_KEY_PLACEHOLDER", STITCH_API_KEY)
+    # also expose as window.STITCH_API_KEY for stitch-client.js
+    html = html.replace(
+        '<meta name="stitch-api-key" content="',
+        '<script>window.STITCH_API_KEY=document.querySelector('meta[name=stitch-api-key]').content;</script>\n<meta name="stitch-api-key" content="'
+    )
+    return HTMLResponse(content=html)
+
 executor = ThreadPoolExecutor(max_workers=10)
 
 class ProxyManager:
@@ -106,7 +121,6 @@ def download_worker(url, fmt, api_key):
         'outtmpl': f'{DOWNLOAD_DIR}/%(title)s.%(ext)s',
         'format': 'bestvideo+bestaudio/best' if fmt == 'mp4' else 'bestaudio/best',
         'proxy': proxy,
-        'js_runtimes': ['node'],
         'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3', 'preferredquality': '192'}] if fmt == 'mp3' else [],
         'quiet': True, 'no_warnings': True,
     }
@@ -119,8 +133,26 @@ def download_worker(url, fmt, api_key):
             data_manager.update_network(net_end.bytes_sent - net_start.bytes_sent, net_end.bytes_recv - net_start.bytes_recv)
             data_manager.add_download({'title': info.get('title', 'Unknown'), 'url': url, 'format': fmt, 'size': info.get('filesize', 0), 'timestamp': time.time(), 'status': 'completed'})
             return {"status": "success", "file": filename, "title": info.get('title')}
+    except Exception as e_proxy:
+        # Fallback: tenta de novo sem proxy se um proxy foi usado
+        if proxy:
+            try:
+                ydl_opts['proxy'] = None
+                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                    info = ydl.extract_info(url, download=True)
+                    filename = ydl.prepare_filename(info)
+                    if fmt == 'mp3': filename = filename.rsplit('.', 1)[0] + '.mp3'
+                    net_end = psutil.net_io_counters()
+                    data_manager.update_network(net_end.bytes_sent - net_start.bytes_sent, net_end.bytes_recv - net_start.bytes_recv)
+                    data_manager.add_download({'title': info.get('title', 'Unknown'), 'url': url, 'format': fmt, 'size': info.get('filesize', 0), 'timestamp': time.time(), 'status': 'completed'})
+                    return {"status": "success", "file": filename, "title": info.get('title')}
+            except Exception:
+                pass
+        with open(os.path.join(DATA_DIR, 'error.log'), 'a') as lf: lf.write(f"{time.time()} - {traceback.format_exc()}\n")
+        data_manager.add_download({'url': url, 'status': 'failed', 'error': str(e_proxy), 'timestamp': time.time()})
+        return {"status": "error", "message": str(e_proxy)}
     except Exception as e:
-        with open('/app/error.log', 'a') as lf: lf.write(f"{time.time()} - {traceback.format_exc()}\n")
+        with open(os.path.join(DATA_DIR, 'error.log'), 'a') as lf: lf.write(f"{time.time()} - {traceback.format_exc()}\n")
         data_manager.add_download({'url': url, 'status': 'failed', 'error': str(e), 'timestamp': time.time()})
         return {"status": "error", "message": str(e)}
 
@@ -128,7 +160,15 @@ def download_worker(url, fmt, api_key):
 async def health(): return {"status": "healthy", "ffmpeg": subprocess.run(['ffmpeg', '-version'], capture_output=True).returncode == 0}
 
 @app.get('/')
-async def root(): return HTMLResponse(content="<meta http-equiv='refresh' content='0; url=/static/login.html'>")
+async def root():
+    return _serve_page('index.html')
+
+@app.post('/login')
+from fastapi.responses import RedirectResponse
+
+@app.get('/login')
+async def login_page():
+    return _serve_page('login.html')
 
 @app.post('/login')
 async def login(password: str = Form(...)):
@@ -141,19 +181,19 @@ async def login(password: str = Form(...)):
 @app.get('/info')
 async def get_info(url: str):
     try:
-        with yt_dlp.YoutubeDL({'js_runtimes': ['node']}) as ydl:
+        with yt_dlp.YoutubeDL({}) as ydl:
             return ydl.extract_info(url, download=False)
     except Exception: pass
     for i in range(15):
         proxy = proxy_manager.get_proxy('general')
         if not proxy: continue
         try:
-            with yt_dlp.YoutubeDL({'proxy': proxy, 'js_runtimes': ['node']}) as ydl:
+            with yt_dlp.YoutubeDL({'proxy': proxy}) as ydl:
                 return ydl.extract_info(url, download=False)
         except Exception:
             proxy_manager.mark_blocked(proxy, 'general')
             continue
-    with open('/app/error.log', 'a') as lf: lf.write(f"{time.time()} - Info failed all attempts\n")
+    with open(os.path.join(DATA_DIR, 'error.log'), 'a') as lf: lf.write(f"{time.time()} - Info failed all attempts\n")
     raise HTTPException(status_code=500, detail="Proxy and No-Proxy failure")
 
 @app.api_route('/download', methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'])
