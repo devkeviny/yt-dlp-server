@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="pt-br"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>yt-dlp Server | Dashboard</title>
+<meta name="stitch-api-key" content="STITCH_API_KEY_PLACEHOLDER"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration from Google Stitch MCP Design Tokens -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface": "#0b1326",
+                    "on-primary-fixed": "#00174b",
+                    "tertiary-container": "#cf2c30",
+                    "on-tertiary-container": "#ffecea",
+                    "surface-dim": "#0b1326",
+                    "on-primary": "#002a78",
+                    "tertiary-fixed": "#ffdad7",
+                    "surface-container": "#171f33",
+                    "on-tertiary-fixed": "#410004",
+                    "on-secondary-container": "#00311f",
+                    "surface-container-lowest": "#060e20",
+                    "secondary-fixed": "#6ffbbe",
+                    "secondary": "#4edea3",
+                    "surface-variant": "#2d3449",
+                    "on-surface": "#dae2fd",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "tertiary-fixed-dim": "#ffb3ad",
+                    "on-error-container": "#ffdad6",
+                    "tertiary": "#ffb3ad",
+                    "primary-container": "#2563eb",
+                    "background": "#0b1326",
+                    "surface-container-highest": "#2d3449",
+                    "on-secondary-fixed": "#002113",
+                    "surface-bright": "#31394d",
+                    "error": "#ffb4ab",
+                    "primary": "#b4c5ff",
+                    "on-surface-variant": "#c3c6d7",
+                    "on-tertiary-fixed-variant": "#930013",
+                    "surface-container-high": "#222a3d",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "inverse-surface": "#dae2fd",
+                    "on-secondary": "#003824",
+                    "inverse-primary": "#0053db",
+                    "primary-fixed": "#dbe1ff",
+                    "outline-variant": "#434655",
+                    "error-container": "#93000a",
+                    "on-secondary-fixed-variant": "#005236",
+                    "on-error": "#690005",
+                    "on-background": "#dae2fd",
+                    "outline": "#8d90a0",
+                    "inverse-on-surface": "#283044",
+                    "on-tertiary": "#68000a",
+                    "secondary-container": "#00a572",
+                    "surface-tint": "#b4c5ff",
+                    "on-primary-container": "#eeefff",
+                    "surface-container-low": "#131b2e",
+                    "secondary-fixed-dim": "#4edea3"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "container-padding": "24px",
+                    "unit": "4px",
+                    "stack-sm": "8px",
+                    "gutter": "16px",
+                    "stack-md": "16px",
+                    "stack-lg": "32px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "code-label": ["JetBrains Mono"],
+                    "title-sm": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "status-badge": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "code-label": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "title-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "status-badge": ["12px", {"lineHeight": "12px", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body {
+            background-color: #0b1326;
+            color: #dae2fd;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #131b2e;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #2d3449;
+            border-radius: 2px;
+        }
+        .glow-active {
+            box-shadow: inset 0 0 10px rgba(180, 197, 255, 0.1);
+        }
+        @keyframes spin-slow { to { transform: rotate(360deg); } }
+        .animate-spin-slow { animation: spin-slow 1.5s linear infinite; }
+        #toast {
+            transition: opacity 0.3s;
+        }
+    </style>
+<!-- Stitch runtime integration: carrega design system via API Stitch,
+     atualiza CSS vars dinamicamente. Tem fallback local se API falhar. -->
+<script src="stitch-client.js"></script>
+</head>
+<body class="font-body-md text-body-md overflow-hidden h-screen flex flex-col">
+
+<!-- Stitch status indicator (canto superior direito) -->
+<div id="stitch-status" class="fixed top-3 right-3 z-[60] flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider backdrop-blur-md bg-surface-container/80 border border-outline-variant opacity-0 transition-opacity duration-300" data-state="loading" title="Carregando design system...">
+    <span id="stitch-status-dot" class="w-1.5 h-1.5 rounded-full bg-on-surface-variant animate-pulse"></span>
+    <span id="stitch-status-label">stitch · syncing</span>
+</div>
+
+<!-- Auth check -->
+<script>
+    // If no session cookie, redirect to login
+    if (!document.cookie.includes('auth_session=authenticated')) {
+        window.location.href = '/static/login.html';
+    }
+</script>
+
+<!-- TopAppBar -->
+<header class="flex justify-between items-center px-container-padding h-16 w-full fixed top-0 z-50 bg-surface-container dark:bg-surface-container border-b border-outline-variant">
+<div class="flex items-center gap-4">
+<span class="font-display-lg text-display-lg text-primary tracking-tighter" style="font-size:20px;font-weight:700;">yt-dlp Server</span>
+<div class="hidden md:flex gap-6 ml-8">
+<a class="font-title-sm text-title-sm text-primary font-bold border-b-2 border-primary cursor-pointer active:opacity-80" href="#">Downloads</a>
+<a class="font-title-sm text-title-sm text-on-surface-variant hover:bg-surface-variant transition-colors px-2 py-1 rounded cursor-pointer active:opacity-80" href="#">Fila</a>
+<a class="font-title-sm text-title-sm text-on-surface-variant hover:bg-surface-variant transition-colors px-2 py-1 rounded cursor-pointer active:opacity-80" href="#">Config</a>
+</div>
+</div>
+<div class="flex items-center gap-stack-lg">
+<!-- Real-time network speed pill -->
+<div id="net-pill" class="flex gap-4 font-code-label text-code-label text-primary bg-surface-container-low px-4 py-2 rounded-lg border border-outline-variant">
+<div class="flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-[16px]">arrow_downward</span>
+<span id="net-down-speed">0 B/s</span>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">arrow_upward</span>
+<span id="net-up-speed">0 B/s</span>
+</div>
+<span id="net-pulse" class="w-2 h-2 rounded-full bg-secondary self-center animate-pulse"></span>
+</div>
+</div>
+</header>
+
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-16 bottom-8 w-64 flex flex-col p-stack-md z-40 bg-surface-container-low dark:bg-surface-container-low border-r border-outline-variant hidden lg:flex">
+<div class="mb-stack-lg">
+<h2 class="font-headline-md text-headline-md text-primary" style="font-size:18px;font-weight:700;">YT-DLP GUI</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Motor ativo</p>
+</div>
+<nav class="flex flex-col gap-unit">
+<div class="flex items-center gap-3 px-4 py-3 text-primary bg-surface-container-highest rounded-lg transition-all duration-200 cursor-pointer">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">download</span>
+<span class="font-body-md text-body-md">Novo Download</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-lg transition-all duration-200 cursor-pointer">
+<span class="material-symbols-outlined">folder_zip</span>
+<span class="font-body-md text-body-md">Histórico</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-lg transition-all duration-200 cursor-pointer">
+<span class="material-symbols-outlined">terminal</span>
+<span class="font-body-md text-body-md">Logs</span>
+</div>
+</nav>
+<div class="mt-auto pt-stack-md">
+<button onclick="logout()" class="w-full py-3 bg-surface-variant text-on-surface-variant font-bold rounded-lg hover:brightness-110 active:scale-95 transition-all text-sm flex items-center justify-center gap-2">
+    <span class="material-symbols-outlined text-[16px]">logout</span> Sair
+</button>
+</div>
+</aside>
+
+<!-- Main Content -->
+<main class="mt-16 mb-8 lg:ml-64 p-container-padding flex-1 overflow-hidden">
+<div class="h-full flex flex-col md:flex-row gap-6">
+
+<!-- Left Panel (30%): Download Form -->
+<section class="w-full md:w-[30%] flex flex-col gap-6">
+<div class="bg-surface-container-high p-6 rounded-xl border border-outline-variant flex flex-col gap-6">
+<h3 class="font-title-sm text-title-sm text-primary flex items-center gap-2">
+<span class="material-symbols-outlined">add_circle</span> Novo Download
+</h3>
+<div class="space-y-4">
+<div class="space-y-2">
+<label class="font-code-label text-code-label text-on-surface-variant">URL DO VÍDEO</label>
+<input id="url-input" class="w-full bg-surface-container-lowest border border-outline px-4 py-3 rounded text-on-surface font-code-label focus:border-primary outline-none transition-all" placeholder="https://www.youtube.com/watch?v=..." type="text"/>
+</div>
+<div class="space-y-2">
+<label class="font-code-label text-code-label text-on-surface-variant">FORMATO</label>
+<div class="grid grid-cols-2 gap-2 bg-surface-container-lowest p-1 rounded">
+<button id="btn-mp4" onclick="selectFormat('mp4')" class="py-2 bg-primary text-on-primary font-bold rounded text-body-sm transition-all">MP4 VÍDEO</button>
+<button id="btn-mp3" onclick="selectFormat('mp3')" class="py-2 text-on-surface-variant hover:bg-surface-variant font-bold rounded text-body-sm transition-all">MP3 ÁUDIO</button>
+</div>
+</div>
+<div class="space-y-2">
+<label class="font-code-label text-code-label text-on-surface-variant">API KEY</label>
+<input id="api-key-input" type="password" class="w-full bg-surface-container-lowest border border-outline px-4 py-3 rounded text-on-surface font-code-label focus:border-primary outline-none transition-all" placeholder="Chave de API"/>
+</div>
+</div>
+<button onclick="startDownload()" id="download-btn" class="w-full py-4 bg-primary-container text-on-primary-container font-bold rounded shadow-lg hover:shadow-primary/20 transition-all flex items-center justify-center gap-2 mt-2">
+<span class="material-symbols-outlined">download</span> BAIXAR AGORA
+</button>
+</div>
+
+<!-- Stats mini cards -->
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container p-4 rounded border border-outline-variant">
+<span class="font-code-label text-on-surface-variant block mb-1">CPU</span>
+<span id="stat-cpu" class="text-2xl font-bold text-primary">--</span>
+</div>
+<div class="bg-surface-container p-4 rounded border border-outline-variant">
+<span class="font-code-label text-on-surface-variant block mb-1">RAM</span>
+<span id="stat-ram" class="text-2xl font-bold text-secondary">--</span>
+</div>
+</div>
+</section>
+
+<!-- Right Panel (70%): History Table -->
+<section class="w-full md:w-[70%] bg-surface-container rounded-xl border border-outline-variant overflow-hidden flex flex-col">
+<div class="px-6 py-4 border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-title-sm text-title-sm text-on-surface">Downloads Recentes</h3>
+<div class="flex gap-2 items-center">
+<span id="history-count" class="text-xs text-on-surface-variant font-code-label"></span>
+<button onclick="refreshHistory()" class="material-symbols-outlined text-on-surface-variant hover:text-on-surface transition-colors">refresh</button>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto custom-scrollbar" style="max-height: calc(100vh - 14rem);">
+<table class="w-full border-collapse">
+<thead class="sticky top-0 bg-surface-container-high z-10">
+<tr class="text-left font-code-label text-on-surface-variant border-b border-outline-variant">
+<th class="px-6 py-3 font-medium">STATUS</th>
+<th class="px-6 py-3 font-medium">TÍTULO</th>
+<th class="px-6 py-3 font-medium">FORMATO</th>
+<th class="px-6 py-3 font-medium">TAMANHO</th>
+<th class="px-6 py-3 font-medium">TEMPO</th>
+</tr>
+</thead>
+<tbody id="history-tbody" class="divide-y divide-outline-variant/30">
+<tr>
+<td colspan="5" class="px-6 py-8 text-center text-on-surface-variant font-code-label">
+<span class="material-symbols-outlined animate-spin-slow block mb-2">autorenew</span>
+Carregando histórico...
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+
+</div>
+</main>
+
+<!-- Footer Stats -->
+<footer class="fixed bottom-0 left-0 w-full h-8 flex items-center justify-between px-container-padding z-50 bg-surface-container-lowest dark:bg-surface-container-lowest border-t border-outline-variant">
+<div class="flex items-center gap-6">
+<span class="font-code-label text-code-label text-on-surface-variant">yt-dlp Server</span>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<span class="font-code-label text-code-label text-secondary" id="footer-cpu">CPU: --</span>
+<div class="w-20 h-1.5 bg-surface-variant rounded-full overflow-hidden">
+<div id="footer-cpu-bar" class="h-full bg-secondary" style="width: 0%;"></div>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-code-label text-code-label text-secondary" id="footer-ram">RAM: --</span>
+<div class="w-20 h-1.5 bg-surface-variant rounded-full overflow-hidden">
+<div id="footer-ram-bar" class="h-full bg-secondary" style="width: 0%;"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex gap-4">
+<span class="font-code-label text-code-label text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">security</span> SSL ENCRYPTED
+</span>
+</div>
+</footer>
+
+<!-- Toast notification -->
+<div id="toast" class="fixed top-20 right-6 z-[100] opacity-0 pointer-events-none max-w-xs px-4 py-3 rounded-lg border font-body-sm text-body-sm" style="transition: opacity 0.3s;"></div>
+
+<script>
+    // ============================================================
+    // State
+    // ============================================================
+    let selectedFormat = 'mp4';
+    let prevNetSample = null;
+
+    // ============================================================
+    // Format selector
+    // ============================================================
+    function selectFormat(fmt) {
+        selectedFormat = fmt;
+        const mp4 = document.getElementById('btn-mp4');
+        const mp3 = document.getElementById('btn-mp3');
+        if (fmt === 'mp4') {
+            mp4.className = 'py-2 bg-primary text-on-primary font-bold rounded text-body-sm transition-all';
+            mp3.className = 'py-2 text-on-surface-variant hover:bg-surface-variant font-bold rounded text-body-sm transition-all';
+        } else {
+            mp3.className = 'py-2 bg-primary text-on-primary font-bold rounded text-body-sm transition-all';
+            mp4.className = 'py-2 text-on-surface-variant hover:bg-surface-variant font-bold rounded text-body-sm transition-all';
+        }
+    }
+
+    // ============================================================
+    // Toast
+    // ============================================================
+    function showToast(msg, isError = false) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = `fixed top-20 right-6 z-[100] max-w-xs px-4 py-3 rounded-lg border font-body-sm text-body-sm ${
+            isError
+                ? 'bg-error-container text-on-error-container border-error/30'
+                : 'bg-secondary-container text-on-secondary-container border-secondary/30'
+        }`;
+        t.style.opacity = '1';
+        t.style.pointerEvents = 'auto';
+        setTimeout(() => { t.style.opacity = '0'; t.style.pointerEvents = 'none'; }, 3500);
+    }
+
+    // ============================================================
+    // Start download
+    // ============================================================
+    async function startDownload() {
+        const url = document.getElementById('url-input').value.trim();
+        const apiKey = document.getElementById('api-key-input').value.trim();
+        if (!url) { showToast('Informe a URL do vídeo.', true); return; }
+        if (!apiKey) { showToast('Informe a API Key.', true); return; }
+
+        const btn = document.getElementById('download-btn');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="material-symbols-outlined animate-spin-slow">autorenew</span> PROCESSANDO...';
+
+        try {
+            const resp = await fetch(`/download?url=${encodeURIComponent(url)}&fmt=${selectedFormat}&api_key=${encodeURIComponent(apiKey)}`, {
+                method: 'POST',
+                credentials: 'include'
+            });
+            const data = await resp.json();
+            if (resp.ok && data.status === 'success') {
+                showToast(`✓ Download iniciado: ${data.title || 'OK'}`);
+                document.getElementById('url-input').value = '';
+                setTimeout(refreshHistory, 2000);
+            } else {
+                showToast(data.message || data.detail || 'Erro ao iniciar download.', true);
+            }
+        } catch (e) {
+            showToast('Erro de conexão: ' + e.message, true);
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<span class="material-symbols-outlined">download</span> BAIXAR AGORA';
+        }
+    }
+
+    // ============================================================
+    // History
+    // ============================================================
+    function fmtSize(bytes) {
+        if (!bytes || bytes === 0) return '--';
+        const units = ['B','KB','MB','GB'];
+        let v = bytes, i = 0;
+        while (v >= 1024 && i < 3) { v /= 1024; i++; }
+        return v.toFixed(1) + ' ' + units[i];
+    }
+
+    function fmtTime(ts) {
+        if (!ts) return '--';
+        const d = new Date(ts * 1000);
+        const now = new Date();
+        const diff = Math.floor((now - d) / 1000);
+        if (diff < 60) return `${diff}s atrás`;
+        if (diff < 3600) return `${Math.floor(diff/60)}m atrás`;
+        if (diff < 86400) return `${Math.floor(diff/3600)}h atrás`;
+        return d.toLocaleDateString('pt-BR');
+    }
+
+    function statusChip(status) {
+        const s = (status || '').toLowerCase();
+        if (s === 'completed') {
+            return `<span class="bg-secondary/10 text-secondary px-2 py-1 rounded font-status-badge text-status-badge flex items-center w-fit gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> CONCLUÍDO
+            </span>`;
+        } else if (s === 'failed') {
+            return `<span class="bg-error/10 text-error px-2 py-1 rounded font-status-badge text-status-badge flex items-center w-fit gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-error"></span> FALHOU
+            </span>`;
+        }
+        return `<span class="bg-primary/10 text-primary px-2 py-1 rounded font-status-badge text-status-badge flex items-center w-fit gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span> ${s.toUpperCase()}
+        </span>`;
+    }
+
+    async function refreshHistory() {
+        try {
+            const resp = await fetch('/api/stats/history', { credentials: 'include' });
+            const items = await resp.json();
+            const tbody = document.getElementById('history-tbody');
+            document.getElementById('history-count').textContent = `${items.length} itens`;
+
+            if (!items.length) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-on-surface-variant font-code-label">
+                    <span class="material-symbols-outlined block mb-2">inbox</span>Nenhum download ainda
+                </td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = items.map(item => `
+                <tr class="hover:bg-surface-container-highest transition-colors cursor-pointer">
+                    <td class="px-6 py-4">${statusChip(item.status)}</td>
+                    <td class="px-6 py-4 font-body-sm text-on-surface max-w-xs truncate" title="${item.title || item.url || ''}">${item.title || item.url || '--'}</td>
+                    <td class="px-6 py-4 font-code-label text-on-surface-variant">${(item.format || '--').toUpperCase()}</td>
+                    <td class="px-6 py-4 font-code-label text-on-surface-variant">${fmtSize(item.size)}</td>
+                    <td class="px-6 py-4 font-code-label text-on-surface-variant">${fmtTime(item.timestamp)}</td>
+                </tr>
+            `).join('');
+        } catch (e) {
+            console.error('history error:', e);
+        }
+    }
+
+    // ============================================================
+    // Network speed
+    // ============================================================
+    function fmtSpeed(bps) {
+        if (bps < 1024) return `${Math.round(bps)} B/s`;
+        if (bps < 1024*1024) return `${(bps/1024).toFixed(1)} KB/s`;
+        return `${(bps/(1024*1024)).toFixed(1)} MB/s`;
+    }
+
+    async function refreshNetwork() {
+        try {
+            const resp = await fetch('/api/stats/network', { credentials: 'include' });
+            const data = await resp.json();
+            const sample = data.sample;
+            if (prevNetSample && sample && sample.ts > prevNetSample.ts) {
+                const dt = sample.ts - prevNetSample.ts;
+                const downBps = Math.max(0, (sample.recv - prevNetSample.recv) / dt);
+                const upBps   = Math.max(0, (sample.sent - prevNetSample.sent) / dt);
+                document.getElementById('net-down-speed').textContent = fmtSpeed(downBps);
+                document.getElementById('net-up-speed').textContent   = fmtSpeed(upBps);
+            }
+            if (sample) prevNetSample = sample;
+        } catch(e) {}
+    }
+
+    // ============================================================
+    // Logout
+    // ============================================================
+    async function logout() {
+        document.cookie = 'auth_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        window.location.href = '/static/login.html';
+    }
+
+    // ============================================================
+    // Init
+    // ============================================================
+    refreshHistory();
+    refreshNetwork();
+    setInterval(refreshHistory, 10000);
+    setInterval(refreshNetwork, 1500);
+
+    // Enter to download
+    document.getElementById('url-input').addEventListener('keydown', e => {
+        if (e.key === 'Enter') startDownload();
+    });
+
+    // ============================================================
+    // Stitch Design System integration
+    // Carrega tokens via API Stitch (stitch.googleapis.com/mcp),
+    // atualiza CSS vars no :root, e atualiza o badge de status.
+    // ============================================================
+    (function initStitch() {
+        const badge = document.getElementById('stitch-status');
+        const dot = document.getElementById('stitch-status-dot');
+        const label = document.getElementById('stitch-status-label');
+
+        function showBadge() { badge.style.opacity = '1'; }
+
+        function setState(state, text, dotClass) {
+            badge.dataset.state = state;
+            label.textContent = text;
+            dot.className = 'w-1.5 h-1.5 rounded-full ' + dotClass;
+            badge.title = text;
+            showBadge();
+        }
+
+        // Init: tenta API, cai em fallback local
+        StitchTheme.init({
+            projectId: '15410152418051530362',
+            // Sem assetId: o client escolhe o design system com displayName (Obsidian Stream)
+        }).then(result => {
+            if (result.source === 'api') {
+                setState('live', 'stitch · live', 'bg-secondary');
+                console.log('[stitch] Design system synced from API:', StitchTheme.tokens.assetName);
+            } else if (result.source === 'cache') {
+                setState('live', 'stitch · cache', 'bg-secondary');
+                console.log('[stitch] Design system loaded from cache');
+            } else {
+                setState('fallback', 'stitch · offline', 'bg-tertiary');
+                console.warn('[stitch] Using local fallback tokens');
+            }
+        });
+
+        // Listeners para reatividade
+        StitchTheme.onReady(({ source, tokens }) => {
+            // Atualizar dinamicamente Tailwind config se possível (a CDN expõe tailwind global)
+            if (window.tailwind && tokens && tokens.namedColors) {
+                try {
+                    const cfg = window.tailwind.config || {};
+                    cfg.theme = cfg.theme || {};
+                    cfg.theme.extend = cfg.theme.extend || {};
+                    cfg.theme.extend.colors = cfg.theme.extend.colors || {};
+                    for (const [k, v] of Object.entries(tokens.namedColors)) {
+                        cfg.theme.extend.colors[k.replace(/_/g, '-')] = v;
+                    }
+                } catch (e) { /* silencioso */ }
+            }
+        });
+
+        StitchTheme.onFallback(({ error }) => {
+            console.info('[stitch] Fallback ativo — UI usando tokens locais. Erro:', error && error.message);
+        });
+    })();
+</script>
+</body>
+</html>
