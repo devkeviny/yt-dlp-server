@@ -163,8 +163,6 @@ async def health(): return {"status": "healthy", "ffmpeg": subprocess.run(['ffmp
 async def root():
     return _serve_page('index.html')
 
-@app.post('/login')
-
 @app.get('/login')
 async def login_page():
     return _serve_page('login.html')
