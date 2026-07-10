@@ -6,4 +6,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 RUN mkdir -p /downloads /data && chmod 777 /downloads /data
 EXPOSE 8000
+ENV BUILD_REF=20260709v2
 CMD ["python", "main.py"]
