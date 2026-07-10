@@ -25,8 +25,8 @@ def _serve_page(filename):
     html = html.replace("STITCH_API_KEY_PLACEHOLDER", STITCH_API_KEY)
     # also expose as window.STITCH_API_KEY for stitch-client.js
     html = html.replace(
-        '<meta name="stitch-api-key" content="',
-        '<script>window.STITCH_API_KEY=document.querySelector('meta[name=stitch-api-key]').content;</script>\n<meta name="stitch-api-key" content="'
+        '<meta name="stitch-api-key" content="STITCH_API_KEY_PLACEHOLDER"/>',
+        '<script>window.STITCH_API_KEY="' + STITCH_API_KEY + '";</script>\n<meta name="stitch-api-key" content="' + STITCH_API_KEY + '"/>'
     )
     return HTMLResponse(content=html)
 
@@ -164,7 +164,6 @@ async def root():
     return _serve_page('index.html')
 
 @app.post('/login')
-from fastapi.responses import RedirectResponse
 
 @app.get('/login')
 async def login_page():
