@@ -175,6 +175,12 @@ async def login(password: str = Form(...)):
         return response
     raise HTTPException(status_code=401, detail="Invalid Password")
 
+@app.get('/api/me')
+async def me(request: Request):
+    if request.cookies.get('auth_session') == 'authenticated':
+        return {"status": "ok", "authenticated": True}
+    raise HTTPException(status_code=401, detail="Not authenticated")
+
 @app.get('/info')
 async def get_info(url: str):
     try:

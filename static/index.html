@@ -142,8 +142,10 @@
 <!-- Auth check -->
 <script>
     // If no session cookie, redirect to login
-    if (!document.cookie.includes('auth_session=authenticated')) {
-        window.location.href = '/static/login.html';
+    try {
+        const me = await fetch('/api/me', { credentials: 'include' });
+        if (!me.ok) { window.location.href = '/static/login.html'; }
+    } catch (e) { window.location.href = '/static/login.html'; }
     }
 </script>
 
