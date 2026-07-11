@@ -202,39 +202,66 @@ def _detect_platform(url):
 # ============================================================
 # Streaming download (passa direto pro usuario, nao salva)
 # ============================================================
-def stream_download(url, fmt):
-    proxy = proxy_manager.get_proxy()
-    start = time.time()
-    bytes_sent = 0
-    try:
-        cmd = ['yt-dlp', url, '--quiet', '--no-warnings', '--no-playlist', '-o', '-']
-        if proxy:
-            cmd += ['--proxy', proxy]
-        if fmt == 'mp4':
-            cmd += ['-f', 'bestvideo+bestaudio/best']
+def _build_cmd(url, fmt, proxy, q=0):
+    cmd = ['yt-dlp', url, '--quiet', '--no-warnings', '--no-playlist', '-o', '-',
+           '--retries', '3', '--fragment-retries', '3', '--socket-timeout', '30']
+    if proxy:
+        cmd += ['--proxy', proxy]
+    if fmt == 'mp4':
+        if q and q > 0:
+            cmd += ['-f', f'bestvideo[height<={q}][ext=mp4]+bestaudio[ext=m4a]/best[height<={q}]']
         else:
-            cmd += ['-f', 'bestaudio', '-x', '--audio-format', 'mp3', '--audio-quality', '192']
-        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=0)
-        while True:
-            chunk = proc.stdout.read(65536)
-            if not chunk:
-                break
-            bytes_sent += len(chunk)
-            yield chunk
-        proc.wait()
-        dur = round(time.time() - start, 1)
-        data_manager.add_download({
-            'url': url, 'format': fmt, 'size': bytes_sent, 'duration_s': dur,
-            'timestamp': time.time(), 'status': 'completed',
-            'platform': _detect_platform(url),
-        })
-    except Exception as e:
-        with open(os.path.join(DATA_DIR, 'error.log'), 'a') as lf:
-            lf.write(f"{time.time()} - stream error: {traceback.format_exc()}\n")
-        data_manager.add_download({
-            'url': url, 'format': fmt, 'status': 'failed', 'error': str(e),
-            'timestamp': time.time(), 'platform': _detect_platform(url),
-        })
+            cmd += ['-f', 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best']
+        cmd += ['--merge-output-format', 'mp4']
+    else:
+        cmd += ['-f', 'bestaudio', '-x', '--audio-format', 'mp3']
+        if q and q > 0:
+            cmd += ['--audio-quality', f'{q}k']
+        else:
+            cmd += ['--audio-quality', '192']
+    return cmd
+
+def stream_download(url, fmt, q=0, meta=None):
+    attempts = [None, proxy_manager.get_proxy()] if proxy_manager.get_proxy() else [None]
+    start = time.time()
+    title = (meta or {}).get('title') if meta else None
+    thumb = (meta or {}).get('thumbnail') if meta else None
+    for attempt_proxy in attempts:
+        bytes_sent = 0
+        try:
+            cmd = _build_cmd(url, fmt, attempt_proxy, q)
+            proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=0)
+            while True:
+                chunk = proc.stdout.read(65536)
+                if not chunk:
+                    break
+                bytes_sent += len(chunk)
+                yield chunk
+            proc.wait()
+            dur = round(time.time() - start, 1)
+            if bytes_sent == 0:
+                if attempt_proxy:
+                    proxy_manager.mark_blocked(attempt_proxy)
+                continue
+            data_manager.add_download({
+                'url': url, 'format': fmt, 'size': bytes_sent, 'duration_s': dur,
+                'timestamp': time.time(), 'status': 'completed', 'proxy': bool(attempt_proxy),
+                'platform': _detect_platform(url), 'title': title, 'thumbnail': thumb,
+                'quality': q,
+            })
+            return
+        except Exception as e:
+            with open(os.path.join(DATA_DIR, 'error.log'), 'a') as lf:
+                lf.write(f"{time.time()} - stream error (proxy={attempt_proxy}): {traceback.format_exc()}\n")
+            if attempt_proxy:
+                proxy_manager.mark_blocked(attempt_proxy)
+            continue
+    dur = round(time.time() - start, 1)
+    data_manager.add_download({
+        'url': url, 'format': fmt, 'status': 'failed', 'error': 'sem bytes produzidos',
+        'timestamp': time.time(), 'duration_s': dur, 'platform': _detect_platform(url),
+        'title': title, 'thumbnail': thumb, 'quality': q,
+    })
 
 # ============================================================
 # Routes
@@ -281,28 +308,41 @@ async def me(request: Request):
     raise HTTPException(status_code=401, detail="Not authenticated")
 
 @app.get('/api/download')
-async def api_download(request: Request, url: str, fmt: str = 'mp4', api_key: str = None):
+async def api_download(request: Request, url: str, fmt: str = 'mp4', q: int = 0, api_key: str = None):
     if not api_token_enabled():
         raise HTTPException(status_code=403, detail="API token desativada nas configuracoes")
     if api_key != API_KEY:
         raise HTTPException(status_code=403, detail="API Key invalida")
     ext = 'mp3' if fmt == 'mp3' else 'mp4'
-    return StreamingResponse(stream_download(url, fmt),
+    return StreamingResponse(stream_download(url, fmt, q),
         media_type=("audio/mpeg" if fmt == 'mp3' else "video/mp4"),
         headers={"Content-Disposition": f'attachment; filename="media.{ext}"',
                  "Cache-Control": "no-store", "X-Accel-Buffering": "no"})
 
+
+def _fetch_meta(url):
+    """Busca titulo/thumbnail rapidamente (sem proxy) para o historico."""
+    try:
+        with yt_dlp.YoutubeDL({'proxy': None, 'quiet': True, 'no_warnings': True,
+                               'noplaylist': True, 'format': 'best'}) as ydl:
+            info = ydl.extract_info(url, download=False)
+            if info.get('entries'): info = info['entries'][0]
+            return {'title': info.get('title'), 'thumbnail': info.get('thumbnail'),
+                    'view_count': info.get('view_count'), 'duration': info.get('duration')}
+    except Exception:
+        return None
+
 @app.get('/stream')
-async def stream(request: Request, url: str, fmt: str = 'mp4'):
+async def stream(request: Request, url: str, fmt: str = 'mp4', q: int = 0):
     if not is_authenticated(request):
         raise HTTPException(status_code=401, detail="Not authenticated")
     ext = 'mp3' if fmt == 'mp3' else 'mp4'
     fn = f"media_{int(time.time())}.{ext}"
-    return StreamingResponse(stream_download(url, fmt),
+    meta = _fetch_meta(url)
+    return StreamingResponse(stream_download(url, fmt, q, meta),
         media_type=("audio/mpeg" if fmt == 'mp3' else "video/mp4"),
         headers={"Content-Disposition": f'attachment; filename="{fn}"',
                  "Cache-Control": "no-store", "X-Accel-Buffering": "no"})
-
 @app.get('/api/history')
 async def get_history(request: Request):
     if not is_authenticated(request): raise HTTPException(status_code=401)
@@ -322,7 +362,7 @@ async def get_proxies(request: Request):
 @app.get('/api/info')
 async def get_info(url: str):
     proxy = proxy_manager.get_proxy()
-    attempts = [proxy, None] if proxy else [None]
+    attempts = [None, proxy] if proxy else [None]
     for px in attempts:
         try:
             with yt_dlp.YoutubeDL({'proxy': px, 'quiet': True, 'no_warnings': True,
@@ -331,10 +371,52 @@ async def get_info(url: str):
                 if info.get('entries'): info = info['entries'][0]
                 safe = {k: info.get(k) for k in ('title', 'duration', 'thumbnail',
                          'uploader', 'view_count', 'webpage_url') if k in info}
+                # Lista de qualidades para o usuario escolher
+                fmts = []
+                seen = set()
+                for f in info.get('formats', []):
+                    if f.get('vcodec') != 'none' and f.get('acodec') != 'none':
+                        h = f.get('height')
+                        if h and h not in seen:
+                            seen.add(h)
+                            fmts.append({'height': h, 'note': f.get('format_note', f'{h}p'),
+                                         'ext': f.get('ext', 'mp4')})
+                    elif f.get('vcodec') != 'none' and f.get('acodec') == 'none':
+                        h = f.get('height')
+                        if h and h not in seen:
+                            seen.add(h)
+                            fmts.append({'height': h, 'note': f.get('format_note', f'{h}p'),
+                                         'ext': f.get('ext', 'mp4'), 'video_only': True})
+                fmts.sort(key=lambda x: x['height'], reverse=True)
+                safe['formats'] = fmts[:12]
+                safe['has_audio'] = any(f.get('acodec') != 'none' for f in info.get('formats', []))
                 return safe
         except Exception:
             if px: proxy_manager.mark_blocked(px)
     raise HTTPException(status_code=500, detail="Falha ao obter informacoes")
+
+
+@app.get('/api/transcript')
+async def get_transcript(url: str):
+    proxy = proxy_manager.get_proxy()
+    attempts = [None, proxy] if proxy else [None]
+    for px in attempts:
+        try:
+            with yt_dlp.YoutubeDL({'proxy': px, 'quiet': True, 'no_warnings': True,
+                                   'noplaylist': True, 'writesubtitles': True,
+                                   'writeautomaticsub': True, 'skip_download': True,
+                                   'subtitlesformat': 'json3', 'outtmpl': '/tmp/tr_%(id)s'}) as ydl:
+                info = ydl.extract_info(url, download=False)
+                subs = info.get('subtitles', {}) or info.get('automatic_captions', {}) or {}
+                if not subs:
+                    return {'available': False, 'message': 'Sem transcricao disponivel'}
+                lang = 'pt' if 'pt' in subs else (list(subs.keys())[0] if subs else None)
+                if not lang:
+                    return {'available': False, 'message': 'Sem transcricao disponivel'}
+                return {'available': True, 'lang': lang, 'languages': list(subs.keys())}
+        except Exception:
+            if px: proxy_manager.mark_blocked(px)
+    return {'available': False, 'message': 'Falha ao verificar transcricao'}
 
 @app.get('/api/config/api')
 async def get_api_config(request: Request):

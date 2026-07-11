@@ -2,8 +2,9 @@
 <html class="dark" lang="pt-BR"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>MEDIA_CORE_V1 | Login</title>
+<title>Lulu Downloader | Login</title>
 <meta name="stitch-api-key" content="STITCH_API_KEY_PLACEHOLDER"/>
+<link rel="stylesheet" href="/static/brand.css"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <script id="tw-config">
@@ -27,8 +28,8 @@ body{background:#131313;color:#e5e2e1;font-family:Inter,sans-serif;margin:0}
 <div class="absolute inset-0 opacity-[0.03]" style="background-image:radial-gradient(#dbfcff 1px,transparent 1px);background-size:32px 32px"></div></div>
 
 <main class="relative z-10 w-full max-w-md px-6">
-<div class="text-center mb-8"><h1 class="text-2xl font-bold text-primary tracking-tighter">MEDIA_CORE_V1</h1>
-<p class="text-xs text-onSurfaceVariant tracking-widest uppercase mt-1">Servidor de Mídia de Alta Performance</p></div>
+<div class="text-center mb-8"><span id="logo-login"></span>
+<p class="text-xs text-onSurfaceVariant tracking-widest uppercase mt-2">Baixe e converta mídia</p></div>
 <div class="glass p-8 rounded-xl">
 <form id="login-form" class="space-y-6" onsubmit="return false">
 <div class="space-y-2">
@@ -44,8 +45,13 @@ body{background:#131313;color:#e5e2e1;font-family:Inter,sans-serif;margin:0}
 <span class="material-symbols-outlined text-sm text-primary">sensors</span>
 <p class="text-xs text-onSurfaceVariant font-mono">ACESSO API HEADLESS: header X-API-Key</p></div></div>
 </div>
-<p class="text-center mt-6 text-xs text-onSurfaceVariant/40 font-mono">© 2024 MEDIA_CORE. v2.4.1-stable</p>
+<p class="text-center mt-6 text-xs text-onSurfaceVariant/40 font-mono">© 2024 Lulu Downloader</p>
 </main>
+
+<script src="/static/brand.js"></script>
+<script>
+renderLogo('vertical','lg',document.getElementById('logo-login'));
+</script>
 
 <script>
 (async function(){

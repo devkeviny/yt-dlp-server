@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html class="dark" lang="pt-BR"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>MEDIA_CORE_V1 | Dashboard</title>
+<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lulu Downloader</title>
 <meta name="stitch-api-key" content="STITCH_API_KEY_PLACEHOLDER"/>
+<link rel="stylesheet" href="/static/brand.css"/>
+<script src="/static/brand.js"></script>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <script id="tw-config">
@@ -26,22 +27,24 @@ body{background:#131313;color:#e5e2e1;font-family:Inter,sans-serif;margin:0}
 .custom-scroll::-webkit-scrollbar{width:5px}
 .custom-scroll::-webkit-scrollbar-thumb{background:#3b494b;border-radius:3px}
 #toast{transition:opacity .3s}
+@keyframes spin{to{transform:rotate(360deg)}}
+.animate-spin{animation:spin 1s linear infinite}
+.progress-bar{transition:width .4s ease}
 </style>
 </head>
 <body class="min-h-screen">
-<!-- Auth check -->
 <script>
 (async function(){ try{ const me=await fetch('/api/me',{credentials:'include'}); if(!me.ok) location.href='/login'; }catch(e){ location.href='/login'; } })();
 </script>
 
 <!-- TopNav -->
-<header class="fixed top-0 w-full z-50 flex justify-between items-center px-marginDesktop h-20 bg-surface/60 backdrop-blur-md border-b border-white/10">
-<div class="font-bold text-primary tracking-tighter text-xl">MEDIA_CORE_V1</div>
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 lg:px-16 h-20 bg-surface/60 backdrop-blur-md border-b border-white/10">
+<span id="logo"></span>
 <nav class="hidden md:flex gap-8">
-<a class="text-primary border-b-2 border-primary pb-1 cursor-pointer">Dashboard</a>
-<a class="text-onSurfaceVariant hover:text-primary cursor-pointer" href="/transfers">Transfers</a>
-<a class="text-onSurfaceVariant hover:text-primary cursor-pointer" href="/storage">Storage</a>
-<a class="text-onSurfaceVariant hover:text-primary cursor-pointer" href="/system">System</a>
+<a class="text-onSurfaceVariant hover:text-primary cursor-pointer border-b-2 border-primary pb-1 text-primary">Conversor</a>
+<a class="text-onSurfaceVariant hover:text-primary cursor-pointer" href="/transfers">Histórico</a>
+<a class="text-onSurfaceVariant hover:text-primary cursor-pointer" href="/storage">Armazenamento</a>
+<a class="text-onSurfaceVariant hover:text-primary cursor-pointer" href="/system">Sistema</a>
 </nav>
 <div class="flex items-center gap-4">
 <div id="net-pill" class="hidden md:flex gap-3 font-mono text-xs text-primary bg-surfaceContainerLow px-4 py-2 rounded-full border border-white/10">
@@ -52,14 +55,13 @@ body{background:#131313;color:#e5e2e1;font-family:Inter,sans-serif;margin:0}
 </header>
 
 <!-- SideNav -->
-<aside class="fixed left-0 top-0 h-full pt-20 flex flex-col bg-surfaceContainerLowest/80 backdrop-blur-xl border-r border-white/10 w-64 hidden lg:flex">
-<div class="p-6 flex items-center gap-3"><div class="w-9 h-9 rounded-lg bg-primaryContainer/20 flex items-center justify-center"><span class="material-symbols-outlined text-primary" style="font-variation-settings:'FILL' 1">terminal</span></div>
-<div><div class="text-xs text-primary font-mono">NODE_01</div><div class="text-[10px] text-onSurfaceVariant uppercase tracking-widest">Online</div></div></div>
-<nav class="flex-1 px-4 py-6 space-y-2">
-<a class="flex items-center gap-4 px-4 py-3 rounded-lg bg-primaryContainer/20 text-primary border-r-4 border-primary" href="/"><span class="material-symbols-outlined">dashboard</span><span class="text-sm">Home</span></a>
-<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-onSurfaceVariant hover:bg-surfaceVariant/30" href="/transfers"><span class="material-symbols-outlined">download</span><span class="text-sm">Transfers</span></a>
-<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-onSurfaceVariant hover:bg-surfaceVariant/30" href="/storage"><span class="material-symbols-outlined">database</span><span class="text-sm">Storage</span></a>
-<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-onSurfaceVariant hover:bg-surfaceVariant/30" href="/system"><span class="material-symbols-outlined">settings</span><span class="text-sm">System</span></a>
+<aside class="fixed left-0 top-0 h-full pt-24 flex flex-col bg-surfaceContainerLowest/80 backdrop-blur-xl border-r border-white/10 w-64 hidden lg:flex">
+<div class="px-6 pb-6"><span id="logo-side"></span></div>
+<nav class="flex-1 px-4 space-y-2">
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg bg-primaryContainer/20 text-primary border-r-4 border-primary" href="/"><span class="material-symbols-outlined">download</span><span class="text-sm">Conversor</span></a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-onSurfaceVariant hover:bg-surfaceVariant/30" href="/transfers"><span class="material-symbols-outlined">history</span><span class="text-sm">Histórico</span></a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-onSurfaceVariant hover:bg-surfaceVariant/30" href="/storage"><span class="material-symbols-outlined">database</span><span class="text-sm">Armazenamento</span></a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-onSurfaceVariant hover:bg-surfaceVariant/30" href="/system"><span class="material-symbols-outlined">settings</span><span class="text-sm">Sistema</span></a>
 </nav>
 <div class="p-4"><button onclick="logout()" class="w-full py-3 bg-primaryContainer text-onPrimaryContainer font-bold rounded-xl active:scale-95 transition-all flex items-center justify-center gap-2"><span class="material-symbols-outlined">logout</span>Sair</button></div>
 </aside>
@@ -70,15 +72,26 @@ body{background:#131313;color:#e5e2e1;font-family:Inter,sans-serif;margin:0}
 <!-- Left: converter -->
 <section class="xl:col-span-1 space-y-6">
 <div class="glass p-6 rounded-2xl">
-<h3 class="text-primary flex items-center gap-2 mb-4"><span class="material-symbols-outlined">add_circle</span> Novo Download</h3>
+<h3 class="text-primary flex items-center gap-2 mb-4"><span class="material-symbols-outlined">download</span> Baixar & Converter</h3>
 <div class="space-y-4">
 <input id="url-input" class="w-full bg-surfaceContainerLowest border border-white/10 rounded-lg px-4 py-3 text-onSurface font-mono text-sm focus:border-primaryContainer outline-none" placeholder="Cole a URL (YouTube, TikTok, Instagram...)"/>
+<!-- formato -->
 <div class="grid grid-cols-2 gap-2 bg-surfaceContainerLowest p-1 rounded-lg">
 <button id="btn-mp4" onclick="selectFmt('mp4')" class="py-2 bg-primaryContainer text-onPrimaryContainer font-bold rounded text-sm">MP4 VÍDEO</button>
 <button id="btn-mp3" onclick="selectFmt('mp3')" class="py-2 text-onSurfaceVariant rounded text-sm">MP3 ÁUDIO</button>
 </div>
-<button onclick="analyze()" id="analyze-btn" class="w-full py-3 bg-surfaceVariant text-onSurface rounded-lg font-bold hover:brightness-110 transition-all flex items-center justify-center gap-2"><span class="material-symbols-outlined">analytics</span> Analisar</button>
+<!-- qualidade dinamica -->
+<div id="quality-wrap" class="bg-surfaceContainerLowest rounded-lg p-1 hidden">
+<select id="quality" class="w-full bg-transparent text-onSurface text-sm py-2 px-2 rounded outline-none"></select>
+</div>
+<!-- processo -->
+<div id="progress" class="hidden">
+<div class="flex items-center gap-3 mb-2"><span id="prog-icon" class="material-symbols-outlined text-primary animate-spin">sync</span><span id="prog-text" class="text-sm text-onSurface">Processando...</span></div>
+<div class="w-full h-2 bg-surfaceContainerLowest rounded-full overflow-hidden"><div id="prog-bar" class="h-full bg-primaryContainer progress-bar" style="width:30%"></div></div>
+</div>
 <button onclick="startDownload()" id="dl-btn" class="w-full py-4 bg-primaryContainer text-onPrimaryContainer font-bold rounded-lg shadow cyan-glow hover:brightness-110 transition-all flex items-center justify-center gap-2"><span class="material-symbols-outlined">download</span> BAIXAR AGORA</button>
+<div class="flex items-center gap-2 text-xs text-onSurfaceVariant"><input type="checkbox" id="chk-transcript" class="accent-primaryContainer"/> <label for="chk-transcript">Verificar legenda/transcrição disponível</label></div>
+<div id="transcript-info" class="hidden text-xs text-tertiaryContainer font-mono">Transcrição: <span id="tr-lang"></span> ✓</div>
 </div>
 </div>
 <div class="grid grid-cols-3 gap-3">
@@ -89,7 +102,7 @@ body{background:#131313;color:#e5e2e1;font-family:Inter,sans-serif;margin:0}
 </section>
 <!-- Right: history + stats -->
 <section class="xl:col-span-2 space-y-6">
-<!-- Analyze preview -->
+<!-- preview -->
 <div id="preview" class="glass p-6 rounded-2xl hidden">
 <div class="flex gap-4">
 <img id="pv-thumb" class="w-40 aspect-video rounded-xl object-cover border border-white/10"/>
@@ -115,12 +128,7 @@ body{background:#131313;color:#e5e2e1;font-family:Inter,sans-serif;margin:0}
 <div class="glass rounded-2xl overflow-hidden">
 <div class="px-6 py-4 border-b border-white/10 flex justify-between items-center"><h3 class="text-onSurface text-sm uppercase tracking-widest">Histórico (máx 100)</h3><div class="flex items-center gap-2"><span id="hist-count" class="text-xs text-onSurfaceVariant font-mono"></span><button onclick="refreshHistory()" class="material-symbols-outlined text-onSurfaceVariant hover:text-primary">refresh</button></div></div>
 <div class="max-h-[420px] overflow-y-auto custom-scroll">
-<table class="w-full text-left">
-<thead class="bg-surfaceContainerLow sticky top-0"><tr class="text-[10px] text-onSurfaceVariant uppercase font-mono">
-<th class="px-4 py-3">Status</th><th class="px-4 py-3">Título</th><th class="px-4 py-3">Fmt</th><th class="px-4 py-3">Tam</th><th class="px-4 py-3">Tempo</th><th class="px-4 py-3">Plat</th>
-</tr></thead>
-<tbody id="hist-tbody" class="divide-y divide-white/5 text-sm"></tbody>
-</table>
+<div id="hist-list" class="divide-y divide-white/5"></div>
 </div>
 </div>
 </section>
@@ -129,11 +137,44 @@ body{background:#131313;color:#e5e2e1;font-family:Inter,sans-serif;margin:0}
 
 <div id="toast" class="fixed top-20 right-6 z-[100] opacity-0 pointer-events-none max-w-xs px-4 py-3 rounded-lg border text-sm"></div>
 <script>
-let selectedFmt='mp4', prevNet=null;
+renderLogo('horizontal','md',document.getElementById('logo'));
+renderLogo('horizontal','sm',document.getElementById('logo-side'));
+
+let selectedFmt='mp4', currentInfo=null, debounceTimer=null, maxHeight=0;
 
 function selectFmt(f){ selectedFmt=f;
   document.getElementById('btn-mp4').className = f==='mp4'?'py-2 bg-primaryContainer text-onPrimaryContainer font-bold rounded text-sm':'py-2 text-onSurfaceVariant rounded text-sm';
   document.getElementById('btn-mp3').className = f==='mp3'?'py-2 bg-primaryContainer text-onPrimaryContainer font-bold rounded text-sm':'py-2 text-onSurfaceVariant rounded text-sm';
+  buildQualityOptions();
+}
+function buildQualityOptions(){
+  const wrap=document.getElementById('quality-wrap'), sel=document.getElementById('quality');
+  sel.innerHTML='';
+  if(selectedFmt==='mp3'){
+    wrap.classList.remove('hidden');
+    [['320','MP3 320 kbps (melhor)'],['192','MP3 192 kbps (padrão)'],['128','MP3 128 kbps (menor)']].forEach(([v,t])=>{
+      const o=document.createElement('option'); o.value=v; o.textContent=t; if(v==='192')o.selected=true; sel.appendChild(o);
+    });
+  } else {
+    wrap.classList.remove('hidden');
+    if(!currentInfo||!currentInfo.formats||!currentInfo.formats.length){
+      const o=document.createElement('option'); o.value='0'; o.textContent='MP4 melhor qualidade'; sel.appendChild(o); return;
+    }
+    const hs=currentInfo.formats.map(f=>f.height);
+    maxHeight=Math.max(...hs);
+    // monta opcoes: do maximo descendo (4K/1080/720/480) conforme disponivel
+    const tier=[2160,1440,1080,720,480,360];
+    const avail=[...new Set(hs)].sort((a,b)=>b-a);
+    const opts=[];
+    if(maxHeight>=2160) opts.push(['2160','MP4 4K (2160p)']);
+    if(maxHeight>=1080) opts.push(['1080','MP4 1080p']);
+    if(maxHeight>=720) opts.push(['720','MP4 720p']);
+    if(maxHeight>=480) opts.push(['480','MP4 480p']);
+    if(maxHeight>=360 && !opts.length) opts.push(['360','MP4 360p']);
+    // garante que a maior disponivel apareca
+    if(!opts.find(o=>o[0]==String(maxHeight))) opts.unshift([String(maxHeight),'MP4 '+maxHeight+'p (máx)']);
+    opts.forEach(([v,t])=>{ const o=document.createElement('option'); o.value=v; o.textContent=t; if(v===opts[0][0])o.selected=true; sel.appendChild(o); });
+  }
 }
 function showToast(msg,err){ const t=document.getElementById('toast');
   t.textContent=msg; t.className='fixed top-20 right-6 z-[100] max-w-xs px-4 py-3 rounded-lg border text-sm '+(err?'bg-errorContainer text-onError':'bg-surfaceVariant text-onSurface');
@@ -141,34 +182,60 @@ function showToast(msg,err){ const t=document.getElementById('toast');
 }
 async function logout(){ document.cookie='auth_session=; expires=Thu,01 Jan 1970 00:00:00 UTC; path=/;'; location.href='/login'; }
 
-async function analyze(){
+async function autoAnalyze(){
   const url=document.getElementById('url-input').value.trim();
-  if(!url){showToast('Informe a URL.',true);return;}
-  const btn=document.getElementById('analyze-btn'); btn.disabled=true; btn.innerHTML='<span class="material-symbols-outlined animate-spin">sync</span> Analisando...';
+  if(!url || !/^https?:\/\//.test(url)){ document.getElementById('preview').classList.add('hidden'); return; }
   try{
     const r=await fetch('/api/info?url='+encodeURIComponent(url)); const d=await r.json();
-    if(r.ok){ const p=document.getElementById('preview'); p.classList.remove('hidden');
+    if(r.ok){ currentInfo=d;
+      const p=document.getElementById('preview'); p.classList.remove('hidden');
       document.getElementById('pv-thumb').src=d.thumbnail||''; document.getElementById('pv-title').textContent=d.title||'--';
       const dur=d.duration?Math.floor(d.duration/60)+'m'+(d.duration%60)+'s':'--';
-      document.getElementById('pv-meta').textContent=(d.uploader||'')+' • '+dur+' • '+(d.view_count?d.view_count+' views':'');
-    } else showToast(d.detail||'Falha',true);
-  }catch(e){showToast('Erro: '+e.message,true);}
-  finally{ btn.disabled=false; btn.innerHTML='<span class="material-symbols-outlined">analytics</span> Analisar'; }
+      document.getElementById('pv-meta').textContent=(d.uploader||'')+' • '+dur+' • '+(d.view_count?d.view_count.toLocaleString('pt-BR')+' views':'');
+      buildQualityOptions();
+      // transcrição?
+      if(document.getElementById('chk-transcript').checked) checkTranscript(url);
+    }
+  }catch(e){}
+}
+document.getElementById('url-input').addEventListener('input',()=>{
+  clearTimeout(debounceTimer); debounceTimer=setTimeout(autoAnalyze,700);
+});
+document.getElementById('chk-transcript').addEventListener('change',()=>{
+  const url=document.getElementById('url-input').value.trim();
+  if(document.getElementById('chk-transcript').checked && url) checkTranscript(url);
+  else document.getElementById('transcript-info').classList.add('hidden');
+});
+async function checkTranscript(url){
+  try{ const r=await fetch('/api/transcript?url='+encodeURIComponent(url)); const d=await r.json();
+    const box=document.getElementById('transcript-info');
+    if(d.available){ box.classList.remove('hidden'); document.getElementById('tr-lang').textContent=(d.lang||'').toUpperCase(); }
+    else box.classList.add('hidden');
+  }catch(e){}
 }
 
+function setProgress(show,text,pct){
+  const p=document.getElementById('progress');
+  if(!show){ p.classList.add('hidden'); return; }
+  p.classList.remove('hidden');
+  document.getElementById('prog-text').textContent=text||'Processando...';
+  document.getElementById('prog-bar').style.width=(pct||30)+'%';
+}
 async function startDownload(){
   const url=document.getElementById('url-input').value.trim();
   if(!url){showToast('Informe a URL.',true);return;}
   const btn=document.getElementById('dl-btn'); btn.disabled=true;
-  btn.innerHTML='<span class="material-symbols-outlined animate-spin">sync</span> Processando...';
+  setProgress(true,'Iniciando conversão...',15);
   try{
-    // streaming: abre o /stream numa aba oculta p/ baixar direto
-    const a=document.createElement('a'); a.href='/stream?url='+encodeURIComponent(url)+'&fmt='+selectedFmt;
+    const q=selectedFmt==='mp3'?document.getElementById('quality').value:document.getElementById('quality').value;
+    // dispara o stream (download direto, sem salvar no servidor)
+    const a=document.createElement('a'); a.href='/stream?url='+encodeURIComponent(url)+'&fmt='+selectedFmt+'&q='+q;
     a.download=''; document.body.appendChild(a); a.click(); a.remove();
-    showToast('Download iniciado — salvando arquivo...');
-    setTimeout(refreshHistory,3000);
-  }catch(e){showToast('Erro: '+e.message,true);}
-  finally{ setTimeout(()=>{btn.disabled=false; btn.innerHTML='<span class="material-symbols-outlined">download</span> BAIXAR AGORA';},1500); }
+    setProgress(true,'Convertendo e enviando...',60);
+    setTimeout(()=>{ setProgress(true,'Conversão pronta ✓',100); showToast('Download concluído — arquivo salvo.'); },2500);
+    setTimeout(()=>{ setProgress(false); refreshHistory(); },3500);
+  }catch(e){showToast('Erro: '+e.message,true); setProgress(false);}
+  finally{ setTimeout(()=>{btn.disabled=false;},1500); }
 }
 
 function fmtSize(b){ if(!b||b===0)return'--'; const u=['B','KB','MB','GB']; let v=b,i=0; while(v>=1024&&i<3){v/=1024;i++;} return v.toFixed(1)+' '+u[i]; }
@@ -182,15 +249,16 @@ function statusChip(s){ s=(s||'').toLowerCase();
 async function refreshHistory(){
   try{ const r=await fetch('/api/history',{credentials:'include'}); const items=await r.json();
     document.getElementById('hist-count').textContent=items.length+' itens';
-    const tb=document.getElementById('hist-tbody');
-    if(!items.length){tb.innerHTML='<tr><td colspan="6" class="px-4 py-8 text-center text-onSurfaceVariant">Nenhum download ainda</td></tr>';return;}
-    tb.innerHTML=items.map(i=>`<tr class="hover:bg-white/5">
-      <td class="px-4 py-3">${statusChip(i.status)}</td>
-      <td class="px-4 py-3 text-onSurface max-w-[200px] truncate" title="${i.title||i.url||''}">${i.title||i.url||'--'}</td>
-      <td class="px-4 py-3 font-mono text-onSurfaceVariant">${(i.format||'--').toUpperCase()}</td>
-      <td class="px-4 py-3 font-mono text-onSurfaceVariant">${fmtSize(i.size)}</td>
-      <td class="px-4 py-3 font-mono text-onSurfaceVariant">${i.duration_s?i.duration_s+'s':'--'}</td>
-      <td class="px-4 py-3 font-mono text-onSurfaceVariant">${i.platform||'--'}</td></tr>`).join('');
+    const box=document.getElementById('hist-list');
+    if(!items.length){box.innerHTML='<div class="px-4 py-8 text-center text-onSurfaceVariant">Nenhum download ainda</div>';return;}
+    box.innerHTML=items.map(i=>`<div class="flex items-center gap-3 px-4 py-3 hover:bg-white/5">
+      <img src="${i.thumbnail||''}" onerror="this.style.display='none'" class="w-14 aspect-video rounded object-cover border border-white/10 flex-shrink-0"/>
+      <div class="flex-1 min-w-0">
+        <div class="text-onSurface text-sm truncate" title="${i.title||i.url||''}">${i.title||i.url||'--'}</div>
+        <div class="text-[10px] text-onSurfaceVariant font-mono mt-0.5">${(i.format||'--').toUpperCase()} ${i.quality?('· '+i.quality+'p'):''} · ${fmtSize(i.size)} · ${fmtAgo(i.timestamp)}</div>
+      </div>
+      <div class="flex-shrink-0">${statusChip(i.status)}</div>
+    </div>`).join('');
   }catch(e){}
 }
 function fmtSpeed(bps){ if(!bps)return'0 B/s'; if(bps<1024)return Math.round(bps)+' B/s'; if(bps<1048576)return (bps/1024).toFixed(1)+' KB/s'; return (bps/1048576).toFixed(1)+' MB/s'; }
@@ -232,9 +300,10 @@ async function refreshNetwork(){
     prevNet=s;
   }catch(e){}
 }
+let prevNet=null;
 
+selectFmt('mp4');
 refreshHistory(); refreshStats();
 setInterval(refreshHistory,8000); setInterval(refreshStats,10000); setInterval(refreshNetwork,5000);
-document.getElementById('url-input').addEventListener('keydown',e=>{if(e.key==='Enter')analyze();});
 </script>
 </body></html>

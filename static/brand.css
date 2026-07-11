@@ -1,0 +1,22 @@
+/* Lulu Downloader — marca (logo de gato) */
+/* Variáveis da paleta MEDIA_CORE_V1 */
+:root{
+  --lu-surface:#131313;
+  --lu-primary:#dbfcff;
+  --lu-cyan:#00f0ff;
+  --lu-purple:#7000ff;
+  --lu-on-surface:#e5e2e1;
+}
+.lu-logo{display:flex;align-items:center;gap:12px;color:var(--lu-primary);text-decoration:none;user-select:none}
+.lu-logo.vertical{flex-direction:column;gap:6px;text-align:center}
+.lu-cat{display:block;filter:drop-shadow(0 0 8px rgba(0,240,255,.35))}
+.lu-wordmark{font-family:Inter,sans-serif;font-weight:700;letter-spacing:-.02em;line-height:1;color:var(--lu-primary)}
+.lu-wordmark .lu-lu{color:var(--lu-cyan)}
+.lu-wordmark .lu-sub{display:block;font-size:.42em;font-weight:500;letter-spacing:.28em;text-transform:uppercase;color:#b9cacb;margin-top:3px}
+.lu-logo.sm .lu-wordmark{font-size:18px}
+.lu-logo.md .lu-wordmark{font-size:22px}
+.lu-logo.lg .lu-wordmark{font-size:30px}
+/* responsivo: esconde o wordmark em telas muito estreitas se .compact */
+@media (max-width:380px){
+  .lu-logo.compact .lu-wordmark{font-size:16px}
+}

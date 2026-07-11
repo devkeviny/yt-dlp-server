@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html class="dark" lang="pt-BR"><head>
 <meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>MEDIA_CORE_V1 | Storage</title>
+<title>Lulu Downloader | Armazenamento</title>
 <meta name="stitch-api-key" content="STITCH_API_KEY_PLACEHOLDER"/>
+<link rel="stylesheet" href="/static/brand.css"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <script id="tw-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{surface:"#131313",surfaceContainerLowest:"#0e0e0e",surfaceVariant:"#353534",surfaceContainerLow:"#1c1b1b",onSurface:"#e5e2e1",onSurfaceVariant:"#b9cacb",primary:"#dbfcff",primaryContainer:"#00f0ff",onPrimaryContainer:"#00363a",secondaryContainer:"#7000ff",tertiaryContainer:"#00f990",outlineVariant:"#3b494b",error:"#ffb4ab"},fontFamily:{body:["Inter"],mono:["JetBrains Mono"]}}}};</script>
@@ -10,8 +11,8 @@
 </head>
 <body class="min-h-screen">
 <script>(async function(){try{const me=await fetch('/api/me',{credentials:'include'});if(!me.ok)location.href='/login';}catch(e){location.href='/login';}})();</script>
-<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 lg:px-16 h-20 bg-surface/60 backdrop-blur-md border-b border-white/10">
-<div class="font-bold text-primary tracking-tighter text-xl">MEDIA_CORE_V1</div>
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-marginDesktop h-20 bg-surface/60 backdrop-blur-md border-b border-white/10">
+<span id="logo"></span>
 <nav class="hidden md:flex gap-8 text-sm"><a class="text-onSurfaceVariant hover:text-primary cursor-pointer" href="/">Dashboard</a><a class="text-onSurfaceVariant hover:text-primary cursor-pointer" href="/transfers">Transfers</a><a class="text-primary border-b-2 border-primary pb-1" href="/storage">Storage</a><a class="text-onSurfaceVariant hover:text-primary cursor-pointer" href="/system">System</a></nav>
 <button onclick="logout()" class="material-symbols-outlined text-onSurfaceVariant hover:text-primary">logout</button>
 </header>
@@ -43,3 +44,6 @@ const top=done.sort((a,b)=>(b.size||0)-(a.size||0)).slice(0,8);
 document.getElementById('top').innerHTML=top.map(i=>'<div class="flex items-center justify-between py-2 border-b border-white/5"><span class="truncate max-w-[60%] text-sm">'+(i.title||i.url||'--')+'</span><span class="font-mono text-primary text-sm">'+fmtSize(i.size)+'</span></div>').join('')||'<p class="text-onSurfaceVariant text-sm">Vazio.</p>';
 }catch(e){}}
 load();setInterval(load,10000);
+</script>
+<script src="/static/brand.js"></script>
+<script>renderLogo('horizontal','md',document.getElementById('logo'));</script>
