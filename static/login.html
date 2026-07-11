@@ -193,11 +193,12 @@
 
 <script>
     // If already authenticated, go to dashboard
-    try {
-        const me = await fetch('/api/me', { credentials: 'include' });
-        if (me.ok) { window.location.href = '/static/index.html'; }
-    } catch (e) {}
-    }
+    (async function() {
+        try {
+            const me = await fetch('/api/me', { credentials: 'include' });
+            if (me.ok) { window.location.href = '/static/index.html'; }
+        } catch (e) {}
+    })();
 
     // Measure latency on load
     (async function() {
