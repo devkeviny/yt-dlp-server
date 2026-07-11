@@ -1,256 +1,64 @@
 <!DOCTYPE html>
 <html class="dark" lang="pt-BR"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Sleek Media Downloader | System</title>
+<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MEDIA_CORE_V1 | System</title>
+<meta name="stitch-api-key" content="STITCH_API_KEY_PLACEHOLDER"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<style>
-    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-    .glass-panel { background: rgba(19, 19, 19, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
-    .neon-glow { box-shadow: 0 0 20px rgba(0, 240, 255, 0.15); }
-    .terminal-grid { background-image: radial-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px); background-size: 24px 24px; }
-    @keyframes pulse-cyan { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
-    .animate-pulse-cyan { animation: pulse-cyan 2s infinite ease-in-out; }
-</style>
-<script id="tailwind-config">
-    tailwind.config = {
-        darkMode: "class",
-        theme: {
-            extend: {
-                "colors": {
-                    "surface": "#131313", "background": "#131313", "on-surface": "#e5e2e1",
-                    "primary": "#00f0ff", "primary-container": "#00f0ff", "on-primary": "#00363a",
-                    "secondary": "#d1bcff", "secondary-container": "#7000ff", "on-secondary": "#3c0090",
-                    "tertiary": "#dcffe2", "tertiary-container": "#00f990", "on-tertiary": "#00391d",
-                    "surface-container": "#201f1f", "surface-container-high": "#2a2a2a",
-                    "surface-variant": "#353534", "on-surface-variant": "#b9cacb",
-                    "outline": "#849495"
-                },
-                "borderRadius": { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem" },
-                "fontFamily": { "headline": ["Inter"], "body": ["Inter"], "stats": ["JetBrains Mono"] }
-            },
-        },
-    }
-</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tw-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{surface:"#131313",surfaceContainerLowest:"#0e0e0e",surfaceVariant:"#353534",surfaceContainerLow:"#1c1b1b",onSurface:"#e5e2e1",onSurfaceVariant:"#b9cacb",primary:"#dbfcff",primaryContainer:"#00f0ff",onPrimaryContainer:"#00363a",secondaryContainer:"#7000ff",tertiaryContainer:"#00f990",outlineVariant:"#3b494b",error:"#ffb4ab"},fontFamily:{body:["Inter"],mono:["JetBrains Mono"]}}}};</script>
+<style>.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400;vertical-align:middle}body{background:#131313;color:#e5e2e1;font-family:Inter,sans-serif;margin:0}.glass{background:rgba(19,19,19,.6);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.08)}</style>
 </head>
-<body class="bg-background text-on-surface font-body min-h-screen terminal-grid selection:bg-primary selection:text-on-primary">
-<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-20 bg-surface/60 backdrop-blur-md border-b border-white/10 shadow-[0_0_20px_rgba(0,240,255,0.05)]">
-    <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow-[0_0_12px_rgba(0,240,255,0.4)]">
-            <span class="material-symbols-outlined text-on-primary text-sm">settings</span>
-        </div>
-        <span class="text-lg font-bold text-primary tracking-tighter">Sleek Media Downloader</span>
-    </div>
-    <nav class="hidden md:flex items-center gap-6">
-        <a class="text-on-surface-variant hover:text-primary transition-all" href="/dashboard">Dashboard</a>
-        <a class="text-on-surface-variant hover:text-primary transition-all" href="/transfers">Transfers</a>
-        <a class="text-on-surface-variant hover:text-primary transition-all" href="/storage">Storage</a>
-        <a class="text-primary border-b-2 border-primary pb-1 transition-all" href="/system">System</a>
-    </nav>
-    <a href="/" onclick="document.cookie='session=;max-age=0'" class="text-xs text-on-surface-variant hover:text-error transition-colors">Sair ✕</a>
+<body class="min-h-screen">
+<script>(async function(){try{const me=await fetch('/api/me',{credentials:'include'});if(!me.ok)location.href='/login';}catch(e){location.href='/login';}})();</script>
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 lg:px-16 h-20 bg-surface/60 backdrop-blur-md border-b border-white/10">
+<div class="font-bold text-primary tracking-tighter text-xl">MEDIA_CORE_V1</div>
+<nav class="hidden md:flex gap-8 text-sm"><a class="text-onSurfaceVariant hover:text-primary cursor-pointer" href="/">Dashboard</a><a class="text-onSurfaceVariant hover:text-primary cursor-pointer" href="/transfers">Transfers</a><a class="text-onSurfaceVariant hover:text-primary cursor-pointer" href="/storage">Storage</a><a class="text-primary border-b-2 border-primary pb-1" href="/system">System</a></nav>
+<button onclick="logout()" class="material-symbols-outlined text-onSurfaceVariant hover:text-primary">logout</button>
 </header>
-
-<main class="lg:pl-64 pt-24 pb-20 px-6 md:px-12 min-h-screen">
-    <div class="max-w-6xl mx-auto space-y-12">
-        <header class="mb-12">
-            <div class="flex items-center gap-3 text-primary mb-2 animate-pulse-cyan">
-                <span class="w-2 h-2 rounded-full bg-primary"></span>
-                <span class="text-xs font-stats tracking-[0.2em] uppercase">Container Diagnostics</span>
-            </div>
-            <h1 class="text-5xl font-bold tracking-tighter text-on-surface">System Status</h1>
-        </header>
-
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
-            <!-- CPU Usage -->
-            <div class="md:col-span-4 glass-panel p-6 rounded-3xl flex flex-col justify-between min-h-[200px] group hover:border-primary/30 transition-all">
-                <div class="flex justify-between items-start">
-                    <div class="text-xs font-stats text-on-surface-variant tracking-wider uppercase">Container CPU</div>
-                    <span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">memory</span>
-                </div>
-                <div class="mt-4">
-                    <div class="text-5xl font-stats font-bold text-primary mb-2"><span id="cpu-percent">0</span>%</div>
-                    <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden">
-                        <div id="cpu-bar" class="h-full bg-gradient-to-r from-primary to-secondary-container w-0 transition-all duration-500 shadow-[0_0_10px_rgba(0,240,255,0.5)]"></div>
-                    </div>
-                </div>
-                <div class="mt-6 text-[10px] font-stats text-on-surface-variant/40 flex justify-between uppercase">
-                    <span id="cpu-cores">Cores: --</span>
-                    <span id="cpu-temp">Temp: --°C</span>
-                </div>
-            </div>
-
-            <!-- RAM Usage -->
-            <div class="md:col-span-4 glass-panel p-6 rounded-3xl flex flex-col justify-between min-h-[200px] group hover:border-primary/30 transition-all">
-                <div class="flex justify-between items-start">
-                    <div class="text-xs font-stats text-on-surface-variant tracking-wider uppercase">Container RAM</div>
-                    <span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">settings_input_component</span>
-                </div>
-                <div class="mt-4">
-                    <div class="text-5xl font-stats font-bold text-primary mb-2"><span id="ram-used">0</span><span class="text-xl font-normal opacity-60">GB</span></div>
-                    <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden">
-                        <div id="ram-bar" class="h-full bg-gradient-to-r from-primary to-secondary-container w-0 transition-all duration-500 shadow-[0_0_10px_rgba(0,240,255,0.5)]"></div>
-                    </div>
-                </div>
-                <div class="mt-6 text-[10px] font-stats text-on-surface-variant/40 flex justify-between uppercase">
-                    <span id="ram-total">Total: --</span>
-                    <span id="ram-percent">0% Utilized</span>
-                </div>
-            </div>
-
-            <!-- Network Throughput -->
-            <div class="md:col-span-4 glass-panel p-6 rounded-3xl min-h-[200px] group hover:border-primary/30 transition-all">
-                <div class="flex justify-between items-start mb-6">
-                    <div class="text-xs font-stats text-on-surface-variant tracking-wider uppercase">Container Net</div>
-                    <span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">swap_vert</span>
-                </div>
-                <div class="space-y-6">
-                    <div class="flex items-end justify-between">
-                        <div class="flex flex-col">
-                            <span class="text-[10px] font-stats text-on-surface-variant/60 uppercase">Incoming</span>
-                            <span id="net-recv" class="text-2xl font-stats font-bold text-primary">0.0 MB</span>
-                        </div>
-                        <div class="flex items-end gap-1 h-8">
-                            <div class="w-1 bg-primary/20 h-[40%] rounded-t-sm animate-pulse"></div>
-                            <div class="w-1 bg-primary/40 h-[60%] rounded-t-sm animate-pulse"></div>
-                            <div class="w-1 bg-primary/60 h-[80%] rounded-t-sm animate-pulse"></div>
-                            <div class="w-1 bg-primary h-full rounded-t-sm animate-pulse"></div>
-                        </div>
-                    </div>
-                    <div class="flex items-end justify-between">
-                        <div class="flex flex-col">
-                            <span class="text-[10px] font-stats text-on-surface-variant/60 uppercase">Outgoing</span>
-                            <span id="net-sent" class="text-2xl font-stats font-bold text-on-surface-variant">0.0 MB</span>
-                        </div>
-                        <div class="flex items-end gap-1 h-8">
-                            <div class="w-1 bg-white/10 h-[30%] rounded-t-sm"></div>
-                            <div class="w-1 bg-white/20 h-[40%] rounded-t-sm"></div>
-                            <div class="w-1 bg-white/30 h-[20%] rounded-t-sm"></div>
-                            <div class="w-1 bg-white/40 h-[35%] rounded-t-sm"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Proxy Matrix -->
-            <div class="md:col-span-8 glass-panel rounded-3xl overflow-hidden relative border-t-4 border-primary">
-                <div class="p-6 border-b border-white/5 flex justify-between items-center bg-white/5">
-                    <div class="flex items-center gap-3">
-                        <span class="material-symbols-outlined text-primary">hub</span>
-                        <h3 class="text-xs font-stats font-bold uppercase tracking-widest text-on-surface">Proxy Rotation Matrix</h3>
-                    </div>
-                </div>
-                <div class="p-0 overflow-x-auto relative z-10">
-                    <table class="w-full text-left font-stats text-xs">
-                        <thead>
-                            <tr class="text-on-surface-variant/40 border-b border-white/5">
-                                <th class="px-6 py-4 font-normal">PROXY ADDRESS</th>
-                                <th class="px-6 py-4 font-normal">STATUS</th>
-                                <th class="px-6 py-4 font-normal">REGION</th>
-                            </tr>
-                        </thead>
-                        <tbody id="proxy-list" class="divide-y divide-white/5">
-                            <!-- Dynamic rows -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="md:col-span-4 glass-panel p-6 rounded-3xl">
-                <h3 class="text-xs font-stats font-bold uppercase tracking-widest text-on-surface mb-8">Overrides</h3>
-                <div class="space-y-6">
-                    <div class="flex items-center justify-between group cursor-pointer">
-                        <div>
-                            <div class="text-on-surface font-medium text-sm group-hover:text-primary transition-colors">Auto-Global Failover</div>
-                            <div class="text-[10px] text-on-//surface-variant/60">Dynamic region switching</div>
-                        </div>
-                        <div class="w-10 h-5 rounded-full bg-primary p-1 transition-all relative flex items-center">
-                            <div class="w-3 h-3 rounded-full bg-on-background absolute right-1"></div>
-                        </div>
-                    </div>
-                    <div class="flex items-center justify-between group cursor-pointer">
-                        <div>
-                            <div class="text-on-surface font-medium text-sm group-hover:text-primary transition-colors">API Access</div>
-                            <div class="text-[10px] text-on-surface-variant/60">Remote command execution</div>
-                        </div>
-                        <div class="w-10 h-5 rounded-full bg-white/10 p-1 transition-all relative flex items-center">
-                            <div class="w-3 h-3 rounded-full bg-on-background absolute left-1"></div>
-                        </div>
-                    </div>
-                </div>
-                <button class="w-full mt-10 py-3 border border-primary/30 text-primary font-stats text-xs rounded-xl hover:bg-primary/10 transition-all active:scale-95">
-                    PURGE SESSION CACHE
-                </button>
-            </div>
-        </div>
-    </div>
+<aside class="fixed left-0 top-0 h-full pt-20 flex flex-col bg-surfaceContainerLowest/80 backdrop-blur-xl border-r border-white/10 w-64 hidden lg:flex">
+<div class="p-6 flex items-center gap-3"><div class="w-9 h-9 rounded-lg bg-primaryContainer/20 flex items-center justify-center"><span class="material-symbols-outlined text-primary" style="font-variation-settings:'FILL' 1">terminal</span></div><div><div class="text-xs text-primary font-mono">NODE_01</div><div class="text-[10px] text-onSurfaceVariant uppercase">Online</div></div></div>
+<nav class="flex-1 px-4 py-6 space-y-2"><a class="flex items-center gap-4 px-4 py-3 rounded-lg text-onSurfaceVariant hover:bg-surfaceVariant/30" href="/"><span class="material-symbols-outlined">dashboard</span>Home</a><a class="flex items-center gap-4 px-4 py-3 rounded-lg text-onSurfaceVariant hover:bg-surfaceVariant/30" href="/transfers"><span class="material-symbols-outlined">download</span>Transfers</a><a class="flex items-center gap-4 px-4 py-3 rounded-lg text-onSurfaceVariant hover:bg-surfaceVariant/30" href="/storage"><span class="material-symbols-outlined">database</span>Storage</a><a class="flex items-center gap-4 px-4 py-3 rounded-lg bg-primaryContainer/20 text-primary border-r-4 border-primary" href="/system"><span class="material-symbols-outlined">settings</span>System</a></nav>
+<div class="p-4"><button onclick="logout()" class="w-full py-3 bg-primaryContainer text-onPrimaryContainer font-bold rounded-xl active:scale-95 transition-all flex items-center justify-center gap-2"><span class="material-symbols-outlined">logout</span>Sair</button></div>
+</aside>
+<main class="lg:pl-64 pt-24 pb-16 px-6 max-w-7xl mx-auto space-y-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="glass p-6 rounded-2xl"><h3 class="text-primary text-sm uppercase tracking-widest mb-4">Diagnostico</h3>
+<div id="diag" class="space-y-2 text-sm font-mono"></div></div>
+<div class="glass p-6 rounded-2xl"><h3 class="text-primary text-sm uppercase tracking-widest mb-4">API Token (Headless)</h3>
+<p class="text-sm text-onSurfaceVariant mb-4">Permite ou bloqueia o uso da API via X-API-Key em /api/download.</p>
+<div class="flex items-center justify-between bg-surfaceContainerLow p-4 rounded-lg"><span class="text-sm">Status da API</span>
+<button id="api-toggle" onclick="toggleApi()" class="relative w-14 h-8 rounded-full bg-surfaceVariant transition-all"><span id="api-knob" class="absolute top-1 left-1 w-6 h-6 rounded-full bg-primary transition-all"></span></button></div>
+<div id="api-key-box" class="mt-4 p-4 rounded-lg bg-surfaceContainerLowest border border-white/10"><div class="text-xs text-onSurfaceVariant uppercase mb-1">Sua API Key</div><code id="api-key" class="text-primary font-mono text-sm break-all">--</code></div>
+</div>
+</div>
+<div class="glass p-6 rounded-2xl"><h3 class="text-primary text-sm uppercase tracking-widest mb-4">Matriz de Rotacao de Proxies</h3>
+<div class="overflow-x-auto"><table class="w-full text-left text-sm"><thead class="text-[10px] text-onSurfaceVariant uppercase font-mono"><tr><th class="px-4 py-2">Node</th><th class="px-4 py-2">Regiao</th><th class="px-4 py-2">Status</th><th class="px-4 py-2">Pool</th></tr></thead>
+<tbody class="font-mono" id="proxy-tbody"><tr><td colspan="4" class="px-4 py-4 text-center text-onSurfaceVariant">Carregando...</td></tr></tbody></table></div>
+<p class="text-xs text-onSurfaceVariant mt-3">Proxies gratuitos (proxifly) com rotacao automatica e fallback sem proxy. Bloqueados sao descartados dinamicamente.</p>
+</div>
 </main>
-
-<footer class="w-full py-8 px-6 md:px-12 flex justify-between items-center bg-surface-dim border-t border-white/10 mt-auto">
-    <div class="font-stats text-primary font-bold">Sleek Media Downloader</div>
-    <div class="flex gap-6 text-on-surface-variant/60 text-xs font-stats">
-        <a class="hover:text-primary transition-colors" href="#">API Docs</a>
-        <a class="hover:text-primary transition-colors" href="#">Status</a>
-        <a class="hover:text-primary transition-colors" href="#">Support</a>
-    </div>
-    <div class="text-xs text-on-surface-variant/40 font-stats">© 2026 Sleek Media. v3.0.0-stable</div>
-</footer>
-
 <script>
-    async function updateStats() {
-        try {
-            const s = await fetch('/api/system/stats');
-            const sd = await s.json();
-            
-            document.getElementById('cpu-percent').textContent = sd.cpu.percent;
-            document.getElementById('cpu-bar').style.width = sd.cpu.percent + '%';
-            document.getElementById('cpu-cores').textContent = 'Cores: ' + sd.cpu.cores;
-            document.getElementById('cpu-temp').textContent = 'Temp: ' + (sd.temp || '--') + '°C';
-
-            document.getElementById('ram-used').textContent = sd.memory.used_gb;
-            document.getElementById('ram-bar').style.width = sd.memory.percent + '%';
-            document.getElementById('ram-total').textContent = 'Total: ' + sd.memory.total_gb + 'GB';
-            document.getElementById('ram-percent').textContent = sd.memory.percent + '% Utilized';
-        } catch(e) { console.error('Stats error:', e); }
-    }
-
-    async function updateNetwork() {
-        try {
-            const n = await fetch('/api/system/stats');
-            const nd = await n.json();
-            document.getElementById('net-sent').textContent = nd.network.sent_mb + ' MB';
-            document.getElementById('net-recv').textContent = nd.network.recv_mb + ' MB';
-        } catch(e) { console.error('Net error:', e); }
-    }
-
-    async function updateProxies() {
-        try {
-            const p = await fetch('/api/proxies');
-            const pd = await p.json();
-            const list = document.getElementById('proxy-list');
-            list.innerHTML = '';
-            
-            const allProxies = [...pd.br_pool, ...pd.global_pool];
-            allProxies.forEach((proxy, i) => {
-                const row = document.createElement('tr');
-                row.className = "hover:bg-white/5 transition-colors";
-                row.innerHTML = `
-                    <td class="px-6 py-4 font-mono text-primary">${proxy}</td>
-                    <td class="px-6 py-4"><span class="px-2 py-0.5 rounded-full bg-tertiary-container/10 text-tertiary-container text-[10px] font-bold uppercase">Operational</span></td>
-                    <td class="px-6 py-4 text-on-surface-variant">${i < pd.br_count ? 'Brazil' : 'Global'}</td>
-                `;
-                list.appendChild(row);
-            });
-        } catch(e) { console.error('Proxy error:', e); }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        updateStats();
-        updateNetwork();
-        updateProxies();
-        setInterval(updateStats, 5000);
-        setInterval(updateNetwork, 5000);
-        setInterval(updateProxies, 60000);
-    });
+function logout(){document.cookie='auth_session=; expires=Thu,01 Jan 1970 00:00:00 UTC; path=/;';location.href='/login';}
+async function loadDiag(){try{const r=await fetch('/api/stats',{credentials:'include'});const d=await r.json();const c=d.current||{};
+document.getElementById('diag').innerHTML=
+'<div class="flex justify-between"><span class="text-onSurfaceVariant">CPU</span><span class="text-primary">'+(c.cpu||'--')+'%</span></div>'+
+'<div class="flex justify-between"><span class="text-onSurfaceVariant">RAM</span><span class="text-primaryContainer">'+((c.ram_used_mb||0)/1024).toFixed(1)+' / '+((c.ram_total_mb||0)/1024).toFixed(1)+' GB</span></div>'+
+'<div class="flex justify-between"><span class="text-onSurfaceVariant">Rede RX</span><span class="text-tertiaryContainer">'+(c.net_recv_mbps||0)+' MB</span></div>'+
+'<div class="flex justify-between"><span class="text-onSurfaceVariant">Rede TX</span><span class="text-tertiaryContainer">'+(c.net_sent_mbps||0)+' MB</span></div>'+
+'<div class="flex justify-between"><span class="text-onSurfaceVariant">Snapshots (30d)</span><span class="text-primary">'+(d.count||0)+'</span></div>';
+}catch(e){}}
+async function loadProxies(){try{const r=await fetch('/api/proxies',{credentials:'include'});const d=await r.json();
+const nodes=[['BR-SAO-01','Sao Paulo',d.br_count>0?'OK':'VAZIO','BR '+d.br_count],['US-VA-09','Virginia',d.global_count>0?'OK':'VAZIO','GLOBAL '+d.global_count],['EU-FRA-02','Frankfurt',d.global_count>0?'OK':'VAZIO','GLOBAL '+d.global_count]];
+document.getElementById('proxy-tbody').innerHTML=nodes.map(n=>`<tr class="border-t border-white/5"><td class="px-4 py-2 text-onSurface">${n[0]}</td><td class="px-4 py-2 text-onSurfaceVariant">${n[1]}</td><td class="px-4 py-2"><span class="${n[2]==='OK'?'text-tertiaryContainer':'text-error'}">${n[2]==='OK'?'● ATIVO':'○ OFF'}</span></td><td class="px-4 py-2 text-onSurfaceVariant">${n[3]}</td></tr>`).join('');
+}catch(e){}}
+async function loadApi(){try{const r=await fetch('/api/config/api',{credentials:'include'});const d=await r.json();setToggle(d.enabled);document.getElementById('api-key').textContent=API_KEY_PLACEHOLDER();}catch(e){}}
+function API_KEY_PLACEHOLDER(){return (window.STITCH_API_KEY?window.STITCH_API_KEY:'KEY')===''? 'KEY' : 'X-API-Key header';}
+function setToggle(on){const k=document.getElementById('api-knob');const b=document.getElementById('api-toggle');
+if(on){k.className='absolute top-1 left-7 w-6 h-6 rounded-full bg-primary transition-all';b.className='relative w-14 h-8 rounded-full bg-primaryContainer transition-all';}
+else{k.className='absolute top-1 left-1 w-6 h-6 rounded-full bg-onSurfaceVariant transition-all';b.className='relative w-14 h-8 rounded-full bg-surfaceVariant transition-all';}}
+async function toggleApi(){const cur=document.getElementById('api-knob').style.left==='28px';
+const nv=!cur;const fd=new FormData();fd.append('enabled',nv);
+try{await fetch('/api/config/api',{method:'POST',body:fd,credentials:'include'});setToggle(nv);}catch(e){}}
+loadDiag();loadProxies();loadApi();setInterval(loadDiag,5000);setInterval(loadProxies,15000);
 </script>
 </body></html>

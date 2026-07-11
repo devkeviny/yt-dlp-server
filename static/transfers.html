@@ -1,189 +1,37 @@
 <!DOCTYPE html>
 <html class="dark" lang="pt-BR"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Sleek Media Downloader | Transferências</title>
+<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MEDIA_CORE_V1 | Transfers</title>
+<meta name="stitch-api-key" content="STITCH_API_KEY_PLACEHOLDER"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<style>
-    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-    .glass-panel { background: rgba(19, 19, 19, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
-    .neon-glow { box-shadow: 0 0 20px rgba(0, 240, 255, 0.15); }
-    .progress-pulse { background: linear-gradient(90deg, #00f0ff, #7000ff); background-size: 200% 200%; animation: pulse-gradient 2s ease infinite; }
-    @keyframes pulse-gradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-</style>
-<script id="tailwind-config">
-    tailwind.config = {
-        darkMode: "class",
-        theme: {
-            extend: {
-                "colors": {
-                    "surface": "#131313", "background": "#131313", "on-surface": "#e5e2e1",
-                    "primary": "#00f0ff", "primary-container": "#00f0ff", "on-primary": "#00363a",
-                    "secondary": "#d1bcff", "secondary-container": "#7000ff", "on-secondary": "#3c0090",
-                    "tertiary": "#dcffe2", "tertiary-container": "#00f990", "on-tertiary": "#00391d",
-                    "surface-container": "#201f1f", "surface-container-high": "#2a2a2a",
-                    "surface-variant": "#353534", "on-surface-variant": "#b9cacb",
-                    "outline": "#849495"
-                },
-                "borderRadius": { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem" },
-                "fontFamily": { "headline": ["Inter"], "body": ["Inter"], "stats": ["JetBrains Mono"] }
-            },
-        },
-    }
-</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tw-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{surface:"#131313",surfaceContainerLowest:"#0e0e0e",surfaceVariant:"#353534",surfaceContainerLow:"#1c1b1b",onSurface:"#e5e2e1",onSurfaceVariant:"#b9cacb",primary:"#dbfcff",primaryContainer:"#00f0ff",onPrimaryContainer:"#00363a",secondaryContainer:"#7000ff",tertiaryContainer:"#00f990",outlineVariant:"#3b494b",error:"#ffb4ab"},fontFamily:{body:["Inter"],mono:["JetBrains Mono"]}}}};</script>
+<style>.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400;vertical-align:middle}body{background:#131313;color:#e5e2e1;font-family:Inter,sans-serif;margin:0}.glass{background:rgba(19,19,19,.6);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.08)}.custom-scroll::-webkit-scrollbar{width:6px}.custom-scroll::-webkit-scrollbar-thumb{background:#3b494b;border-radius:3px}</style>
 </head>
-<body class="bg-background text-on-surface font-body min-h-screen selection:bg-primary selection:text-on-primary">
-<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-20 bg-surface/60 backdrop-blur-md border-b border-white/10 shadow-[0_0_20px_rgba(0,240,255,0.05)]">
-    <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow-[0_0_12px_rgba(0,240,255,0.4)]">
-            <span class="material-symbols-outlined text-on-primary text-sm">history</span>
-        </div>
-        <span class="text-lg font-bold text-primary tracking-tighter">Sleek Media Downloader</span>
-    </div>
-    <nav class="hidden md:flex items-center gap-6">
-        <a class="text-on-surface-variant hover:text-primary transition-all" href="/dashboard">Dashboard</a>
-        <a class="text-primary border-b-2 border-primary pb-1 transition-all" href="/transfers">Transferências</a>
-        <a class="text-on-surface-variant hover:text-primary transition-all" href="/storage">Armazenamento</a>
-        <a class="text-on-//surface-variant hover:text-primary transition-all" href="/system">Sistema</a>
-    </nav>
-    <a href="/" onclick="document.cookie='session=;max-age=0'" class="text-xs text-on-surface-variant hover:text-error transition-colors">Sair ✕</a>
+<body class="min-h-screen">
+<script>(async function(){try{const me=await fetch('/api/me',{credentials:'include'});if(!me.ok)location.href='/login';}catch(e){location.href='/login';}})();</script>
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 lg:px-16 h-20 bg-surface/60 backdrop-blur-md border-b border-white/10">
+<div class="font-bold text-primary tracking-tighter text-xl">MEDIA_CORE_V1</div>
+<nav class="hidden md:flex gap-8 text-sm"><a class="text-onSurfaceVariant hover:text-primary cursor-pointer" href="/">Dashboard</a><a class="text-primary border-b-2 border-primary pb-1" href="/transfers">Transfers</a><a class="text-onSurfaceVariant hover:text-primary cursor-pointer" href="/storage">Storage</a><a class="text-onSurfaceVariant hover:text-primary cursor-pointer" href="/system">System</a></nav>
+<button onclick="logout()" class="material-symbols-outlined text-onSurfaceVariant hover:text-primary">logout</button>
 </header>
-
-<main class="lg:pl-64 pt-24 pb-20 px-6 md:px-12 min-h-screen">
-    <div class="max-w-6xl mx-auto space-y-12">
-        <header class="flex flex-col md:flex-row justify-between items-end mb-10 gap-6">
-            <div>
-                <h1 class="text-5xl font-bold tracking-tighter text-on-surface">Transferências</h1>
-                <p class="text-on-surface-variant font-body">Monitoramento de ingestão de dados e histórico de processamento.</p>
-            </div>
-            <button id="clear-history" class="px-6 py-3 rounded-xl border border-error/30 text-error text-xs font-stats hover:bg-error/10 transition-all active:scale-95">
-                LIMPAR HISTÓRICO
-            </button>
-        </header>
-
-        <section class="space-y-8">
-            <div class="flex items-center gap-3 text-primary mb-4">
-                <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-                <span class="text-xs font-stats tracking-widest uppercase">Fila Ativa</span>
-            </div>
-            
-            <div class="grid grid-cols-1 gap-4" id="active-queue">
-                <div class="text-center py-12 glass-panel rounded-3xl text-on-surface-variant/40 font-stats text-sm">
-                    Nenhum download ativo no momento.
-                </div>
-            </div>
-
-            <div class="pt-12">
-                <h2 class="text-xs font-stats text-on-surface-variant tracking-widest uppercase mb-6">Arquivo de Log</h2>
-                <div class="glass-panel rounded-3xl overflow-hidden border border-white/5">
-                    <table class="w-full text-left font-stats text-xs">
-                        <thead>
-                            <tr class="bg-white/5 text-on-surface-variant/60 border-b border-white/5">
-                                <th class="px-6 py-4 font-normal">RECURSO</th>
-                                <th class="px-6 py-4 font-normal">FORMATO</th>
-                                <th class="px-6 py-4 font-normal">TAMANHO</th>
-                                <th class="px-6 py-4 font-normal">STATUS</th>
-                                <th class="px-6 py-4 font-normal text-right">DATA</th>
-                            </tr>
-                        </thead>
-                        <tbody id="history-table" class="divide-y divide-white/5">
-                            <!-- History rows injected here -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-    </div>
+<aside class="fixed left-0 top-0 h-full pt-20 flex flex-col bg-surfaceContainerLowest/80 backdrop-blur-xl border-r border-white/10 w-64 hidden lg:flex">
+<div class="p-6 flex items-center gap-3"><div class="w-9 h-9 rounded-lg bg-primaryContainer/20 flex items-center justify-center"><span class="material-symbols-outlined text-primary" style="font-variation-settings:'FILL' 1">terminal</span></div><div><div class="text-xs text-primary font-mono">NODE_01</div><div class="text-[10px] text-onSurfaceVariant uppercase">Online</div></div></div>
+<nav class="flex-1 px-4 py-6 space-y-2"><a class="flex items-center gap-4 px-4 py-3 rounded-lg text-onSurfaceVariant hover:bg-surfaceVariant/30" href="/"><span class="material-symbols-outlined">dashboard</span>Home</a><a class="flex items-center gap-4 px-4 py-3 rounded-lg bg-primaryContainer/20 text-primary border-r-4 border-primary" href="/transfers"><span class="material-symbols-outlined">download</span>Transfers</a><a class="flex items-center gap-4 px-4 py-3 rounded-lg text-onSurfaceVariant hover:bg-surfaceVariant/30" href="/storage"><span class="material-symbols-outlined">database</span>Storage</a><a class="flex items-center gap-4 px-4 py-3 rounded-lg text-onSurfaceVariant hover:bg-surfaceVariant/30" href="/system"><span class="material-symbols-outlined">settings</span>System</a></nav>
+<div class="p-4"><button onclick="logout()" class="w-full py-3 bg-primaryContainer text-onPrimaryContainer font-bold rounded-xl active:scale-95 transition-all flex items-center justify-center gap-2"><span class="material-symbols-outlined">logout</span>Sair</button></div>
+</aside>
+<main class="lg:pl-64 pt-24 pb-16 px-6 max-w-7xl mx-auto space-y-6">
+<div class="glass p-6 rounded-2xl"><div class="flex justify-between items-center mb-4"><h3 class="text-primary text-sm uppercase tracking-widest">Fila Ativa</h3><button onclick="refresh()" class="material-symbols-outlined text-onSurfaceVariant hover:text-primary">refresh</button></div>
+<div id="active" class="space-y-3"><div class="text-center text-onSurfaceVariant py-8">Nenhum download ativo</div></div></div>
+<div class="glass rounded-2xl overflow-hidden"><div class="px-6 py-4 border-b border-white/10 flex justify-between items-center"><h3 class="text-onSurface text-sm uppercase tracking-widest">Archive (Histórico • máx 100)</h3><span id="cnt" class="text-xs text-onSurfaceVariant font-mono"></span></div>
+<div class="max-h-[500px] overflow-y-auto custom-scroll"><table class="w-full text-left"><thead class="bg-surfaceContainerLow sticky top-0"><tr class="text-[10px] text-onSurfaceVariant uppercase font-mono"><th class="px-4 py-3">Status</th><th class="px-4 py-3">Título</th><th class="px-4 py-3">Fmt</th><th class="px-4 py-3">Tam</th><th class="px-4 py-3">Tempo</th><th class="px-4 py-3">Plat</th><th class="px-4 py-3">Quando</th></tr></thead><tbody id="tb" class="divide-y divide-white/5 text-sm"></tbody></table></div></div>
 </main>
-
-<footer class="w-full py-8 px-6 md:px-12 flex justify-between items-center bg-surface-dim border-t border-white/10 mt-auto">
-    <div class="font-stats text-primary font-bold">Sleek Media Downloader</div>
-    <div class="flex gap-6 text-on-surface-variant/60 text-xs font-stats">
-        <a class="hover:text-primary transition-colors" href="#">Documentação API</a>
-        <a class="hover:text-primary transition-colors" href="#">Status do Sistema</a>
-        <a class="hover:text-primary transition-colors" href="#">Suporte</a>
-    </div>
-    <div class="text-xs text-on-surface-variant/40 font-stats">© 2026 Sleek Media. v3.0.0-stable</div>
-</footer>
-
 <script>
-    async function loadHistory() {
-        try {
-            const r = await fetch('/api/history');
-            const data = await r.json();
-            const tbody = document.getElementById('history-table');
-            
-            if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-12 text-on-surface-variant/40">Nenhum registro encontrado no histórico.</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = data.map(h => `
-                <tr class="hover:bg-white/5 transition-colors group">
-                    <td class="px-6 py-4 font-body text-on-surface truncate max-w-xs">${h.title || h.url || 'Desconhecido'}</td>
-                    <td class="px-6 py-4"><span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface-variant text-[10px] uppercase">${h.format || 'mp4'}</span></td>
-                    <td class="px-6 py-4 text-on-surface-variant">${h.size ? (h.size/1048576).toFixed(1) + ' MB' : 'N/A'}</td>
-                    <td class="px-6 py-4">
-                        <span class="px-2 py-0.5 rounded-full bg-tertiary-container/10 text-tertiary-container text-[10px] uppercase font-bold">
-                            ${h.status || 'concluído'}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 text-right text-on-surface-variant/40 text-[10px]">
-                        ${h.time ? new Date(h.time).toLocaleString('pt-BR') : 'N/A'}
-                    </td>
-                </tr>
-            `).join('');
-        } catch(e) { console.error('History error:', e); }
-    }
-
-    document.getElementById('clear-history').onclick = async () => {
-        if (!confirm('Deseja limpar todo o histórico de downloads?')) return;
-        try {
-            const r = await fetch('/api/history', { method: 'DELETE' });
-            if (r.ok) loadHistory();
-        } catch(e) { alert('Erro ao limpar histórico'); }
-    };
-
-    async function updateQueue() {
-        try {
-            const r = await fetch('/api/queue');
-            const data = await r.json();
-            const queueDiv = document.getElementById('active-queue');
-            
-            if (data.active.length === 0) {
-                queueDiv.innerHTML = '<div class="text-center py-12 glass-panel rounded-3xl text-on-surface-variant/40 font-stats text-sm">Nenhum download ativo no momento.</div>';
-                return;
-            }
-
-            queueDiv.innerHTML = data.active.map(item => `
-                <div class="glass-panel p-6 rounded-3xl flex flex-col md:flex-row items-center gap-6 border-l-4 border-primary transition-all hover:border-primary/50">
-                    <div class="w-full md:w-48 aspect-video rounded-2xl overflow-hidden relative border border-white/5">
-                        <img src="${item.thumbnail || ''}" class="w-full h-full object-cover"/>
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-                    </div>
-                    <div class="flex-1 w-full space-y-3">
-                        <div class="flex justify-between items-start">
-                            <h3 class="font-stats text-on-surface truncate max-w-xs">${item.title}</h3>
-                            <span class="text-primary font-stats text-sm">${item.progress}%</span>
-                        </div>
-                        <div class="w-full h-2 bg-white/5 rounded-full overflow-hidden">
-                            <div class="h-full progress-pulse" style="width: ${item.progress}%"></div>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <button class="p-2 rounded-full hover:bg-white/5 text-on-surface-variant transition-colors"><span class="material-symbols-outlined">pause</span></button>
-                        <button class="p-2 rounded-full hover:bg-error/10 text-error transition-colors"><span class="material-symbols-outlined">close</span></button>
-                    </div>
-                </div>
-            `).join('');
-        } catch(e) { console.error('Queue error:', e); }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        loadHistory();
-        updateQueue();
-        setInterval(updateQueue, 5000);
-    });
+function logout(){document.cookie='auth_session=; expires=Thu,01 Jan 1970 00:00:00 UTC; path=/;';location.href='/login';}
+function fmtSize(b){if(!b)return'--';const u=['B','KB','MB','GB'];let v=b,i=0;while(v>=1024&&i<3){v/=1024;i++;}return v.toFixed(1)+' '+u[i];}
+function fmtAgo(ts){if(!ts)return'--';const d=new Date(ts*1000),n=Date.now(),x=Math.floor((n-d)/1000);if(x<60)return x+'s';if(x<3600)return Math.floor(x/60)+'m';if(x<86400)return Math.floor(x/3600)+'h';return d.toLocaleDateString('pt-BR');}
+function chip(s){s=(s||'').toLowerCase();if(s==='completed')return'<span class="text-tertiaryContainer text-xs font-mono">✓ OK</span>';if(s==='failed')return'<span class="text-error text-xs font-mono">✗ FALHOU</span>';return'<span class="text-primary text-xs font-mono">'+(s||'?').toUpperCase()+'</span>';}
+async function refresh(){try{const r=await fetch('/api/history',{credentials:'include'});const items=await r.json();document.getElementById('cnt').textContent=items.length+' itens';const tb=document.getElementById('tb');if(!items.length){tb.innerHTML='<tr><td colspan="7" class="px-4 py-8 text-center text-onSurfaceVariant">Vazio</td></tr>';return;}tb.innerHTML=items.map(i=>`<tr class="hover:bg-white/5"><td class="px-4 py-3">${chip(i.status)}</td><td class="px-4 py-3 max-w-[220px] truncate">${i.title||i.url||'--'}</td><td class="px-4 py-3 font-mono text-onSurfaceVariant">${(i.format||'--').toUpperCase()}</td><td class="px-4 py-3 font-mono text-onSurfaceVariant">${fmtSize(i.size)}</td><td class="px-4 py-3 font-mono text-onSurfaceVariant">${i.duration_s?i.duration_s+'s':'--'}</td><td class="px-4 py-3 font-mono text-onSurfaceVariant">${i.platform||'--'}</td><td class="px-4 py-3 font-mono text-onSurfaceVariant">${fmtAgo(i.timestamp)}</td></tr>`).join('');}catch(e){}}
+refresh();setInterval(refresh,8000);
 </script>
 </body></html>

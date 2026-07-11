@@ -4,7 +4,7 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
-RUN mkdir -p /downloads /data && chmod 777 /downloads /data
+RUN mkdir -p /data && chmod 777 /data
 EXPOSE 8000
-ENV BUILD_REF=20260709v2
-CMD ["python", "main.py"]
+ENV BUILD_REF=20260711v3
+CMD ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--timeout-keep-alive", "300"]
