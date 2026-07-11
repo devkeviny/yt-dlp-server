@@ -250,6 +250,12 @@ async def root(request: Request):
         return RedirectResponse(url='/login')
     return _serve_page('dashboard.html')
 
+@app.get('/dashboard')
+async def dashboard_page(request: Request):
+    if not is_authenticated(request):
+        return RedirectResponse(url='/login')
+    return _serve_page('dashboard.html')
+
 @app.get('/login')
 async def login_page():
     return _serve_page('login.html')
