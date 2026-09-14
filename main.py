@@ -64,11 +64,20 @@ class ProxyManager:
 
     def update_lists(self):
         try:
-            self.br_all = [p['proxy'] for p in requests.get('https://raw.githubusercontent.com/proxifly/free-proxy-list/refs/heads/main/proxies/countries/BR/data.json', timeout=10).json() if 'proxy' in p]
-            self.global_all = [p['proxy'] for p in requests.get('https://raw.githubusercontent.com/proxifly/free-proxy-list/refs/heads/main/proxies/all/data.json', timeout=10).json() if 'proxy' in p]
-        except Exception: pass
+            br_resp = requests.get('https://raw.githubusercontent.com/proxifly/free-proxy-list/refs/heads/main/proxies/countries/BR/data.json', timeout=15)
+            br_resp.raise_for_status()
+            self.br_all = [p['proxy'] for p in br_resp.json() if isinstance(p, dict) and 'proxy' in p]
+        except Exception as e:
+            print(f"[ProxyManager] BR list fail: {e}")
+        try:
+            gl_resp = requests.get('https://raw.githubusercontent.com/proxifly/free-proxy-list/refs/heads/main/proxies/all/data.json', timeout=15)
+            gl_resp.raise_for_status()
+            self.global_all = [p['proxy'] for p in gl_resp.json() if isinstance(p, dict) and 'proxy' in p]
+        except Exception as e:
+            print(f"[ProxyManager] GLOBAL list fail: {e}")
 
     def get_proxy(self, force_global=False):
+        # Fallback: PROXY_URL env > BR pool > global pool > None
         if PROXY_URL: return PROXY_URL
         pool = self.global_all if force_global else (self.br_all if self.br_all else self.global_all)
         if not pool: return None
