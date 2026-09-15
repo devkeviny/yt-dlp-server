@@ -1,4 +1,4 @@
-import os, json, time, psutil, asyncio, subprocess, logging, random, requests, traceback, sys
+import os, json, time, psutil, asyncio, subprocess, logging, random, requests, traceback, sys, threading
 from datetime import datetime, timezone
 from fastapi import FastAPI, HTTPException, Request, Form
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, StreamingResponse
@@ -521,8 +521,11 @@ async def get_stats(request: Request):
 @app.get('/api/proxies')
 async def get_proxies(request: Request):
     if not is_authenticated(request): raise HTTPException(status_code=401)
-    return JSONResponse(content={"blocked": list(proxy_manager.blocked_proxies),
-        "br_count": len(proxy_manager.br_all), "global_count": len(proxy_manager.global_all)})
+    return JSONResponse(content={"active": smart_tester.load_active(),
+        "active_count": len(smart_tester.load_active()),
+        "blocked": list(proxy_manager.blocked_proxies),
+        "br_count": len(proxy_manager.br_all), "global_count": len(proxy_manager.global_all)}
+    )
 
 @app.get('/api/info')
 async def get_info(url: str):
