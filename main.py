@@ -343,7 +343,16 @@ threading.Thread(target=_stats_collector, daemon=True).start()
 # Auth helpers
 # ============================================================
 def is_authenticated(request: Request):
-    return request.cookies.get('auth_session') == 'authenticated'
+    # Check cookie first (web UI)
+    if request.cookies.get('auth_session') == 'authenticated':
+        return True
+    # Check Authorization header (API access)
+    auth_header = request.headers.get('Authorization', '')
+    if auth_header.startswith('Bearer '):
+        token = auth_header[7:]  # Remove 'Bearer '
+        if token == API_KEY:
+            return True
+    return False
 
 def api_token_enabled():
     try:

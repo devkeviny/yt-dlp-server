@@ -1,0 +1,10 @@
+{
+  "auth_finding": "API key authentication via x-api-key header matching API_KEY env var; /api/download also validates api_token_enabled() from /data/api_enabled.json; missing/invalid key returns 403.",
+  "endpoint_contract": "GET /api/download?url=<url>&fmt=mp4|mp3&q=<int> requires x-api-key header (or api_key query param) matching API_KEY env; returns HTTP 200 with streaming media + Content-Disposition header when authorized; returns 403 when API token disabled or API key invalid/missing.",
+  "verification": [
+    "curl -s -o /dev/null -w \"%{http_code}\" -H \"x-api-key: ***\" \"https://localhost/api/download?url=https://www.youtube.com/watch?v=dQw4w9WgXcQ&fmt=mp4\"",
+    "curl -s -o /dev/null -w \"%{http_code}\" -H \"x-api-key: wrong\" \"https://localhost/api/download?url=https://www.youtube.com/watch?v=dQw4w9WgXcQ&fmt=mp4\"",
+    "curl -s -o /dev/null -w \"%{http_code}\" \"https://localhost/api/download?url=https://www.youtube.com/watch?v=dQw4w9WgXcQ&fmt=mp4\"",
+    "cat /data/api_enabled.json 2>/dev/null || echo 'file not found'; cat /data/proxies_active.json 2>/dev/null || echo 'file not found'"
+  ]
+}
