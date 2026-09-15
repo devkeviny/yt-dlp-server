@@ -1,4 +1,4 @@
-import os, json, time, psutil, asyncio, subprocess, logging, random, requests, traceback
+import os, json, time, psutil, asyncio, subprocess, logging, random, requests, traceback, sys
 from datetime import datetime, timezone
 from fastapi import FastAPI, HTTPException, Request, Form
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, StreamingResponse
@@ -100,6 +100,151 @@ class ProxyManager:
             self._save_blocked()
 
 proxy_manager = ProxyManager()
+
+
+# ============================================================
+# Smart Proxy Tester - background loop to test proxies against YouTube
+# ============================================================
+class SmartProxyTester:
+    """
+    Testa proxies BR contra YouTube de forma inteligente:
+    - Testa TODOS os proxies BR periodicamente
+    - Mantém cache de proxies ativos (/data/proxies_active.json)
+    - Re-testa proxies que estavam ativos mas falharam
+    - Prioriza proxies com melhor histórico
+    - Atualiza lista a cada 30 min (configurável)
+    """
+    def __init__(self, proxy_manager, test_interval=1800, max_active=20):
+        self.pm = proxy_manager
+        self.test_interval = test_interval  # 30 min
+        self.max_active = max_active
+        self.active_file = os.path.join(DATA_DIR, 'proxies_active.json')
+        self.test_url = "https://www.youtube.com/"
+        self.headers = {
+            "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Mobile Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Language": "pt-BR,pt;q=0.9,en;q=0.8",
+            "Connection": "keep-alive"
+        }
+        self._running = False
+        self._thread = None
+
+    def test_proxy(self, proxy_url, timeout=8):
+        """Testa um único proxy contra YouTube. Retorna True se passa."""
+        try:
+            r = requests.get(
+                self.test_url,
+                proxies={"https": proxy_url, "http": proxy_url},
+                timeout=timeout,
+                headers=self.headers
+            )
+            text = r.text[:200].lower()
+            return r.status_code == 200 and "sign in to confirm" not in text and "captcha" not in text and "unusual traffic" not in text
+        except Exception:
+            return False
+
+    def load_active(self):
+        """Carrega lista de proxies ativos do arquivo."""
+        try:
+            with open(self.active_file) as f:
+                return json.load(f)
+        except Exception:
+            return []
+
+    def save_active(self, active_list):
+        """Salva lista de proxies ativos."""
+        try:
+            with open(self.active_file, 'w') as f:
+                json.dump(active_list, f)
+        except Exception:
+            pass
+
+    def test_all_br(self):
+        """Testa TODOS os proxies BR e atualiza cache."""
+        print("[SmartProxyTester] Iniciando teste de todos os proxies BR...")
+        self.pm.update_lists()
+        br_proxies = self.pm.br_all
+        if not br_proxies:
+            print("[SmartProxyTester] Nenhum proxy BR encontrado")
+            return
+
+        # Carregar ativos atuais para preservar histórico
+        current_active = self.load_active()
+        current_set = set(current_active)
+
+        new_active = []
+        tested = 0
+        for proxy in br_proxies:
+            # Pular se já está nos bloqueados
+            if proxy in self.pm.blocked_proxies:
+                continue
+            
+            # Testar
+            if self.test_proxy(proxy):
+                new_active.append(proxy)
+                if proxy not in current_set:
+                    print(f"[SmartProxyTester] NOVO ativo: {proxy}")
+            else:
+                # Marcar como bloqueado se falhou
+                if proxy not in self.pm.blocked_proxies:
+                    self.pm.blocked_proxies.add(proxy)
+                    self.pm._save_blocked()
+            
+            tested += 1
+            # Log de progresso a cada 50
+            if tested % 50 == 0:
+                print(f"[SmartProxyTester] Testados {tested}/{len(br_proxies)}, ativos: {len(new_active)}")
+
+        # Combinar: novos ativos + atuais que ainda funcionam (re-testar atuais)
+        # Re-testar atuais para garantir que ainda funcionam
+        still_active = []
+        for proxy in current_active:
+            if proxy in new_active:
+                still_active.append(proxy)
+            elif self.test_proxy(proxy):
+                still_active.append(proxy)
+            else:
+                # Parou de funcionar
+                if proxy not in self.pm.blocked_proxies:
+                    self.pm.blocked_proxies.add(proxy)
+                    self.pm._save_blocked()
+                print(f"[SmartProxyTester] EXPIROU: {proxy}")
+
+        # Mesclar e limitar
+        combined = list(dict.fromkeys(still_active + new_active))  # preserva ordem, remove duplicados
+        final_active = combined[:self.max_active]
+        self.save_active(final_active)
+        print(f"[SmartProxyTester] Concluído: {len(final_active)} ativos salvos (testados {tested})")
+
+    def start_background(self):
+        """Inicia thread de background para testar periodicamente."""
+        if self._running:
+            return
+        self._running = True
+        
+        def run_loop():
+            while self._running:
+                try:
+                    self.test_all_br()
+                except Exception as e:
+                    print(f"[SmartProxyTester] Erro no loop: {e}")
+                time.sleep(self.test_interval)
+        
+        self._thread = threading.Thread(target=run_loop, daemon=True)
+        self._thread.start()
+        print("[SmartProxyTester] Thread de background iniciada")
+
+    def stop_background(self):
+        """Para a thread de background."""
+        self._running = False
+        if self._thread:
+            self._thread.join(timeout=5)
+
+
+# Iniciar testador inteligente
+smart_tester = SmartProxyTester(proxy_manager, test_interval=1800, max_active=20)
+smart_tester.start_background()
+
 
 # ============================================================
 # Data manager: history (cap 100) + metrics + 30d stats
