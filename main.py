@@ -618,7 +618,8 @@ async def get_transcript(url: str):
             with yt_dlp.YoutubeDL({'proxy': px, 'quiet': True, 'no_warnings': True,
                                    'noplaylist': True, 'writesubtitles': True,
                                    'writeautomaticsub': True, 'skip_download': True,
-                                   'subtitlesformat': 'json3', 'outtmpl': '/tmp/tr_%(id)s'}) as ydl:
+                                   'subtitlesformat': 'json3', 'outtmpl': '/tmp/tr_%(id)s',
+                                   'extractor_args': 'youtube:player_client=android'}) as ydl:
                 info = ydl.extract_info(url, download=False)
                 subs = info.get('subtitles', {}) or info.get('automatic_captions', {}) or {}
                 if not subs:
