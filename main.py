@@ -77,8 +77,18 @@ class ProxyManager:
             print(f"[ProxyManager] GLOBAL list fail: {e}")
 
     def get_proxy(self, force_global=False):
-        # Fallback: PROXY_URL env > BR pool > global pool > None
+        # SEMPRE busca do github/proxifly atualizado antes de selecionar
+        self.update_lists()
         if PROXY_URL: return PROXY_URL
+        # Preferência: BR > global > direto; testa e mantém só ativos
+        try:
+            with open("/data/proxies_active.json") as f:
+                active = json.load(f)
+            if active:
+                return random.choice(active)
+        except:
+            pass
+        # Fallback: lista local (não bloqueados)
         pool = self.global_all if force_global else (self.br_all if self.br_all else self.global_all)
         if not pool: return None
         healthy = [p for p in pool if p not in self.blocked_proxies]
@@ -213,7 +223,8 @@ def _detect_platform(url):
 # ============================================================
 def _build_cmd(url, fmt, proxy, q=0):
     cmd = ['yt-dlp', url, '--quiet', '--no-warnings', '--no-playlist', '-o', '-',
-           '--retries', '3', '--fragment-retries', '3', '--socket-timeout', '30']
+           '--retries', '3', '--fragment-retries', '3', '--socket-timeout', '30',
+           '--extractor-args', 'youtube:player_client=android']
     if proxy:
         cmd += ['--proxy', proxy]
     if fmt == 'mp4':
@@ -375,7 +386,8 @@ async def get_info(url: str):
     for px in attempts:
         try:
             with yt_dlp.YoutubeDL({'proxy': px, 'quiet': True, 'no_warnings': True,
-                                   'noplaylist': True, 'format': 'best'}) as ydl:
+                                   'noplaylist': True, 'format': 'best',
+                                   'extractor_args': {'youtube': 'player_client=android'}}) as ydl:
                 info = ydl.extract_info(url, download=False)
                 if info.get('entries'): info = info['entries'][0]
                 safe = {k: info.get(k) for k in ('title', 'duration', 'thumbnail',
