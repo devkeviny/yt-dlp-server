@@ -1,0 +1,5 @@
+Kevinny, resumo direto:
+
+No Lulu Downloader, a thumb é só o LINK do YouTube (type i.ytimg.com/codigo.jpg), puxado pela API a partir do código do vídeo. A gente NÃO baixa nem salva a imagem — seu navegador que puxa quando abre o histórico, então não gasta espaço. O título vem como texto da API. A qualidade (720p, 128kbps) também salva. E o arquivo do vídeo em si NUNCA é guardado no servidor — é streaming direto pro seu celular. O JSON guarda só metadados, cap 100, girando: entra o novo, sai o mais antigo.
+
+Sobre o Obsidian: o vault tá em /tmp/obsidian-vault e vai pro GitHub. Lá dentro, o que você chama de "pastas" se chama oficialmente de "notas" e "pastas" mesmo — o Obsidian organiza por pastas (diretórios) e arquivos .md (notas). O que a gente criou tem pastas tipo 01_Inbox, 01_Projetos, 02_Sistemas, 03_Notas_Permanentes, 03_Roteiros, 04_Notas_Literatura, e uma pasta Hermes com subcategorias (Logs_Memoria, Projetos_Tecnologia, Skills_Comandos, etc). Cada arquivo .md é uma nota. O Hermes escreve nas pastas Hermes, principalmente Logs_Memoria e Projetos_Tecnologia. Tá tudo subindo pro GitHub via cron a cada minuto.

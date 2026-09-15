@@ -1,0 +1,7 @@
+Kevinny, beleza. Sobre a memória, não foi compressão não, foi limite de caracteres. Sua memória tem teto de dois mil e duzentos caracteres, e quando eu fui salvar a regra do áudio, estourou. Aí removi duas anotações velhas que não serviam mais, tipo a descrição do design antigo, pra abrir espaço. É gestão de espaço, não compactação.
+
+Essa memória é a sua memória total, persistente, vale pra todas as conversas, não é por seção. Toda vez que eu abro qualquer chat, ela é injetada. Por isso tem que ser enxuta.
+
+Sobre abrir seção nova quando termina tarefa: não precisa. O Telegram é um chat contínuo, você só continua falando aqui, eu gerencio o contexto.
+
+E as sessões não vão pro Obsidian. O Obsidian guarda notas, roteiros e projetos, o que a gente cria como conteúdo. O histórico das nossas conversas fica num banco interno meu, separado. O que sobe pro Obsidian são as notas que eu escrevo ativamente, tipo Logs_Memoria e Projetos_Tecnologia, não o log de cada mensagem sua.

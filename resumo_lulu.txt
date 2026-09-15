@@ -1,0 +1,9 @@
+Oi Kevinny, fiz tudo que você pediu no Lulu Downloader. Resumo rápido:
+
+Primeiro, o bug do download no celular. A causa era o proxy grátis — quando ele caía no meio, o stream morria e o navegador abortava. Resolvi colocando fallback sem proxy: o servidor tenta baixar direto, e só usa proxy se precisar. Também adicionei merge pra MP4 não quebrar na muxação, e agora ele não marca concluído se enviou zero bytes.
+
+Na interface, segui seu raciocínio: tirou o botão de análise separado. Agora é só colar o link que ele já busca tudo sozinho — mostra a thumb, o título e as qualidades. O MP4 e MP3 ficaram num seletor único, do jeito que os outros sites fazem. No MP4, as opções aparecem conforme o vídeo: se for 4K, você tem 4K, 1080, 720 e 480; se for 1080, tem 1080, 720 e 480. No MP3, três bitrates: 320, 192 e 128. Tem barra de progresso de conversão e o histórico mostra a thumbinho.
+
+E a marca: troquei tudo pra Lulu Downloader com o logo de gato em SVG, roxo e ciano, igual você pediu. Tá em todas as páginas, em português.
+
+Testei aqui: download de MP4 720p com 23 mega, MP3 com 3.4 mega, thumbnail salvando no histórico, e a transcrição do YouTube tá disponível incluindo português. Subi pra produção, tá no ar. Dá uma testada no seu celular pra confirmar aí do seu lado.

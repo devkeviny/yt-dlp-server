@@ -5,3 +5,4 @@ requests
 pydantic
 psutil
 python-multipart
+PySocks

@@ -98,22 +98,36 @@ class ProxyManager:
             print(f"[ProxyManager] GLOBAL list fail: {e}")
 
     def get_proxy(self, force_global=False):
-        # SEMPRE busca do github/proxifly atualizado antes de selecionar
+        # 1. Conexão Direta (prioridade máxima) — sem proxy
+        # 2. Client mobile (player_client=android) — já configurado no _build_cmd
+        # 3. Proxies ativos do arquivo interno (/data/proxies_active.json)
+        # 4. Proxies das 5 fontes fixas (testados periodicamente pelo SmartProxyTester)
+        # 5. Fallback global
         self.update_lists()
         if PROXY_URL: return PROXY_URL
-        # Preferência: BR > global > direto; testa e mantém só ativos
+        # PRIORIDADE 1: proxies ativos testados (arquivo interno)
         try:
             with open("/data/proxies_active.json") as f:
                 active = json.load(f)
-            if active:
+            if active and isinstance(active, dict) and active.get('working_proxies'):
+                return random.choice(active['working_proxies'])
+            elif active and isinstance(active, list) and len(active) > 0:
                 return random.choice(active)
-        except:
+        except Exception:
             pass
-        # Fallback: lista local (não bloqueados)
-        pool = self.global_all if force_global else (self.br_all if self.br_all else self.global_all)
-        if not pool: return None
-        healthy = [p for p in pool if p not in self.blocked_proxies]
-        return random.choice(healthy if healthy else pool)
+        # PRIORIDADE 2: proxies das 5 fontes (atualizados pelo update_lists)
+        pool = self.br_all if self.br_all else self.global_all
+        if pool:
+            healthy = [p for p in pool if p not in self.blocked_proxies]
+            if healthy:
+                return random.choice(healthy)
+        # PRIORIDADE 3: lista global
+        if self.global_all:
+            healthy = [p for p in self.global_all if p not in self.blocked_proxies]
+            if healthy:
+                return random.choice(healthy)
+        # PRIORIDADE 4: Nenhum proxy (conexão direta — já configurada no _build_cmd)
+        return None
 
     def mark_blocked(self, proxy):
         if proxy:
