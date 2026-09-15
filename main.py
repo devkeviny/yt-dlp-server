@@ -1,4 +1,4 @@
-import os, json, time, psutil, asyncio, subprocess, logging, random, requests, traceback, sys, threading
+import os, json, time, psutil, asyncio, subprocess, logging, random, requests, traceback, sys, threading, re
 from datetime import datetime, timezone
 from fastapi import FastAPI, HTTPException, Request, Form
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, StreamingResponse
@@ -63,12 +63,33 @@ class ProxyManager:
         except Exception: pass
 
     def update_lists(self):
-        try:
-            br_resp = requests.get('https://raw.githubusercontent.com/proxifly/free-proxy-list/refs/heads/main/proxies/countries/BR/data.json', timeout=15)
-            br_resp.raise_for_status()
-            self.br_all = [p['proxy'] for p in br_resp.json() if isinstance(p, dict) and 'proxy' in p]
-        except Exception as e:
-            print(f"[ProxyManager] BR list fail: {e}")
+        # 5 fontes fixas (sempre atualiza)
+        sources = [
+            ("proxifly_br", "https://raw.githubusercontent.com/proxifly/free-proxy-list/refs/heads/main/proxies/countries/BR/data.json", "json"),
+            ("zaeem_socks5", "https://raw.githubusercontent.com/Zaeem20/FREE_PROXIES_LIST/refs/heads/master/socks5.txt", "socks5"),
+            ("zaeem_https", "https://raw.githubusercontent.com/Zaeem20/FREE_PROXIES_LIST/refs/heads/master/https.txt", "http"),
+            ("hproxy_br", "https://raw.githubusercontent.com/hproxy-com/free-proxy-list/refs/heads/main/by-country/BR.txt", "http"),
+            ("databay_br", "https://raw.githubusercontent.com/databay-labs/free-proxy-list/refs/heads/master/by-country/br/http.txt", "http"),
+        ]
+        br_set = set()
+        for name, url, ptype in sources:
+            try:
+                resp = requests.get(url, timeout=15)
+                resp.raise_for_status()
+                if ptype == "json":
+                    for item in resp.json():
+                        if isinstance(item, dict) and item.get("proxy"):
+                            br_set.add(item["proxy"])
+                else:
+                    for line in resp.text.splitlines():
+                        line = line.strip()
+                        if line and re.match(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d+$', line):
+                            br_set.add(f"{ptype}://{line}")
+                print(f"[ProxyManager] {name}: OK")
+            except Exception as e:
+                print(f"[ProxyManager] {name}: {e}")
+        self.br_all = sorted(br_set)
+        # Global mantém proxifly global
         try:
             gl_resp = requests.get('https://raw.githubusercontent.com/proxifly/free-proxy-list/refs/heads/main/proxies/all/data.json', timeout=15)
             gl_resp.raise_for_status()
