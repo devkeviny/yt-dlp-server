@@ -44,7 +44,9 @@ class ProxyManager:
     def __init__(self):
         self.br_all, self.global_all = [], []
         self.proxy_file = os.path.join(DATA_DIR, 'proxies.json')
+        self.active_file = os.path.join(DATA_DIR, 'proxies_active.json')
         self.blocked_proxies = self._load_blocked()
+        self.active_proxies = self._load_active()
         self.update_lists()
 
     def _load_blocked(self):
@@ -61,6 +63,37 @@ class ProxyManager:
             with open(self.proxy_file, 'w') as f:
                 json.dump(list(self.blocked_proxies), f)
         except Exception: pass
+
+    def _load_active(self):
+        try:
+            if os.path.exists(self.active_file):
+                with open(self.active_file, 'r') as f:
+                    data = json.load(f)
+                    if isinstance(data, list):
+                        return data
+                    elif isinstance(data, dict) and 'working_proxies' in data:
+                        return data['working_proxies']
+        except Exception: pass
+        return []
+
+    def save_active(self, active_list):
+        self.active_proxies = list(dict.fromkeys(active_list))
+        try:
+            with open(self.active_file, 'w') as f:
+                json.dump(self.active_proxies, f)
+        except Exception: pass
+
+    def evict_proxy(self, proxy):
+        if not proxy: return
+        self.blocked_proxies.add(proxy)
+        self._save_blocked()
+        if proxy in self.active_proxies:
+            self.active_proxies = [p for p in self.active_proxies if p != proxy]
+            try:
+                with open(self.active_file, 'w') as f:
+                    json.dump(self.active_proxies, f)
+            except Exception: pass
+        print(f"[ProxyManager] EVICTED bad proxy: {proxy} (restam {len(self.active_proxies)} ativos)")
 
     def update_lists(self):
         # 5 fontes fixas (sempre atualiza)
@@ -97,42 +130,33 @@ class ProxyManager:
         except Exception as e:
             print(f"[ProxyManager] GLOBAL list fail: {e}")
 
+    def get_candidate_proxies(self, limit=5):
+        if PROXY_URL:
+            return [PROXY_URL]
+        active = self._load_active()
+        if active:
+            self.active_proxies = active
+        healthy_active = [p for p in self.active_proxies if p not in self.blocked_proxies]
+        candidates = []
+        if healthy_active:
+            shuffled = list(healthy_active)
+            random.shuffle(shuffled)
+            candidates.extend(shuffled[:limit])
+        if len(candidates) < limit:
+            fallback = [p for p in (self.br_all + self.global_all) if p not in self.blocked_proxies and p not in candidates]
+            if fallback:
+                random.shuffle(fallback)
+                candidates.extend(fallback[:(limit - len(candidates))])
+        if None not in candidates:
+            candidates.append(None)
+        return candidates
+
     def get_proxy(self, force_global=False):
-        # 1. Conexão Direta (prioridade máxima) — sem proxy
-        # 2. Client mobile (player_client=android) — já configurado no _build_cmd
-        # 3. Proxies ativos do arquivo interno (/data/proxies_active.json)
-        # 4. Proxies das 5 fontes fixas (testados periodicamente pelo SmartProxyTester)
-        # 5. Fallback global
-        self.update_lists()
-        if PROXY_URL: return PROXY_URL
-        # PRIORIDADE 1: proxies ativos testados (arquivo interno)
-        try:
-            with open("/data/proxies_active.json") as f:
-                active = json.load(f)
-            if active and isinstance(active, dict) and active.get('working_proxies'):
-                return random.choice(active['working_proxies'])
-            elif active and isinstance(active, list) and len(active) > 0:
-                return random.choice(active)
-        except Exception:
-            pass
-        # PRIORIDADE 2: proxies das 5 fontes (atualizados pelo update_lists)
-        pool = self.br_all if self.br_all else self.global_all
-        if pool:
-            healthy = [p for p in pool if p not in self.blocked_proxies]
-            if healthy:
-                return random.choice(healthy)
-        # PRIORIDADE 3: lista global
-        if self.global_all:
-            healthy = [p for p in self.global_all if p not in self.blocked_proxies]
-            if healthy:
-                return random.choice(healthy)
-        # PRIORIDADE 4: Nenhum proxy (conexão direta — já configurada no _build_cmd)
-        return None
+        c = self.get_candidate_proxies(limit=1)
+        return c[0] if c else None
 
     def mark_blocked(self, proxy):
-        if proxy:
-            self.blocked_proxies.add(proxy)
-            self._save_blocked()
+        self.evict_proxy(proxy)
 
 proxy_manager = ProxyManager()
 
@@ -142,142 +166,122 @@ proxy_manager = ProxyManager()
 # ============================================================
 class SmartProxyTester:
     """
-    Testa proxies BR contra YouTube de forma inteligente:
-    - Testa TODOS os proxies BR periodicamente
-    - Mantém cache de proxies ativos (/data/proxies_active.json)
-    - Re-testa proxies que estavam ativos mas falharam
-    - Prioriza proxies com melhor histórico
-    - Atualiza lista a cada 30 min (configurável)
+    Testa proxies periodicamente contra YouTube REAL (video canonical):
+    - Baixa/extrai info do video 'jNQXAC9IVRw' via yt_dlp
+    - Descarta proxies que tomam bot-check, timeout ou connection error
+    - Mantem cache de proxies ativos (/data/proxies_active.json)
+    - Re-testa a cada 1 hora (3600s)
     """
-    def __init__(self, proxy_manager, test_interval=1800, max_active=20):
+    def __init__(self, proxy_manager, test_interval=3600, target_active=15):
         self.pm = proxy_manager
-        self.test_interval = test_interval  # 30 min
-        self.max_active = max_active
+        self.test_interval = test_interval  # 1 hora
+        self.target_active = target_active
         self.active_file = os.path.join(DATA_DIR, 'proxies_active.json')
-        self.test_url = "https://www.youtube.com/"
-        self.headers = {
-            "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Mobile Safari/537.36",
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-            "Accept-Language": "pt-BR,pt;q=0.9,en;q=0.8",
-            "Connection": "keep-alive"
-        }
+        self.test_video = 'https://www.youtube.com/watch?v=jNQXAC9IVRw'
         self._running = False
         self._thread = None
 
-    def test_proxy(self, proxy_url, timeout=8):
-        """Testa um único proxy contra YouTube. Retorna True se passa."""
+    def test_proxy_video(self, proxy_url, timeout=5):
+        opts = {
+            'proxy': proxy_url,
+            'quiet': True,
+            'no_warnings': True,
+            'noplaylist': True,
+            'skip_download': True,
+            'socket_timeout': timeout,
+            'extract_flat': 'in_playlist'
+        }
         try:
-            r = requests.get(
-                self.test_url,
-                proxies={"https": proxy_url, "http": proxy_url},
-                timeout=timeout,
-                headers=self.headers
-            )
-            text = r.text[:200].lower()
-            return r.status_code == 200 and "sign in to confirm" not in text and "captcha" not in text and "unusual traffic" not in text
-        except Exception:
-            return False
-
-    def load_active(self):
-        """Carrega lista de proxies ativos do arquivo."""
-        try:
-            with open(self.active_file) as f:
-                return json.load(f)
-        except Exception:
-            return []
-
-    def save_active(self, active_list):
-        """Salva lista de proxies ativos."""
-        try:
-            with open(self.active_file, 'w') as f:
-                json.dump(active_list, f)
+            with yt_dlp.YoutubeDL(opts) as ydl:
+                info = ydl.extract_info(self.test_video, download=False)
+                if info and info.get('title'):
+                    return True
         except Exception:
             pass
+        return False
 
-    def test_all_br(self):
-        """Testa TODOS os proxies BR e atualiza cache."""
-        print("[SmartProxyTester] Iniciando teste de todos os proxies BR...")
+    def load_active(self):
+        return self.pm._load_active()
+
+    def save_active(self, active_list):
+        self.pm.save_active(active_list)
+
+    def test_all_sources(self):
+        print("[SmartProxyTester] Iniciando ciclo de teste de proxies contra video YouTube...")
         self.pm.update_lists()
-        br_proxies = self.pm.br_all
-        if not br_proxies:
-            print("[SmartProxyTester] Nenhum proxy BR encontrado")
-            return
+        current_active = self.pm._load_active()
+        valid_active = []
+        if current_active:
+            print(f"[SmartProxyTester] Re-validando {len(current_active)} proxies ativos atuais...")
+            with ThreadPoolExecutor(max_workers=8) as ex:
+                fut_map = {ex.submit(self.test_proxy_video, px): px for px in current_active if px not in self.pm.blocked_proxies}
+                for fut in fut_map:
+                    px = fut_map[fut]
+                    try:
+                        if fut.result():
+                            valid_active.append(px)
+                        else:
+                            self.pm.blocked_proxies.add(px)
+                    except Exception:
+                        self.pm.blocked_proxies.add(px)
+            self.pm._save_blocked()
+            print(f"[SmartProxyTester] Ativos preservados: {len(valid_active)}")
 
-        # Carregar ativos atuais para preservar histórico
-        current_active = self.load_active()
-        current_set = set(current_active)
+        if len(valid_active) >= self.target_active:
+            self.pm.save_active(valid_active)
+            return valid_active
 
-        new_active = []
-        tested = 0
-        for proxy in br_proxies:
-            # Pular se já está nos bloqueados
-            if proxy in self.pm.blocked_proxies:
-                continue
-            
-            # Testar
-            if self.test_proxy(proxy):
-                new_active.append(proxy)
-                if proxy not in current_set:
-                    print(f"[SmartProxyTester] NOVO ativo: {proxy}")
-            else:
-                # Marcar como bloqueado se falhou
-                if proxy not in self.pm.blocked_proxies:
-                    self.pm.blocked_proxies.add(proxy)
-                    self.pm._save_blocked()
-            
-            tested += 1
-            # Log de progresso a cada 50
-            if tested % 50 == 0:
-                print(f"[SmartProxyTester] Testados {tested}/{len(br_proxies)}, ativos: {len(new_active)}")
+        pool = [p for p in (self.pm.br_all + self.pm.global_all) if p not in self.pm.blocked_proxies and p not in valid_active]
+        random.shuffle(pool)
+        print(f"[SmartProxyTester] Buscando novos proxies no pool ({len(pool)} disponiveis)...")
+        candidates_to_test = pool[:120]
+        with ThreadPoolExecutor(max_workers=15) as ex:
+            fut_map = {ex.submit(self.test_proxy_video, px): px for px in candidates_to_test}
+            for fut in fut_map:
+                px = fut_map[fut]
+                try:
+                    if fut.result():
+                        valid_active.append(px)
+                        print(f"[SmartProxyTester] PROXY APROVADO: {px} ({len(valid_active)}/{self.target_active})")
+                        if len(valid_active) >= self.target_active:
+                            break
+                    else:
+                        self.pm.blocked_proxies.add(px)
+                except Exception:
+                    self.pm.blocked_proxies.add(px)
 
-        # Combinar: novos ativos + atuais que ainda funcionam (re-testar atuais)
-        # Re-testar atuais para garantir que ainda funcionam
-        still_active = []
-        for proxy in current_active:
-            if proxy in new_active:
-                still_active.append(proxy)
-            elif self.test_proxy(proxy):
-                still_active.append(proxy)
-            else:
-                # Parou de funcionar
-                if proxy not in self.pm.blocked_proxies:
-                    self.pm.blocked_proxies.add(proxy)
-                    self.pm._save_blocked()
-                print(f"[SmartProxyTester] EXPIROU: {proxy}")
-
-        # Mesclar e limitar
-        combined = list(dict.fromkeys(still_active + new_active))  # preserva ordem, remove duplicados
-        final_active = combined[:self.max_active]
-        self.save_active(final_active)
-        print(f"[SmartProxyTester] Concluído: {len(final_active)} ativos salvos (testados {tested})")
+        self.pm._save_blocked()
+        self.pm.save_active(valid_active)
+        print(f"[SmartProxyTester] Ciclo concluido. Total ativos salvos: {len(valid_active)}")
+        return valid_active
 
     def start_background(self):
-        """Inicia thread de background para testar periodicamente."""
         if self._running:
             return
         self._running = True
-        
+
         def run_loop():
+            # Aguarda 5 segundos na subida do container para liberar boot da API
+            time.sleep(5)
             while self._running:
                 try:
-                    self.test_all_br()
+                    self.test_all_sources()
                 except Exception as e:
-                    print(f"[SmartProxyTester] Erro no loop: {e}")
+                    print(f"[SmartProxyTester] Erro no loop de teste: {e}")
                 time.sleep(self.test_interval)
-        
+
         self._thread = threading.Thread(target=run_loop, daemon=True)
         self._thread.start()
-        print("[SmartProxyTester] Thread de background iniciada")
+        print("[SmartProxyTester] Thread de background iniciada (intervalo: 1 hora)")
 
     def stop_background(self):
-        """Para a thread de background."""
         self._running = False
         if self._thread:
             self._thread.join(timeout=5)
 
 
-# Iniciar testador inteligente
-smart_tester = SmartProxyTester(proxy_manager, test_interval=1800, max_active=20)
+# Iniciar testador inteligente (1h = 3600s)
+smart_tester = SmartProxyTester(proxy_manager, test_interval=3600, target_active=15)
 smart_tester.start_background()
 
 
@@ -431,11 +435,11 @@ def _build_cmd(url, fmt, proxy, q=0):
     return cmd
 
 def stream_download(url, fmt, q=0, meta=None):
-    attempts = [None, proxy_manager.get_proxy()] if proxy_manager.get_proxy() else [None]
+    candidates = proxy_manager.get_candidate_proxies(limit=5)
     start = time.time()
     title = (meta or {}).get('title') if meta else None
     thumb = (meta or {}).get('thumbnail') if meta else None
-    for attempt_proxy in attempts:
+    for attempt_proxy in candidates:
         bytes_sent = 0
         try:
             cmd = _build_cmd(url, fmt, attempt_proxy, q)
@@ -450,7 +454,7 @@ def stream_download(url, fmt, q=0, meta=None):
             dur = round(time.time() - start, 1)
             if bytes_sent == 0:
                 if attempt_proxy:
-                    proxy_manager.mark_blocked(attempt_proxy)
+                    proxy_manager.evict_proxy(attempt_proxy)
                 continue
             data_manager.add_download({
                 'url': url, 'format': fmt, 'size': bytes_sent, 'duration_s': dur,
@@ -463,7 +467,7 @@ def stream_download(url, fmt, q=0, meta=None):
             with open(os.path.join(DATA_DIR, 'error.log'), 'a') as lf:
                 lf.write(f"{time.time()} - stream error (proxy={attempt_proxy}): {traceback.format_exc()}\n")
             if attempt_proxy:
-                proxy_manager.mark_blocked(attempt_proxy)
+                proxy_manager.evict_proxy(attempt_proxy)
             continue
     dur = round(time.time() - start, 1)
     data_manager.add_download({
@@ -573,13 +577,14 @@ async def get_proxies(request: Request):
 
 @app.get('/api/info')
 async def get_info(url: str):
-    proxy = proxy_manager.get_proxy()
-    attempts = [None, proxy] if proxy else [None]
-    for px in attempts:
+    candidates = proxy_manager.get_candidate_proxies(limit=5)
+    last_err = None
+    for px in candidates:
         try:
             with yt_dlp.YoutubeDL({'proxy': px, 'quiet': True, 'no_warnings': True,
                                    'noplaylist': True, 'format': 'best',
-                                   'extractor_args': {'youtube': 'player_client=android'}}) as ydl:
+                                   'socket_timeout': 10,
+                                   'extractor_args': {'youtube': {'player_client': ['android', 'mweb', 'web']}}}) as ydl:
                 info = ydl.extract_info(url, download=False)
                 if info.get('entries'): info = info['entries'][0]
                 safe = {k: info.get(k) for k in ('title', 'duration', 'thumbnail',
@@ -604,22 +609,24 @@ async def get_info(url: str):
                 safe['formats'] = fmts[:12]
                 safe['has_audio'] = any(f.get('acodec') != 'none' for f in info.get('formats', []))
                 return safe
-        except Exception:
-            if px: proxy_manager.mark_blocked(px)
-    raise HTTPException(status_code=500, detail="Falha ao obter informacoes")
+        except Exception as e:
+            last_err = e
+            if px:
+                proxy_manager.evict_proxy(px)
+    raise HTTPException(status_code=500, detail=f"Falha ao obter informacoes: {str(last_err)[:100]}")
 
 
 @app.get('/api/transcript')
 async def get_transcript(url: str):
-    proxy = proxy_manager.get_proxy()
-    attempts = [None, proxy] if proxy else [None]
-    for px in attempts:
+    candidates = proxy_manager.get_candidate_proxies(limit=5)
+    for px in candidates:
         try:
             with yt_dlp.YoutubeDL({'proxy': px, 'quiet': True, 'no_warnings': True,
                                    'noplaylist': True, 'writesubtitles': True,
                                    'writeautomaticsub': True, 'skip_download': True,
                                    'subtitlesformat': 'json3', 'outtmpl': '/tmp/tr_%(id)s',
-                                   'extractor_args': 'youtube:player_client=android'}) as ydl:
+                                   'socket_timeout': 10,
+                                   'extractor_args': {'youtube': {'player_client': ['android', 'mweb']}}}) as ydl:
                 info = ydl.extract_info(url, download=False)
                 subs = info.get('subtitles', {}) or info.get('automatic_captions', {}) or {}
                 if not subs:
@@ -629,7 +636,8 @@ async def get_transcript(url: str):
                     return {'available': False, 'message': 'Sem transcricao disponivel'}
                 return {'available': True, 'lang': lang, 'languages': list(subs.keys())}
         except Exception:
-            if px: proxy_manager.mark_blocked(px)
+            if px:
+                proxy_manager.evict_proxy(px)
     return {'available': False, 'message': 'Falha ao verificar transcricao'}
 
 @app.get('/api/config/api')
