@@ -193,7 +193,7 @@ def _build_cmd(url, fmt, proxy, q=0):
             cmd += ['-f', 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best']
         cmd += ['--merge-output-format', 'mp4']
     else:
-        cmd += ['-f', 'bestaudio', '-x', '--audio-format', 'mp3']
+        cmd += ['-f', 'bestaudio/best', '-x', '--audio-format', 'mp3']
         if q and q > 0:
             cmd += ['--audio-quality', f'{q}k']
         else:
