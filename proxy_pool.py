@@ -1,1 +1,342 @@
-IyEvdXNyL2Jpbi9lbnYgcHl0aG9uMwoiIiIKU21hcnRQcm94eVBvb2wg4oCUIGdlcmVuY2lhZG9yIGRlIHBvb2wgZGUgcHJveGllcyBkbyB5dC1kbHAtc2VydmVyLgoKUG9ydGFkbyBkZSBkZXZrZXZpbnkvb3VyLWZyZWUtbW9kZWwtZG9ja2VyIChwcm94eS9wcm94eV9zZXJ2ZXIucHksIFNtYXJ0UHJveHlQb29sKSwKcXVlIHBvciBzdWEgdmV6IGV2b2x1aXUgZG8gYW50aWdvIFByb3h5TWFuYWdlci9TbWFydFByb3h5VGVzdGVyIGRlc3RlIHNlcnZpZG9yLgpTdWJzdGl0dWkgbyBwYXIgUHJveHlNYW5hZ2VyICsgU21hcnRQcm94eVRlc3RlciBwb3IgdW0gdW5pY28gY29tcG9uZW50ZToKCi0gRm9udGVzOiBhcyA1IGxpc3RhcyBhZ3JlZ2Fkb3JhcyBoaXN0b3JpY2FzIGRlc3RlIHNlcnZpZG9yICsgUFJPWFlfU09VUkNFX1VSTFMKICBleHRyYXMgKHR4dC9qc29uKSArIFBST1hZX1BPT0xfVVJMUyBmaXhvcy4KLSBIZWFsdGggY2hlY2sgbmV1dHJvIHBlcmlvZGljbyAoYWx2byBjb25maWd1cmF2ZWwsIHBhZHJhbyBnZW5lcmF0ZV8yMDQgZG8gR29vZ2xlKSwKICBlbSB0aHJlYWQgZGUgZnVuZG8sIGNvbSB0ZXRvIGRlIHZlcmlmaWNhY29lcyBwb3IgY2ljbG8uCi0gUXVhcmVudGVuYSBjb20gY29vbGRvd246IHByb3h5IHF1ZSBmYWxoYSBzYWkgcG9yIFBST1hZX0NPT0xET1dOX1NFQ09ORFMgZSB2b2x0YQogIHNvemluaG8gKHNlbSBibG9xdWVpbyBzZW1pLXBlcm1hbmVudGUpLgotIFJvdGFjYW8gcm91bmQtcm9iaW4gZW50cmUgb3MgYXRpdm9zIChnZXRfY2FuZGlkYXRlcyksIGNvbSBmYWlsb3ZlciBhIGNhcmdvIGRvCiAgY2hhbWFkb3IgKHN0cmVhbV9kb3dubG9hZC9pbmZvL3RyYW5zY3JpcHQgbWFyY2FtIGZhbGhhIHZpYSBtYXJrX2ZhaWx1cmUpLgotIFBST1hZX1VSTCAob3UgUFJPWFlfU0lOR0xFX1VSTCkgZGVmaW5pZG8gPT4gYXRhbGhvOiB1c2Egc28gZXNzZSBwcm94eS4KLSBGYWxsYmFjayBkaXJldG8gKE5vbmUpIHBvciB1bHRpbW8sIHNhbHZvIFBST1hZX0FMTE9XX0RJUkVDVF9GQUxMQkFDSz1mYWxzZS4KLSBFc3RhZG8gcGVyc2lzdGlkbyBlbSBwcm94aWVzX2FjdGl2ZS5qc29uIChmb3JtYXRvIE9GTSkgZW0gREFUQV9ESVIuCgpBZGFwdGFjb2VzIGVtIHJlbGFjYW8gYW8gb3JpZ2luYWwgYXNzaW5jcm9ubyBkbyBPRk06IGV4ZWN1Y2FvIHNpbmNyb25hIGNvbQpUaHJlYWRQb29sRXhlY3V0b3IgKG8gYXBwIGUgRmFzdEFQSSArIGdlcmFkb3JlcyBzaW5jcm9ub3MpIGUgcHJvdGVjYW8gcG9yIGxvY2suClNvbWVudGUgYmlibGlvdGVjYSBwYWRyYW8uCiIiIgoKaW1wb3J0IGpzb24KaW1wb3J0IGxvZ2dpbmcKaW1wb3J0IG9zCmltcG9ydCByYW5kb20KaW1wb3J0IHJlCmltcG9ydCB0aHJlYWRpbmcKaW1wb3J0IHRpbWUKaW1wb3J0IHVybGxpYi5yZXF1ZXN0CmZyb20gY29uY3VycmVudC5mdXR1cmVzIGltcG9ydCBUaHJlYWRQb29sRXhlY3V0b3IKCmxvZ2dlciA9IGxvZ2dpbmcuZ2V0TG9nZ2VyKCJwcm94eS1wb29sIikKCiMgRm9udGVzIGFncmVnYWRvcmFzIGhpc3RvcmljYXMgZGVzdGUgc2Vydmlkb3IgKGFzIG1lc21hcyBkbyBhbnRpZ28gUHJveHlNYW5hZ2VyKQpCVUlMVElOX1NPVVJDRVMgPSBbCiAgICAoInByb3hpZmx5X2JyIiwgImh0dHBzOi8vcmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbS9wcm94aWZseS9mcmVlLXByb3h5LWxpc3QvcmVmcy9oZWFkcy9tYWluL3Byb3hpZXMvY291bnRyaWVzL0JSL2RhdGEuanNvbiIsICJqc29uIiksCiAgICAoInphZWVtX3NvY2tzNSIsICJodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vWmFlZW0yMC9GUkVFX1BST1hJRVNfTElTVC9yZWZzL2hlYWRzL21hc3Rlci9zb2NrczUudHh0IiwgInNvY2tzNSIpLAogICAgKCJ6YWVlbV9odHRwcyIsICJodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vWmFlZW0yMC9GUkVFX1BST1hJRVNfTElTVC9yZWZzL2hlYWRzL21hc3Rlci9odHRwcy50eHQiLCAiaHR0cCIpLAogICAgKCJocHJveHlfYnIiLCAiaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2hwcm94eS1jb20vZnJlZS1wcm94eS1saXN0L3JlZnMvaGVhZHMvbWFpbi9ieS1jb3VudHJ5L0JSLnR4dCIsICJodHRwIiksCiAgICAoImRhdGFiYXlfYnIiLCAiaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2RhdGFiYXktbGFicy9mcmVlLXByb3h5LWxpc3QvcmVmcy9oZWFkcy9tYXN0ZXIvYnktY291bnRyeS9ici9odHRwLnR4dCIsICJodHRwIiksCiAgICAoInByb3hpZmx5X2dsb2JhbCIsICJodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vcHJveGlmbHkvZnJlZS1wcm94eS1saXN0L3JlZnMvaGVhZHMvbWFpbi9wcm94aWVzL2FsbC9kYXRhLmpzb24iLCAianNvbiIpLApdCgpDSEVDS19JTlRFUlZBTCA9IGludChvcy5nZXRlbnYoIlBST1hZX0NIRUNLX0lOVEVSVkFMIiwgIjMwMCIpKQpDSEVDS19USU1FT1VUID0gaW50KG9zLmdldGVudigiUFJPWFlfQ0hFQ0tfVElNRU9VVCIsICI4IikpCkNPT0xET1dOX1NFQ09ORFMgPSBpbnQob3MuZ2V0ZW52KCJQUk9YWV9DT09MRE9XTl9TRUNPTkRTIiwgIjMwMCIpKQpIRUFMVEhfVEFSR0VUID0gb3MuZ2V0ZW52KCJQUk9YWV9IRUFMVEhfVEFSR0VUIiwgImh0dHA6Ly93d3cuZ3N0YXRpYy5jb20vZ2VuZXJhdGVfMjA0IikKSEVBTFRIX01BWF9DSEVDS1MgPSBpbnQob3MuZ2V0ZW52KCJQUk9YWV9IRUFMVEhfTUFYX0NIRUNLUyIsICIxNTAiKSkKQUxMT1dfRElSRUNUX0ZBTExCQUNLID0gb3MuZ2V0ZW52KCJQUk9YWV9BTExPV19ESVJFQ1RfRkFMTEJBQ0siLCAidHJ1ZSIpLmxvd2VyKCkgaW4gKCJ0cnVlIiwgIjEiLCAieWVzIikKCgpjbGFzcyBTbWFydFByb3h5UG9vbDoKICAgIGRlZiBfX2luaXRfXyhzZWxmLCBkYXRhX2Rpcjogc3RyKToKICAgICAgICBzZWxmLmRhdGFfZGlyID0gZGF0YV9kaXIKICAgICAgICBzZWxmLmFjdGl2ZV9maWxlID0gb3MucGF0aC5qb2luKGRhdGFfZGlyLCAicHJveGllc19hY3RpdmUuanNvbiIpCiAgICAgICAgc2VsZi5zaW5nbGVfcHJveHkgPSAob3MuZ2V0ZW52KCJQUk9YWV9VUkwiKSBvciBvcy5nZXRlbnYoIlBST1hZX1NJTkdMRV9VUkwiKSBvciAiIikuc3RyaXAoKSBvciBOb25lCgogICAgICAgIHNlbGYuYWxsX3Byb3hpZXMgPSBbXQogICAgICAgIHNlbGYuYWN0aXZlX3Byb3hpZXMgPSBbXQogICAgICAgIHNlbGYucXVhcmFudGluZV91bnRpbCA9IHt9ICAjIHByb3h5IC0+IHRpbWVzdGFtcCAoT0ZNKQogICAgICAgIHNlbGYuc3RhdHMgPSB7CiAgICAgICAgICAgICJyZXF1ZXN0c190b3RhbCI6IDAsCiAgICAgICAgICAgICJyZXF1ZXN0c19wcm94aWVkIjogMCwKICAgICAgICAgICAgInJlcXVlc3RzX2ZhbGxiYWNrIjogMCwKICAgICAgICAgICAgImZhaWxvdmVycyI6IDAsCiAgICAgICAgICAgICJxdWFyYW50aW5lcyI6IDAsCiAgICAgICAgICAgICJoZWFsdGhfY3ljbGVzIjogMCwKICAgICAgICB9CiAgICAgICAgc2VsZi5jdXJyZW50X2luZGV4ID0gMAogICAgICAgIHNlbGYuX2xvY2sgPSB0aHJlYWRpbmcuUkxvY2soKQogICAgICAgIHNlbGYuX3J1bm5pbmcgPSBGYWxzZQogICAgICAgIHNlbGYuX3RocmVhZCA9IE5vbmUKICAgICAgICBzZWxmLl9sb2FkX3N0YXRlKCkKICAgICAgICBzZWxmLnJlZnJlc2hfc291cmNlcygpCgogICAgIyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tIGZvbnRlcwogICAgZGVmIHJlZnJlc2hfc291cmNlcyhzZWxmKToKICAgICAgICAiIiIoUmUpY2FycmVnYSBhcyBsaXN0YXMgYWdyZWdhZG9yYXMgKyBmb250ZXMgZXh0cmFzIGRvIGFtYmllbnRlLiIiIgogICAgICAgIHByb3hpZXMgPSBzZXQoKQoKICAgICAgICByYXdfZml4ZWQgPSBvcy5nZXRlbnYoIlBST1hZX1BPT0xfVVJMUyIsICIiKQogICAgICAgIGZvciBwIGluIHJlLnNwbGl0KHIiWyxcc10rIiwgcmF3X2ZpeGVkKToKICAgICAgICAgICAgcCA9IHAuc3RyaXAoKQogICAgICAgICAgICBpZiBwOgogICAgICAgICAgICAgICAgcHJveGllcy5hZGQocCkKCiAgICAgICAgZm9yIG5hbWUsIHVybCwgcHR5cGUgaW4gQlVJTFRJTl9TT1VSQ0VTOgogICAgICAgICAgICB0cnk6CiAgICAgICAgICAgICAgICByZXNwID0gdXJsbGliLnJlcXVlc3QudXJsb3BlbigKICAgICAgICAgICAgICAgICAgICB1cmxsaWIucmVxdWVzdC5SZXF1ZXN0KHVybCwgaGVhZGVycz17IlVzZXItQWdlbnQiOiAieXQtZGxwLXNlcnZlci1wcm94eS1wb29sLzEuMCJ9KSwKICAgICAgICAgICAgICAgICAgICB0aW1lb3V0PTE1KQogICAgICAgICAgICAgICAgcmF3ID0gcmVzcC5yZWFkKCkuZGVjb2RlKCJ1dGYtOCIsIGVycm9ycz0iaWdub3JlIikKICAgICAgICAgICAgICAgIGlmIHB0eXBlID09ICJqc29uIjoKICAgICAgICAgICAgICAgICAgICBmb3IgaXRlbSBpbiBqc29uLmxvYWRzKHJhdyk6CiAgICAgICAgICAgICAgICAgICAgICAgIGlmIGlzaW5zdGFuY2UoaXRlbSwgZGljdCkgYW5kIGl0ZW0uZ2V0KCJwcm94eSIpOgogICAgICAgICAgICAgICAgICAgICAgICAgICAgcHJveGllcy5hZGQoaXRlbVsicHJveHkiXSkKICAgICAgICAgICAgICAgIGVsc2U6CiAgICAgICAgICAgICAgICAgICAgc2NoZW1lID0gInNvY2tzNSIgaWYgcHR5cGUgPT0gInNvY2tzNSIgZWxzZSAiaHR0cCIKICAgICAgICAgICAgICAgICAgICBmb3IgbGluZSBpbiByYXcuc3BsaXRsaW5lcygpOgogICAgICAgICAgICAgICAgICAgICAgICBsaW5lID0gbGluZS5zdHJpcCgpCiAgICAgICAgICAgICAgICAgICAgICAgIGlmIGxpbmUgYW5kIHJlLm1hdGNoKHIiXlxkezEsM31cLlxkezEsM31cLlxkezEsM31cLlxkezEsM306XGQrJCIsIGxpbmUpOgogICAgICAgICAgICAgICAgICAgICAgICAgICAgcHJveGllcy5hZGQoZiJ7c2NoZW1lfTovL3tsaW5lfSIpCiAgICAgICAgICAgICAgICBsb2dnZXIuaW5mbyhmIltQcm94eVBvb2xdIGZvbnRlIHtuYW1lfTogb2siKQogICAgICAgICAgICBleGNlcHQgRXhjZXB0aW9uIGFzIGU6CiAgICAgICAgICAgICAgICBsb2dnZXIud2FybmluZyhmIltQcm94eVBvb2xdIGZvbnRlIHtuYW1lfSBmYWxob3U6IHtlfSIpCgogICAgICAgIGV4dHJhID0gb3MuZ2V0ZW52KCJQUk9YWV9TT1VSQ0VfVVJMUyIsICIiKQogICAgICAgIGZvciB1cmwgaW4gW3Uuc3RyaXAoKSBmb3IgdSBpbiBleHRyYS5zcGxpdCgiLCIpIGlmIHUuc3RyaXAoKV06CiAgICAgICAgICAgIHByb3hpZXMudXBkYXRlKHNlbGYuX2ZldGNoX3JlbW90ZV9zb3VyY2UodXJsKSkKCiAgICAgICAgd2l0aCBzZWxmLl9sb2NrOgogICAgICAgICAgICBzZWxmLmFsbF9wcm94aWVzID0gc29ydGVkKHByb3hpZXMpCiAgICAgICAgICAgICMgQXRpdm8gPSBzb21lbnRlIHF1ZW0gamEgcGFzc291IG5vIGhlYWx0aCBjaGVjayAoc2VtYW50aWNhIGRvIGFudGlnbwogICAgICAgICAgICAjIFNtYXJ0UHJveHlUZXN0ZXIpLiBOYW8tdGVzdGFkb3MgZmljYW0gbm8gcG9vbCBicnV0byBhdGUgc2VyZW0gdmFsaWRhZG9zLgogICAgICAgICAgICBzZWxmLmFjdGl2ZV9wcm94aWVzID0gW3AgZm9yIHAgaW4gc2VsZi5hY3RpdmVfcHJveGllcyBpZiBwIGluIHByb3hpZXNdCiAgICAgICAgbG9nZ2VyLmluZm8oZiJbUHJveHlQb29sXSB7bGVuKHNlbGYuYWxsX3Byb3hpZXMpfSBwcm94aWVzIGNhcnJlZ2Fkb3MgKHtsZW4oc2VsZi5hY3RpdmVfcHJveGllcyl9IGF0aXZvcykuIikKICAgICAgICBzZWxmLnNhdmVfc3RhdGUoKQoKICAgIGRlZiBfZmV0Y2hfcmVtb3RlX3NvdXJjZShzZWxmLCB1cmw6IHN0cik6CiAgICAgICAgIiIiQnVzY2EgdW1hIGxpc3RhIHJlbW90YSAodHh0IG91IGpzb24pIOKAlCBtZXNtbyBwYXJzZXIgZG8gT0ZNLiIiIgogICAgICAgIGRpc2NvdmVyZWQgPSBzZXQoKQogICAgICAgIHRyeToKICAgICAgICAgICAgcmVxID0gdXJsbGliLnJlcXVlc3QuUmVxdWVzdCh1cmwsIGhlYWRlcnM9eyJVc2VyLUFnZW50IjogImVncmVzcy1wcm94eS1mZXRjaGVyLzEuMCJ9KQogICAgICAgICAgICB3aXRoIHVybGxpYi5yZXF1ZXN0LnVybG9wZW4ocmVxLCB0aW1lb3V0PTEyKSBhcyByZXNwOgogICAgICAgICAgICAgICAgcmF3ID0gcmVzcC5yZWFkKCkuZGVjb2RlKCJ1dGYtOCIsIGVycm9ycz0iaWdub3JlIikuc3RyaXAoKQogICAgICAgICAgICAgICAgaWYgcmF3LnN0YXJ0c3dpdGgoIlsiKSBvciByYXcuc3RhcnRzd2l0aCgieyIpOgogICAgICAgICAgICAgICAgICAgIGRhdGEgPSBqc29uLmxvYWRzKHJhdykKICAgICAgICAgICAgICAgICAgICBpdGVtcyA9IGRhdGEgaWYgaXNpbnN0YW5jZShkYXRhLCBsaXN0KSBlbHNlIGRhdGEuZ2V0KCJwcm94aWVzIiwgW10pCiAgICAgICAgICAgICAgICAgICAgZm9yIGl0ZW0gaW4gaXRlbXM6CiAgICAgICAgICAgICAgICAgICAgICAgIGlmIGlzaW5zdGFuY2UoaXRlbSwgZGljdCkgYW5kIGl0ZW0uZ2V0KCJwcm94eSIpOgogICAgICAgICAgICAgICAgICAgICAgICAgICAgcCA9IGl0ZW1bInByb3h5Il0uc3RyaXAoKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgaWYgbm90IHAuc3RhcnRzd2l0aCgiaHR0cDovLyIpIGFuZCBub3QgcC5zdGFydHN3aXRoKCJzb2NrczU6Ly8iKToKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBwID0gZiJodHRwOi8ve3B9IgogICAgICAgICAgICAgICAgICAgICAgICAgICAgZGlzY292ZXJlZC5hZGQocCkKICAgICAgICAgICAgICAgICAgICAgICAgZWxpZiBpc2luc3RhbmNlKGl0ZW0sIHN0cikgYW5kIGl0ZW0uc3RyaXAoKToKICAgICAgICAgICAgICAgICAgICAgICAgICAgIHAgPSBpdGVtLnN0cmlwKCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlmIG5vdCBwLnN0YXJ0c3dpdGgoImh0dHA6Ly8iKSBhbmQgbm90IHAuc3RhcnRzd2l0aCgic29ja3M1Oi8vIik6CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcCA9IGYiaHR0cDovL3twfSIKICAgICAgICAgICAgICAgICAgICAgICAgICAgIGRpc2NvdmVyZWQuYWRkKHApCiAgICAgICAgICAgICAgICBlbHNlOgogICAgICAgICAgICAgICAgICAgIGZvciBsaW5lIGluIHJhdy5zcGxpdGxpbmVzKCk6CiAgICAgICAgICAgICAgICAgICAgICAgIGxpbmUgPSBsaW5lLnN0cmlwKCkKICAgICAgICAgICAgICAgICAgICAgICAgaWYgbm90IGxpbmUgb3IgbGluZS5zdGFydHN3aXRoKCIjIik6CiAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb250aW51ZQogICAgICAgICAgICAgICAgICAgICAgICBtID0gcmUuc2VhcmNoKHIiKCg/Omh0dHBzP3xzb2NrczUpOi8vKT8oWzAtOV17MSwzfSg/OlwuWzAtOV17MSwzfSl7M306WzAtOV17Miw1fSkiLCBsaW5lKQogICAgICAgICAgICAgICAgICAgICAgICBpZiBtOgogICAgICAgICAgICAgICAgICAgICAgICAgICAgc2NoZW1lID0gbS5ncm91cCgxKSBvciAiaHR0cDovLyIKICAgICAgICAgICAgICAgICAgICAgICAgICAgIGRpc2NvdmVyZWQuYWRkKGYie3NjaGVtZX17bS5ncm91cCgyKX0iKQogICAgICAgIGV4Y2VwdCBFeGNlcHRpb24gYXMgZToKICAgICAgICAgICAgbG9nZ2VyLndhcm5pbmcoZiJbUHJveHlQb29sXSBmb250ZSBleHRyYSB7dXJsfSBmYWxob3U6IHtlfSIpCiAgICAgICAgcmV0dXJuIGRpc2NvdmVyZWQKCiAgICAjIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0gZXN0YWRvCiAgICBkZWYgX2xvYWRfc3RhdGUoc2VsZik6CiAgICAgICAgIiIiUmVzdGF1cmEgYXRpdm9zL3F1YXJlbnRlbmEgZG8gcHJveGllc19hY3RpdmUuanNvbiAoZm9ybWF0byBPRk0gb3UgbGVnYWRvKS4iIiIKICAgICAgICB0cnk6CiAgICAgICAgICAgIGlmIG9zLnBhdGguZXhpc3RzKHNlbGYuYWN0aXZlX2ZpbGUpOgogICAgICAgICAgICAgICAgd2l0aCBvcGVuKHNlbGYuYWN0aXZlX2ZpbGUpIGFzIGY6CiAgICAgICAgICAgICAgICAgICAgZGF0YSA9IGpzb24ubG9hZChmKQogICAgICAgICAgICAgICAgaWYgaXNpbnN0YW5jZShkYXRhLCBsaXN0KToKICAgICAgICAgICAgICAgICAgICBzZWxmLmFjdGl2ZV9wcm94aWVzID0gbGlzdChkYXRhKQogICAgICAgICAgICAgICAgZWxpZiBpc2luc3RhbmNlKGRhdGEsIGRpY3QpOgogICAgICAgICAgICAgICAgICAgIHNlbGYuYWN0aXZlX3Byb3hpZXMgPSBsaXN0KGRhdGEuZ2V0KCJhY3RpdmVfcHJveGllcyIpIG9yIGRhdGEuZ2V0KCJ3b3JraW5nX3Byb3hpZXMiKSBvciBbXSkKICAgICAgICAgICAgICAgICAgICBxID0gZGF0YS5nZXQoInF1YXJhbnRpbmVfdW50aWwiKSBvciB7fQogICAgICAgICAgICAgICAgICAgIGlmIGlzaW5zdGFuY2UocSwgZGljdCk6CiAgICAgICAgICAgICAgICAgICAgICAgIHNlbGYucXVhcmFudGluZV91bnRpbCA9IHtrOiBmbG9hdCh2KSBmb3IgaywgdiBpbiBxLml0ZW1zKCl9CiAgICAgICAgZXhjZXB0IEV4Y2VwdGlvbjoKICAgICAgICAgICAgcGFzcwoKICAgIGRlZiBzYXZlX3N0YXRlKHNlbGYpOgogICAgICAgIHRyeToKICAgICAgICAgICAgd2l0aCBzZWxmLl9sb2NrOgogICAgICAgICAgICAgICAgcGF5bG9hZCA9IHsKICAgICAgICAgICAgICAgICAgICAidXBkYXRlZF9hdCI6IHRpbWUudGltZSgpLAogICAgICAgICAgICAgICAgICAgICJ0b3RhbCI6IGxlbihzZWxmLmFsbF9wcm94aWVzKSwKICAgICAgICAgICAgICAgICAgICAiYWN0aXZlX2NvdW50IjogbGVuKHNlbGYuYWN0aXZlX3Byb3hpZXMpLAogICAgICAgICAgICAgICAgICAgICJhY3RpdmVfcHJveGllcyI6IGxpc3Qoc2VsZi5hY3RpdmVfcHJveGllcyksCiAgICAgICAgICAgICAgICAgICAgInF1YXJhbnRpbmVkX2NvdW50IjogbGVuKHNlbGYucXVhcmFudGluZV91bnRpbCksCiAgICAgICAgICAgICAgICAgICAgInF1YXJhbnRpbmVfdW50aWwiOiBkaWN0KHNlbGYucXVhcmFudGluZV91bnRpbCksCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIHdpdGggb3BlbihzZWxmLmFjdGl2ZV9maWxlLCAidyIpIGFzIGY6CiAgICAgICAgICAgICAgICBqc29uLmR1bXAocGF5bG9hZCwgZiwgaW5kZW50PTIpCiAgICAgICAgZXhjZXB0IEV4Y2VwdGlvbiBhcyBlOgogICAgICAgICAgICBsb2dnZXIud2FybmluZyhmIltQcm94eVBvb2xdIGZhbGhhIGFvIHNhbHZhciBlc3RhZG86IHtlfSIpCgogICAgZGVmIGFjdGl2ZV9zbmFwc2hvdChzZWxmKToKICAgICAgICB3aXRoIHNlbGYuX2xvY2s6CiAgICAgICAgICAgIHJldHVybiBsaXN0KHNlbGYuYWN0aXZlX3Byb3hpZXMpCgogICAgZGVmIHF1YXJhbnRpbmVkX3NuYXBzaG90KHNlbGYpOgogICAgICAgIHdpdGggc2VsZi5fbG9jazoKICAgICAgICAgICAgcmV0dXJuIHNvcnRlZChzZWxmLnF1YXJhbnRpbmVfdW50aWwua2V5cygpKQoKICAgICMgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSBxdWFyZW50ZW5hIChPRk0pCiAgICBkZWYgcXVhcmFudGluZShzZWxmLCBwcm94eTogc3RyLCByZWFzb246IHN0ciA9ICJlcnJvciIpOgogICAgICAgIGlmIG5vdCBwcm94eToKICAgICAgICAgICAgcmV0dXJuCiAgICAgICAgd2l0aCBzZWxmLl9sb2NrOgogICAgICAgICAgICBzZWxmLnF1YXJhbnRpbmVfdW50aWxbcHJveHldID0gdGltZS50aW1lKCkgKyBDT09MRE9XTl9TRUNPTkRTCiAgICAgICAgICAgIHNlbGYuc3RhdHNbInF1YXJhbnRpbmVzIl0gKz0gMQogICAgICAgICAgICBpZiBwcm94eSBpbiBzZWxmLmFjdGl2ZV9wcm94aWVzOgogICAgICAgICAgICAgICAgc2VsZi5hY3RpdmVfcHJveGllcy5yZW1vdmUocHJveHkpCiAgICAgICAgbG9nZ2VyLndhcm5pbmcoZiJbUHJveHlQb29sXSBRdWFyZW50ZW5hOiAne3Byb3h5fScgcG9yIHtDT09MRE9XTl9TRUNPTkRTfXMgKHtyZWFzb259KS4iKQogICAgICAgIHNlbGYuc2F2ZV9zdGF0ZSgpCgogICAgIyBDb21wYXQ6IG8gcmVzdGFudGUgZG8gYXBwIGNoYW1hdmEgZXZpY3RfcHJveHkoKQogICAgZGVmIG1hcmtfZmFpbHVyZShzZWxmLCBwcm94eTogc3RyLCByZWFzb246IHN0ciA9ICJyZXF1ZXN0X2ZhaWxlZCIpOgogICAgICAgIHNlbGYucXVhcmFudGluZShwcm94eSwgcmVhc29uPXJlYXNvbikKCiAgICBkZWYgX3Jldml2ZV9leHBpcmVkKHNlbGYpOgogICAgICAgIG5vdyA9IHRpbWUudGltZSgpCiAgICAgICAgd2l0aCBzZWxmLl9sb2NrOgogICAgICAgICAgICBleHBpcmVkID0gW3AgZm9yIHAsIHQgaW4gc2VsZi5xdWFyYW50aW5lX3VudGlsLml0ZW1zKCkgaWYgbm93ID49IHRdCiAgICAgICAgICAgIGZvciBwIGluIGV4cGlyZWQ6CiAgICAgICAgICAgICAgICBkZWwgc2VsZi5xdWFyYW50aW5lX3VudGlsW3BdCiAgICAgICAgICAgICAgICBpZiBwIGluIHNlbGYuYWxsX3Byb3hpZXMgYW5kIHAgbm90IGluIHNlbGYuYWN0aXZlX3Byb3hpZXM6CiAgICAgICAgICAgICAgICAgICAgc2VsZi5hY3RpdmVfcHJveGllcy5hcHBlbmQocCkKICAgICAgICAgICAgICAgICAgICBsb2dnZXIuaW5mbyhmIltQcm94eVBvb2xdICd7cH0nIHNhaXUgZGEgcXVhcmVudGVuYSBlIHZvbHRvdSBhbyBwb29sLiIpCgogICAgIyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tIHNlbGVjYW8gKE9GTTogcm91bmQtcm9iaW4pCiAgICBkZWYgZ2V0X2NhbmRpZGF0ZXMoc2VsZiwgbGltaXQ6IGludCA9IDUpOgogICAgICAgICIiIlByb3hpbW9zIGBsaW1pdGAgY2FuZGlkYXRvcyBlbSByb3VuZC1yb2JpbiArIGRpcmV0byAoTm9uZSkgcG9yIHVsdGltby4KCiAgICAgICAgQ29tcGF0aXZlbCBjb20gbyBhbnRpZ28gZ2V0X2NhbmRpZGF0ZV9wcm94aWVzKGxpbWl0KTogUFJPWFlfVVJMIHRlbQogICAgICAgIHByaW9yaWRhZGUgYWJzb2x1dGE7IHNlbSBhdGl2b3MsIGNhaSBwYXJhIHVtYSBhbW9zdHJhIGRhcyBsaXN0YXMuCiAgICAgICAgIiIiCiAgICAgICAgaWYgc2VsZi5zaW5nbGVfcHJveHk6CiAgICAgICAgICAgIHJldHVybiBbc2VsZi5zaW5nbGVfcHJveHldCiAgICAgICAgc2VsZi5fcmV2aXZlX2V4cGlyZWQoKQogICAgICAgIHdpdGggc2VsZi5fbG9jazoKICAgICAgICAgICAgc2VsZi5zdGF0c1sicmVxdWVzdHNfdG90YWwiXSArPSAxCiAgICAgICAgICAgIGFjdGl2ZXMgPSBbcCBmb3IgcCBpbiBzZWxmLmFjdGl2ZV9wcm94aWVzIGlmIHAgbm90IGluIHNlbGYucXVhcmFudGluZV91bnRpbF0KICAgICAgICAgICAgY2FuZGlkYXRlcyA9IFtdCiAgICAgICAgICAgIGlmIGFjdGl2ZXM6CiAgICAgICAgICAgICAgICBzdGFydCA9IHNlbGYuY3VycmVudF9pbmRleCAlIGxlbihhY3RpdmVzKQogICAgICAgICAgICAgICAgb3JkZXJlZCA9IGFjdGl2ZXNbc3RhcnQ6XSArIGFjdGl2ZXNbOnN0YXJ0XQogICAgICAgICAgICAgICAgY2FuZGlkYXRlcyA9IG9yZGVyZWRbOmxpbWl0XQogICAgICAgICAgICAgICAgc2VsZi5jdXJyZW50X2luZGV4ID0gKHN0YXJ0ICsgbWF4KDEsIGxlbihjYW5kaWRhdGVzKSkpICUgbGVuKGFjdGl2ZXMpCiAgICAgICAgICAgIGlmIGxlbihjYW5kaWRhdGVzKSA8IGxpbWl0OgogICAgICAgICAgICAgICAgcmVzdCA9IFtwIGZvciBwIGluIHNlbGYuYWxsX3Byb3hpZXMKICAgICAgICAgICAgICAgICAgICAgICAgaWYgcCBub3QgaW4gc2VsZi5xdWFyYW50aW5lX3VudGlsIGFuZCBwIG5vdCBpbiBjYW5kaWRhdGVzXQogICAgICAgICAgICAgICAgaWYgcmVzdDoKICAgICAgICAgICAgICAgICAgICByYW5kb20uc2h1ZmZsZShyZXN0KQogICAgICAgICAgICAgICAgICAgIGNhbmRpZGF0ZXMuZXh0ZW5kKHJlc3RbOiBsaW1pdCAtIGxlbihjYW5kaWRhdGVzKV0pCiAgICAgICAgICAgIGlmIGNhbmRpZGF0ZXM6CiAgICAgICAgICAgICAgICBzZWxmLnN0YXRzWyJyZXF1ZXN0c19wcm94aWVkIl0gKz0gMQogICAgICAgICAgICBlbHNlOgogICAgICAgICAgICAgICAgc2VsZi5zdGF0c1sicmVxdWVzdHNfZmFsbGJhY2siXSArPSAxCiAgICAgICAgaWYgQUxMT1dfRElSRUNUX0ZBTExCQUNLIGFuZCBOb25lIG5vdCBpbiBjYW5kaWRhdGVzOgogICAgICAgICAgICBjYW5kaWRhdGVzLmFwcGVuZChOb25lKQogICAgICAgIHJldHVybiBjYW5kaWRhdGVzCgogICAgZGVmIGdldF9jYW5kaWRhdGUoc2VsZik6CiAgICAgICAgIiIiVW0gdW5pY28gY2FuZGlkYXRvIChyb3VuZC1yb2JpbiksIGNvbW8gbm8gT0ZNLiIiIgogICAgICAgIGMgPSBzZWxmLmdldF9jYW5kaWRhdGVzKGxpbWl0PTEpCiAgICAgICAgcmV0dXJuIGNbMF0gaWYgYyBlbHNlIE5vbmUKCiAgICAjIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0gaGVhbHRoIGNoZWNrIChPRk0pCiAgICBkZWYgdGVzdF9wcm94eV9zeW5jKHNlbGYsIHByb3h5X3VybDogc3RyKSAtPiBib29sOgogICAgICAgICIiIlRlc3RhIG8gcHJveHkgY29udHJhIG8gYWx2byBuZXV0cm8gZGUgc2F1ZGUuIiIiCiAgICAgICAgdHJ5OgogICAgICAgICAgICBoYW5kbGVyID0gdXJsbGliLnJlcXVlc3QuUHJveHlIYW5kbGVyKHsiaHR0cCI6IHByb3h5X3VybCwgImh0dHBzIjogcHJveHlfdXJsfSkKICAgICAgICAgICAgb3BlbmVyID0gdXJsbGliLnJlcXVlc3QuYnVpbGRfb3BlbmVyKGhhbmRsZXIpCiAgICAgICAgICAgIHJlcSA9IHVybGxpYi5yZXF1ZXN0LlJlcXVlc3QoSEVBTFRIX1RBUkdFVCwgaGVhZGVycz17IlVzZXItQWdlbnQiOiAiZWdyZXNzLXByb3h5LXRlc3Rlci8xLjAifSkKICAgICAgICAgICAgd2l0aCBvcGVuZXIub3BlbihyZXEsIHRpbWVvdXQ9Q0hFQ0tfVElNRU9VVCkgYXMgcmVzcDoKICAgICAgICAgICAgICAgIHJldHVybiByZXNwLnN0YXR1cyBpbiAoMjAwLCAyMDQpCiAgICAgICAgZXhjZXB0IEV4Y2VwdGlvbjoKICAgICAgICAgICAgcmV0dXJuIEZhbHNlCgogICAgZGVmIHJ1bl9oZWFsdGhfY3ljbGUoc2VsZik6CiAgICAgICAgIiIiVW0gY2ljbG8gZGUgYXVkaXRvcmlhIChtb2RlbG8gT0ZNICsgbWV0YSBkZSBhdGl2b3MgZG8gYW50aWdvIHRlc3Rlcik6CiAgICAgICAgcmV2YWxpZGEgb3MgYXRpdm9zIGF0dWFpcywgcmV2aXZlIHF1YXJlbnRlbmFzIHZlbmNpZGFzIGUgdGVzdGEgbyBwb29sCiAgICAgICAgYnJ1dG8gZW0gbG90ZSBhdGUgYXRpbmdpciBQUk9YWV9UQVJHRVRfQUNUSVZFIGF0aXZvcyB2YWxpZGFkb3Mgb3UgbwogICAgICAgIHRldG8gZGUgdmVyaWZpY2Fjb2VzIGRvIGNpY2xvLiBGYWxoYSA9IHF1YXJlbnRlbmEgY29tIGNvb2xkb3duLiIiIgogICAgICAgIHNlbGYuX3Jldml2ZV9leHBpcmVkKCkKICAgICAgICB0YXJnZXQgPSBpbnQob3MuZ2V0ZW52KCJQUk9YWV9UQVJHRVRfQUNUSVZFIiwgIjE1IikpCiAgICAgICAgd2l0aCBzZWxmLl9sb2NrOgogICAgICAgICAgICBhY3RpdmVzID0gbGlzdChzZWxmLmFjdGl2ZV9wcm94aWVzKQogICAgICAgICAgICB0ZXN0ZWQgPSBzZXQoYWN0aXZlcykKICAgICAgICAgICAgb3RoZXJzID0gW3AgZm9yIHAgaW4gc2VsZi5hbGxfcHJveGllcwogICAgICAgICAgICAgICAgICAgICAgaWYgcCBub3QgaW4gdGVzdGVkIGFuZCBwIG5vdCBpbiBzZWxmLnF1YXJhbnRpbmVfdW50aWxdCiAgICAgICAgcmFuZG9tLnNodWZmbGUob3RoZXJzKQogICAgICAgIGlmIGxlbihhY3RpdmVzKSA+PSB0YXJnZXQ6CiAgICAgICAgICAgIHRvX3Rlc3QgPSBhY3RpdmVzICAjIG1ldGEgYXRpbmdpZGE6IHNvIHJldmFsaWRhIG9zIGF0aXZvcwogICAgICAgIGVsc2U6CiAgICAgICAgICAgIGJ1ZGdldCA9IG1heChIRUFMVEhfTUFYX0NIRUNLUywgbGVuKGFjdGl2ZXMpKQogICAgICAgICAgICB0b190ZXN0ID0gbGlzdChkaWN0LmZyb21rZXlzKGFjdGl2ZXMgKyBvdGhlcnMpKVs6YnVkZ2V0XQogICAgICAgIGlmIG5vdCB0b190ZXN0OgogICAgICAgICAgICByZXR1cm4KICAgICAgICBsb2dnZXIuaW5mbyhmIltQcm94eVBvb2xdIEhlYWx0aCBjeWNsZTogdGVzdGFuZG8ge2xlbih0b190ZXN0KX0gcHJveGllcyAobWV0YToge3RhcmdldH0gYXRpdm9zKS4uLiIpCiAgICAgICAgcmVzdWx0cyA9IHt9CiAgICAgICAgd2l0aCBUaHJlYWRQb29sRXhlY3V0b3IobWF4X3dvcmtlcnM9MTUpIGFzIGV4OgogICAgICAgICAgICBmdXQgPSB7ZXguc3VibWl0KHNlbGYudGVzdF9wcm94eV9zeW5jLCBwKTogcCBmb3IgcCBpbiB0b190ZXN0fQogICAgICAgICAgICBmb3IgZiwgcCBpbiBmdXQuaXRlbXMoKToKICAgICAgICAgICAgICAgIHRyeToKICAgICAgICAgICAgICAgICAgICByZXN1bHRzW3BdID0gYm9vbChmLnJlc3VsdCgpKQogICAgICAgICAgICAgICAgZXhjZXB0IEV4Y2VwdGlvbjoKICAgICAgICAgICAgICAgICAgICByZXN1bHRzW3BdID0gRmFsc2UKICAgICAgICB3aXRoIHNlbGYuX2xvY2s6CiAgICAgICAgICAgIGZvciBwLCBvayBpbiByZXN1bHRzLml0ZW1zKCk6CiAgICAgICAgICAgICAgICBpZiBvazoKICAgICAgICAgICAgICAgICAgICBzZWxmLnF1YXJhbnRpbmVfdW50aWwucG9wKHAsIE5vbmUpCiAgICAgICAgICAgICAgICAgICAgaWYgcCBpbiBzZWxmLmFsbF9wcm94aWVzIGFuZCBwIG5vdCBpbiBzZWxmLmFjdGl2ZV9wcm94aWVzOgogICAgICAgICAgICAgICAgICAgICAgICBzZWxmLmFjdGl2ZV9wcm94aWVzLmFwcGVuZChwKQogICAgICAgICAgICAgICAgZWxzZToKICAgICAgICAgICAgICAgICAgICBpZiBwIGluIHNlbGYuYWN0aXZlX3Byb3hpZXM6CiAgICAgICAgICAgICAgICAgICAgICAgIHNlbGYuYWN0aXZlX3Byb3hpZXMucmVtb3ZlKHApCiAgICAgICAgICAgICAgICAgICAgc2VsZi5xdWFyYW50aW5lX3VudGlsW3BdID0gdGltZS50aW1lKCkgKyBDT09MRE9XTl9TRUNPTkRTCiAgICAgICAgICAgICAgICAgICAgc2VsZi5zdGF0c1sicXVhcmFudGluZXMiXSArPSAxCiAgICAgICAgICAgICMgU2UgYSBtZXRhIGZvaSBhdGluZ2lkYSBjZWRvLCBhdGl2b3MgZXhjZWRlbnRlcyBhbGVtIGRhIG1ldGEgc2FvCiAgICAgICAgICAgICMgbWFudGlkb3MgKHNhbyB2YWxpZGFkb3MpOyBvIGNpY2xvIHNlZ3VpbnRlIGFwZW5hcyByZXZhbGlkYS4KICAgICAgICAgICAgc2VsZi5zdGF0c1siaGVhbHRoX2N5Y2xlcyJdICs9IDEKICAgICAgICAgICAgYWN0aXZlX2NvdW50ID0gbGVuKHNlbGYuYWN0aXZlX3Byb3hpZXMpCiAgICAgICAgc2VsZi5zYXZlX3N0YXRlKCkKICAgICAgICBsb2dnZXIuaW5mbyhmIltQcm94eVBvb2xdIEhlYWx0aCBjeWNsZSBvazoge2FjdGl2ZV9jb3VudH0gYXRpdm9zIHZhbGlkYWRvcyBkZSB7bGVuKHNlbGYuYWxsX3Byb3hpZXMpfS4iKQoKICAgICMgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSBmdW5kbwogICAgZGVmIHN0YXJ0X2JhY2tncm91bmQoc2VsZik6CiAgICAgICAgaWYgc2VsZi5fcnVubmluZzoKICAgICAgICAgICAgcmV0dXJuCiAgICAgICAgc2VsZi5fcnVubmluZyA9IFRydWUKCiAgICAgICAgZGVmIGxvb3AoKToKICAgICAgICAgICAgdGltZS5zbGVlcCg1KQogICAgICAgICAgICB3aGlsZSBzZWxmLl9ydW5uaW5nOgogICAgICAgICAgICAgICAgdHJ5OgogICAgICAgICAgICAgICAgICAgIHNlbGYucmVmcmVzaF9zb3VyY2VzKCkKICAgICAgICAgICAgICAgICAgICBzZWxmLnJ1bl9oZWFsdGhfY3ljbGUoKQogICAgICAgICAgICAgICAgZXhjZXB0IEV4Y2VwdGlvbiBhcyBlOgogICAgICAgICAgICAgICAgICAgIGxvZ2dlci53YXJuaW5nKGYiW1Byb3h5UG9vbF0gZXJybyBubyBjaWNsbyBkZSBmdW5kbzoge2V9IikKICAgICAgICAgICAgICAgIHRpbWUuc2xlZXAoQ0hFQ0tfSU5URVJWQUwpCgogICAgICAgIHNlbGYuX3RocmVhZCA9IHRocmVhZGluZy5UaHJlYWQodGFyZ2V0PWxvb3AsIGRhZW1vbj1UcnVlKQogICAgICAgIHNlbGYuX3RocmVhZC5zdGFydCgpCiAgICAgICAgbG9nZ2VyLmluZm8oZiJbUHJveHlQb29sXSBUaHJlYWQgZGUgZnVuZG8gaW5pY2lhZGEgKGludGVydmFsbyB7Q0hFQ0tfSU5URVJWQUx9cykuIikKCiAgICBkZWYgc3RvcF9iYWNrZ3JvdW5kKHNlbGYpOgogICAgICAgIHNlbGYuX3J1bm5pbmcgPSBGYWxzZQo=
+#!/usr/bin/env python3
+"""
+SmartProxyPool — gerenciador de pool de proxies do yt-dlp-server.
+
+Portado de devkeviny/our-free-model-docker (proxy/proxy_server.py, SmartProxyPool),
+que por sua vez evoluiu do antigo ProxyManager/SmartProxyTester deste servidor.
+Substitui o par ProxyManager + SmartProxyTester por um unico componente:
+
+- Fontes: as 5 listas agregadoras historicas deste servidor + PROXY_SOURCE_URLS
+  extras (txt/json) + PROXY_POOL_URLS fixos.
+- Health check neutro periodico (alvo configuravel, padrao generate_204 do Google),
+  em thread de fundo, com teto de verificacoes por ciclo.
+- Quarentena com cooldown: proxy que falha sai por PROXY_COOLDOWN_SECONDS e volta
+  sozinho (sem bloqueio semi-permanente).
+- Rotacao round-robin entre os ativos (get_candidates), com failover a cargo do
+  chamador (stream_download/info/transcript marcam falha via mark_failure).
+- PROXY_URL (ou PROXY_SINGLE_URL) definido => atalho: usa so esse proxy.
+- Fallback direto (None) por ultimo, salvo PROXY_ALLOW_DIRECT_FALLBACK=false.
+- Estado persistido em proxies_active.json (formato OFM) em DATA_DIR.
+
+Adaptacoes em relacao ao original assincrono do OFM: execucao sincrona com
+ThreadPoolExecutor (o app e FastAPI + geradores sincronos) e protecao por lock.
+Somente biblioteca padrao.
+"""
+
+import json
+import logging
+import os
+import random
+import re
+import threading
+import time
+import urllib.request
+from concurrent.futures import ThreadPoolExecutor
+
+logger = logging.getLogger("proxy-pool")
+
+# Fontes agregadoras historicas deste servidor (as mesmas do antigo ProxyManager)
+BUILTIN_SOURCES = [
+    ("proxifly_br", "https://raw.githubusercontent.com/proxifly/free-proxy-list/refs/heads/main/proxies/countries/BR/data.json", "json"),
+    ("zaeem_socks5", "https://raw.githubusercontent.com/Zaeem20/FREE_PROXIES_LIST/refs/heads/master/socks5.txt", "socks5"),
+    ("zaeem_https", "https://raw.githubusercontent.com/Zaeem20/FREE_PROXIES_LIST/refs/heads/master/https.txt", "http"),
+    ("hproxy_br", "https://raw.githubusercontent.com/hproxy-com/free-proxy-list/refs/heads/main/by-country/BR.txt", "http"),
+    ("databay_br", "https://raw.githubusercontent.com/databay-labs/free-proxy-list/refs/heads/master/by-country/br/http.txt", "http"),
+    ("proxifly_global", "https://raw.githubusercontent.com/proxifly/free-proxy-list/refs/heads/main/proxies/all/data.json", "json"),
+]
+
+CHECK_INTERVAL = int(os.getenv("PROXY_CHECK_INTERVAL", "300"))
+CHECK_TIMEOUT = int(os.getenv("PROXY_CHECK_TIMEOUT", "8"))
+COOLDOWN_SECONDS = int(os.getenv("PROXY_COOLDOWN_SECONDS", "300"))
+HEALTH_TARGET = os.getenv("PROXY_HEALTH_TARGET", "http://www.gstatic.com/generate_204")
+HEALTH_MAX_CHECKS = int(os.getenv("PROXY_HEALTH_MAX_CHECKS", "150"))
+ALLOW_DIRECT_FALLBACK = os.getenv("PROXY_ALLOW_DIRECT_FALLBACK", "true").lower() in ("true", "1", "yes")
+
+
+class SmartProxyPool:
+    def __init__(self, data_dir: str):
+        self.data_dir = data_dir
+        self.active_file = os.path.join(data_dir, "proxies_active.json")
+        self.single_proxy = (os.getenv("PROXY_URL") or os.getenv("PROXY_SINGLE_URL") or "").strip() or None
+
+        self.all_proxies = []
+        self.active_proxies = []
+        self.quarantine_until = {}  # proxy -> timestamp (OFM)
+        self.stats = {
+            "requests_total": 0,
+            "requests_proxied": 0,
+            "requests_fallback": 0,
+            "failovers": 0,
+            "quarantines": 0,
+            "health_cycles": 0,
+        }
+        self.current_index = 0
+        self._lock = threading.RLock()
+        self._running = False
+        self._thread = None
+        self._load_state()
+        self.refresh_sources()
+
+    # ------------------------------------------------------------- fontes
+    def refresh_sources(self):
+        """(Re)carrega as listas agregadoras + fontes extras do ambiente."""
+        proxies = set()
+
+        raw_fixed = os.getenv("PROXY_POOL_URLS", "")
+        for p in re.split(r"[,\s]+", raw_fixed):
+            p = p.strip()
+            if p:
+                proxies.add(p)
+
+        for name, url, ptype in BUILTIN_SOURCES:
+            try:
+                resp = urllib.request.urlopen(
+                    urllib.request.Request(url, headers={"User-Agent": "yt-dlp-server-proxy-pool/1.0"}),
+                    timeout=15)
+                raw = resp.read().decode("utf-8", errors="ignore")
+                if ptype == "json":
+                    for item in json.loads(raw):
+                        if isinstance(item, dict) and item.get("proxy"):
+                            proxies.add(item["proxy"])
+                else:
+                    scheme = "socks5" if ptype == "socks5" else "http"
+                    for line in raw.splitlines():
+                        line = line.strip()
+                        if line and re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d+$", line):
+                            proxies.add(f"{scheme}://{line}")
+                logger.info(f"[ProxyPool] fonte {name}: ok")
+            except Exception as e:
+                logger.warning(f"[ProxyPool] fonte {name} falhou: {e}")
+
+        extra = os.getenv("PROXY_SOURCE_URLS", "")
+        for url in [u.strip() for u in extra.split(",") if u.strip()]:
+            proxies.update(self._fetch_remote_source(url))
+
+        with self._lock:
+            self.all_proxies = sorted(proxies)
+            # Ativo = somente quem ja passou no health check (semantica do antigo
+            # SmartProxyTester). Nao-testados ficam no pool bruto ate serem validados.
+            self.active_proxies = [p for p in self.active_proxies if p in proxies]
+        logger.info(f"[ProxyPool] {len(self.all_proxies)} proxies carregados ({len(self.active_proxies)} ativos).")
+        self.save_state()
+
+    def _fetch_remote_source(self, url: str):
+        """Busca uma lista remota (txt ou json) — mesmo parser do OFM."""
+        discovered = set()
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "egress-proxy-fetcher/1.0"})
+            with urllib.request.urlopen(req, timeout=12) as resp:
+                raw = resp.read().decode("utf-8", errors="ignore").strip()
+                if raw.startswith("[") or raw.startswith("{"):
+                    data = json.loads(raw)
+                    items = data if isinstance(data, list) else data.get("proxies", [])
+                    for item in items:
+                        if isinstance(item, dict) and item.get("proxy"):
+                            p = item["proxy"].strip()
+                            if not p.startswith("http://") and not p.startswith("socks5://"):
+                                p = f"http://{p}"
+                            discovered.add(p)
+                        elif isinstance(item, str) and item.strip():
+                            p = item.strip()
+                            if not p.startswith("http://") and not p.startswith("socks5://"):
+                                p = f"http://{p}"
+                            discovered.add(p)
+                else:
+                    for line in raw.splitlines():
+                        line = line.strip()
+                        if not line or line.startswith("#"):
+                            continue
+                        m = re.search(r"((?:https?|socks5)://)?([0-9]{1,3}(?:\.[0-9]{1,3}){3}:[0-9]{2,5})", line)
+                        if m:
+                            scheme = m.group(1) or "http://"
+                            discovered.add(f"{scheme}{m.group(2)}")
+        except Exception as e:
+            logger.warning(f"[ProxyPool] fonte extra {url} falhou: {e}")
+        return discovered
+
+    # ------------------------------------------------------------- estado
+    def _load_state(self):
+        """Restaura ativos/quarentena do proxies_active.json (formato OFM ou legado)."""
+        try:
+            if os.path.exists(self.active_file):
+                with open(self.active_file) as f:
+                    data = json.load(f)
+                if isinstance(data, list):
+                    self.active_proxies = list(data)
+                elif isinstance(data, dict):
+                    self.active_proxies = list(data.get("active_proxies") or data.get("working_proxies") or [])
+                    q = data.get("quarantine_until") or {}
+                    if isinstance(q, dict):
+                        self.quarantine_until = {k: float(v) for k, v in q.items()}
+        except Exception:
+            pass
+
+    def save_state(self):
+        try:
+            with self._lock:
+                payload = {
+                    "updated_at": time.time(),
+                    "total": len(self.all_proxies),
+                    "active_count": len(self.active_proxies),
+                    "active_proxies": list(self.active_proxies),
+                    "quarantined_count": len(self.quarantine_until),
+                    "quarantine_until": dict(self.quarantine_until),
+                }
+            with open(self.active_file, "w") as f:
+                json.dump(payload, f, indent=2)
+        except Exception as e:
+            logger.warning(f"[ProxyPool] falha ao salvar estado: {e}")
+
+    def active_snapshot(self):
+        with self._lock:
+            return list(self.active_proxies)
+
+    def quarantined_snapshot(self):
+        with self._lock:
+            return sorted(self.quarantine_until.keys())
+
+    # ------------------------------------------------------------- quarentena (OFM)
+    def quarantine(self, proxy: str, reason: str = "error"):
+        if not proxy:
+            return
+        with self._lock:
+            self.quarantine_until[proxy] = time.time() + COOLDOWN_SECONDS
+            self.stats["quarantines"] += 1
+            if proxy in self.active_proxies:
+                self.active_proxies.remove(proxy)
+        logger.warning(f"[ProxyPool] Quarentena: '{proxy}' por {COOLDOWN_SECONDS}s ({reason}).")
+        self.save_state()
+
+    # Compat: o restante do app chamava evict_proxy()
+    def mark_failure(self, proxy: str, reason: str = "request_failed"):
+        self.quarantine(proxy, reason=reason)
+
+    def _revive_expired(self):
+        now = time.time()
+        with self._lock:
+            expired = [p for p, t in self.quarantine_until.items() if now >= t]
+            for p in expired:
+                del self.quarantine_until[p]
+                if p in self.all_proxies and p not in self.active_proxies:
+                    self.active_proxies.append(p)
+                    logger.info(f"[ProxyPool] '{p}' saiu da quarentena e voltou ao pool.")
+
+    # ------------------------------------------------------------- selecao (OFM: round-robin)
+    def get_candidates(self, limit: int = 5):
+        """Proximos `limit` candidatos em round-robin + direto (None) por ultimo.
+
+        Compativel com o antigo get_candidate_proxies(limit): PROXY_URL tem
+        prioridade absoluta; sem ativos, cai para uma amostra das listas.
+        """
+        if self.single_proxy:
+            return [self.single_proxy]
+        self._revive_expired()
+        with self._lock:
+            self.stats["requests_total"] += 1
+            actives = [p for p in self.active_proxies if p not in self.quarantine_until]
+            candidates = []
+            if actives:
+                start = self.current_index % len(actives)
+                ordered = actives[start:] + actives[:start]
+                candidates = ordered[:limit]
+                self.current_index = (start + max(1, len(candidates))) % len(actives)
+            if len(candidates) < limit:
+                rest = [p for p in self.all_proxies
+                        if p not in self.quarantine_until and p not in candidates]
+                if rest:
+                    random.shuffle(rest)
+                    candidates.extend(rest[: limit - len(candidates)])
+            if candidates:
+                self.stats["requests_proxied"] += 1
+            else:
+                self.stats["requests_fallback"] += 1
+        if ALLOW_DIRECT_FALLBACK and None not in candidates:
+            candidates.append(None)
+        return candidates
+
+    def get_candidate(self):
+        """Um unico candidato (round-robin), como no OFM."""
+        c = self.get_candidates(limit=1)
+        return c[0] if c else None
+
+    # ------------------------------------------------------------- health check (OFM)
+    def test_proxy_sync(self, proxy_url: str) -> bool:
+        """Testa o proxy contra o alvo neutro de saude."""
+        try:
+            handler = urllib.request.ProxyHandler({"http": proxy_url, "https": proxy_url})
+            opener = urllib.request.build_opener(handler)
+            req = urllib.request.Request(HEALTH_TARGET, headers={"User-Agent": "egress-proxy-tester/1.0"})
+            with opener.open(req, timeout=CHECK_TIMEOUT) as resp:
+                return resp.status in (200, 204)
+        except Exception:
+            return False
+
+    def run_health_cycle(self):
+        """Um ciclo de auditoria (modelo OFM + meta de ativos do antigo tester):
+        revalida os ativos atuais, revive quarentenas vencidas e testa o pool
+        bruto em lote ate atingir PROXY_TARGET_ACTIVE ativos validados ou o
+        teto de verificacoes do ciclo. Falha = quarentena com cooldown."""
+        self._revive_expired()
+        target = int(os.getenv("PROXY_TARGET_ACTIVE", "15"))
+        with self._lock:
+            actives = list(self.active_proxies)
+            tested = set(actives)
+            others = [p for p in self.all_proxies
+                      if p not in tested and p not in self.quarantine_until]
+        random.shuffle(others)
+        if len(actives) >= target:
+            to_test = actives  # meta atingida: so revalida os ativos
+        else:
+            budget = max(HEALTH_MAX_CHECKS, len(actives))
+            to_test = list(dict.fromkeys(actives + others))[:budget]
+        if not to_test:
+            return
+        logger.info(f"[ProxyPool] Health cycle: testando {len(to_test)} proxies (meta: {target} ativos)...")
+        results = {}
+        with ThreadPoolExecutor(max_workers=15) as ex:
+            fut = {ex.submit(self.test_proxy_sync, p): p for p in to_test}
+            for f, p in fut.items():
+                try:
+                    results[p] = bool(f.result())
+                except Exception:
+                    results[p] = False
+        with self._lock:
+            for p, ok in results.items():
+                if ok:
+                    self.quarantine_until.pop(p, None)
+                    if p in self.all_proxies and p not in self.active_proxies:
+                        self.active_proxies.append(p)
+                else:
+                    if p in self.active_proxies:
+                        self.active_proxies.remove(p)
+                    self.quarantine_until[p] = time.time() + COOLDOWN_SECONDS
+                    self.stats["quarantines"] += 1
+            # Se a meta foi atingida cedo, ativos excedentes alem da meta sao
+            # mantidos (sao validados); o ciclo seguinte apenas revalida.
+            self.stats["health_cycles"] += 1
+            active_count = len(self.active_proxies)
+        self.save_state()
+        logger.info(f"[ProxyPool] Health cycle ok: {active_count} ativos validados de {len(self.all_proxies)}.")
+
+    # ------------------------------------------------------------- fundo
+    def start_background(self):
+        if self._running:
+            return
+        self._running = True
+
+        def loop():
+            time.sleep(5)
+            while self._running:
+                try:
+                    self.refresh_sources()
+                    self.run_health_cycle()
+                except Exception as e:
+                    logger.warning(f"[ProxyPool] erro no ciclo de fundo: {e}")
+                time.sleep(CHECK_INTERVAL)
+
+        self._thread = threading.Thread(target=loop, daemon=True)
+        self._thread.start()
+        logger.info(f"[ProxyPool] Thread de fundo iniciada (intervalo {CHECK_INTERVAL}s).")
+
+    def stop_background(self):
+        self._running = False
