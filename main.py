@@ -33,7 +33,7 @@ def _serve_page(filename):
         '<meta name="stitch-api-key" content="STITCH_API_KEY_PLACEHOLDER"/>',
         '<script>window.STITCH_API_KEY="' + STITCH_API_KEY + '";</script>\n<meta name="stitch-api-key" content="' + STITCH_API_KEY + '"/>'
     )
-    return HTMLResponse(content=html)
+    return HTMLResponse(content=html, headers={"Cache-Control": "no-store"})
 
 executor = ThreadPoolExecutor(max_workers=10)
 
