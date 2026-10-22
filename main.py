@@ -87,12 +87,16 @@ class DataManager:
             cpu = psutil.cpu_percent(interval=0.5)
             mem = psutil.virtual_memory()
             net = psutil.net_io_counters()
+            disk = psutil.disk_usage(DATA_DIR)
             point = {
                 "ts": time.time(),
                 "cpu": round(cpu, 1),
                 "ram_pct": round(mem.percent, 1),
                 "ram_used_mb": round(mem.used / (1024*1024), 0),
                 "ram_total_mb": round(mem.total / (1024*1024), 0),
+                "disk_used_gb": round(disk.used / (1024**3), 1),
+                "disk_total_gb": round(disk.total / (1024**3), 1),
+                "disk_pct": round(disk.percent, 1),
                 "net_recv_mbps": round(net.bytes_recv / (1024*1024), 2),
                 "net_sent_mbps": round(net.bytes_sent / (1024*1024), 2),
             }

@@ -36,7 +36,8 @@ document.getElementById('hc').textContent=items.length;document.getElementById('
 const top=done.sort((a,b)=>(b.size||0)-(a.size||0)).slice(0,8);
 document.getElementById('top').innerHTML=top.map(i=>'<div class="flex items-center justify-between py-2 border-b border-white/5"><span class="truncate max-w-[60%] text-sm">'+(i.title||i.url||'--')+'</span><span class="font-mono text-primary text-sm">'+fmtSize(i.size)+'</span></div>').join('')||'<p class="text-onSurfaceVariant text-sm">Vazio.</p>';
 }catch(e){}}
-load();setInterval(load,10000);
+async function loadDisk(){try{const r=await fetch('/api/stats',{credentials:'include'});const d=await r.json();const c=d.current||{};if(c.disk_total_gb){document.getElementById('disk').textContent=c.disk_used_gb+' / '+c.disk_total_gb+' GB';document.getElementById('disk-det').textContent=c.disk_pct+'% usado';}}catch(e){}}
+load();loadDisk();setInterval(load,10000);setInterval(loadDisk,30000);
 </script>
 <script src="/static/brand.js"></script>
 <script>renderLogo('horizontal','md',document.getElementById('logo'));</script>

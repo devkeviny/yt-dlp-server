@@ -46,6 +46,12 @@ const nodes=[['POOL-ATIVOS','Validados (health check)',d.active_count>0?'OK':'VA
 document.getElementById('proxy-tbody').innerHTML=nodes.map(n=>`<tr class="border-t border-white/5"><td class="px-4 py-2 text-onSurface">${n[0]}</td><td class="px-4 py-2 text-onSurfaceVariant">${n[1]}</td><td class="px-4 py-2"><span class="${n[2]==='OK'?'text-tertiaryContainer':'text-error'}">${n[2]==='OK'?'● ATIVO':'○ OFF'}</span></td><td class="px-4 py-2 text-onSurfaceVariant">${n[3]}</td></tr>`).join('');
 }catch(e){}}
 async function copyApiKey(){const k=document.getElementById('api-key').textContent;if(!k||k==='--')return;try{await navigator.clipboard.writeText(k);}catch(e){const t=document.createElement('textarea');t.value=k;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();}const b=document.getElementById('api-copy-btn');if(b){const o=b.textContent;b.textContent='Copiado!';setTimeout(()=>{b.textContent=o;},1500);}}
+function setToggle(on){const k=document.getElementById('api-knob');const b=document.getElementById('api-toggle');
+if(on){k.className='absolute top-1 left-7 w-6 h-6 rounded-full bg-primary transition-all';b.className='relative w-14 h-8 rounded-full bg-primaryContainer transition-all';}
+else{k.className='absolute top-1 left-1 w-6 h-6 rounded-full bg-onSurfaceVariant transition-all';b.className='relative w-14 h-8 rounded-full bg-surfaceVariant transition-all';}}
+async function toggleApi(){const cur=document.getElementById('api-knob').style.left==='28px';
+const nv=!cur;const fd=new FormData();fd.append('enabled',nv);
+try{await fetch('/api/config/api',{method:'POST',body:fd,credentials:'include'});setToggle(nv);}catch(e){}}
 async function loadApi(){try{const r=await fetch('/api/config/api',{credentials:'include'});const d=await r.json();setToggle(d.enabled);document.getElementById('api-key').textContent=d.api_key||'--';}catch(e){}}
 loadDiag();loadProxies();loadApi();setInterval(loadDiag,5000);setInterval(loadProxies,15000);
 </script>
