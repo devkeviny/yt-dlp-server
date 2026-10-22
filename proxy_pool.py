@@ -71,6 +71,7 @@ class SmartProxyPool:
             "health_cycles": 0,
         }
         self.current_index = 0
+        self.latency_ms = {}
         self._lock = threading.RLock()
         self._running = False
         self._thread = None
@@ -292,12 +293,22 @@ class SmartProxyPool:
         if not to_test:
             return
         logger.info(f"[ProxyPool] Health cycle: testando {len(to_test)} proxies (meta: {target} ativos)...")
+        def _timed(p):
+            t0 = time.monotonic()
+            ok = self.test_proxy_sync(p)
+            return ok, int((time.monotonic() - t0) * 1000)
+
         results = {}
         with ThreadPoolExecutor(max_workers=15) as ex:
-            fut = {ex.submit(self.test_proxy_sync, p): p for p in to_test}
+            fut = {ex.submit(_timed, p): p for p in to_test}
             for f, p in fut.items():
                 try:
-                    results[p] = bool(f.result())
+                    ok, ms = f.result()
+                    results[p] = ok
+                    if ok:
+                        self.latency_ms[p] = ms
+                    else:
+                        self.latency_ms.pop(p, None)
                 except Exception:
                     results[p] = False
         with self._lock:

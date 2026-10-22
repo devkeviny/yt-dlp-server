@@ -130,8 +130,9 @@
 <!-- Stitch runtime integration: carrega design system via API Stitch,
      atualiza CSS vars dinamicamente. Tem fallback local se API falhar. -->
 <script src="stitch-client.js"></script>
-</head>
+<link href="/static/brand.css" rel="stylesheet"/></head>
 <body class="font-body-md text-body-md overflow-hidden h-screen flex flex-col">
+<div id="app-nav"></div>
 
 <!-- Stitch status indicator (canto superior direito) -->
 <div id="stitch-status" class="fixed top-3 right-3 z-[60] flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider backdrop-blur-md bg-surface-container/80 border border-outline-variant opacity-0 transition-opacity duration-300" data-state="loading" title="Carregando design system...">
@@ -151,30 +152,7 @@
 </script>
 
 <!-- TopAppBar -->
-<header class="flex justify-between items-center px-container-padding h-16 w-full fixed top-0 z-50 bg-surface-container dark:bg-surface-container border-b border-outline-variant">
-<div class="flex items-center gap-4">
-<span class="font-display-lg text-display-lg text-primary tracking-tighter" style="font-size:20px;font-weight:700;">yt-dlp Server</span>
-<div class="hidden md:flex gap-6 ml-8">
-<a class="font-title-sm text-title-sm text-primary font-bold border-b-2 border-primary cursor-pointer active:opacity-80" href="#">Downloads</a>
-<a class="font-title-sm text-title-sm text-on-surface-variant hover:bg-surface-variant transition-colors px-2 py-1 rounded cursor-pointer active:opacity-80" href="#">Fila</a>
-<a class="font-title-sm text-title-sm text-on-surface-variant hover:bg-surface-variant transition-colors px-2 py-1 rounded cursor-pointer active:opacity-80" href="#">Config</a>
-</div>
-</div>
-<div class="flex items-center gap-stack-lg">
-<!-- Real-time network speed pill -->
-<div id="net-pill" class="flex gap-4 font-code-label text-code-label text-primary bg-surface-container-low px-4 py-2 rounded-lg border border-outline-variant">
-<div class="flex items-center gap-1 text-secondary">
-<span class="material-symbols-outlined text-[16px]">arrow_downward</span>
-<span id="net-down-speed">0 B/s</span>
-</div>
-<div class="flex items-center gap-1 text-on-surface-variant">
-<span class="material-symbols-outlined text-[16px]">arrow_upward</span>
-<span id="net-up-speed">0 B/s</span>
-</div>
-<span id="net-pulse" class="w-2 h-2 rounded-full bg-secondary self-center animate-pulse"></span>
-</div>
-</div>
-</header>
+
 
 <!-- SideNavBar -->
 <aside class="fixed left-0 top-16 bottom-8 w-64 flex flex-col p-stack-md z-40 bg-surface-container-low dark:bg-surface-container-low border-r border-outline-variant hidden lg:flex">
@@ -555,5 +533,5 @@ Carregando histórico...
         });
     })();
 </script>
-</body>
+<script src="/static/brand.js"></script><script src="/static/nav.js"></script></body>
 </html>

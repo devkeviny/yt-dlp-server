@@ -10,18 +10,11 @@
 <style>.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400;vertical-align:middle}body{background:#131313;color:#e5e2e1;font-family:Inter,sans-serif;margin:0}.glass{background:rgba(19,19,19,.6);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.08)}</style>
 </head>
 <body class="min-h-screen">
+<div id="app-nav"></div>
 <script>(async function(){try{const me=await fetch('/api/me',{credentials:'include'});if(!me.ok)location.href='/login';}catch(e){location.href='/login';}})();</script>
-<header class="fixed top-0 w-full z-50 flex justify-between items-center px-marginDesktop h-20 bg-surface/60 backdrop-blur-md border-b border-white/10">
-<span id="logo"></span>
-<nav class="hidden md:flex gap-8 text-sm"><a class="text-onSurfaceVariant hover:text-primary cursor-pointer" href="/">Dashboard</a><a class="text-onSurfaceVariant hover:text-primary cursor-pointer" href="/transfers">Transfers</a><a class="text-primary border-b-2 border-primary pb-1" href="/storage">Storage</a><a class="text-onSurfaceVariant hover:text-primary cursor-pointer" href="/system">System</a></nav>
-<button onclick="logout()" class="material-symbols-outlined text-onSurfaceVariant hover:text-primary">logout</button>
-</header>
-<aside class="fixed left-0 top-0 h-full pt-20 flex flex-col bg-surfaceContainerLowest/80 backdrop-blur-xl border-r border-white/10 w-64 hidden lg:flex">
-<div class="p-6 flex items-center gap-3"><div class="w-9 h-9 rounded-lg bg-primaryContainer/20 flex items-center justify-center"><span class="material-symbols-outlined text-primary" style="font-variation-settings:'FILL' 1">terminal</span></div><div><div class="text-xs text-primary font-mono">NODE_01</div><div class="text-[10px] text-onSurfaceVariant uppercase">Online</div></div></div>
-<nav class="flex-1 px-4 py-6 space-y-2"><a class="flex items-center gap-4 px-4 py-3 rounded-lg text-onSurfaceVariant hover:bg-surfaceVariant/30" href="/"><span class="material-symbols-outlined">dashboard</span>Home</a><a class="flex items-center gap-4 px-4 py-3 rounded-lg text-onSurfaceVariant hover:bg-surfaceVariant/30" href="/transfers"><span class="material-symbols-outlined">download</span>Transfers</a><a class="flex items-center gap-4 px-4 py-3 rounded-lg bg-primaryContainer/20 text-primary border-r-4 border-primary" href="/storage"><span class="material-symbols-outlined">database</span>Storage</a><a class="flex items-center gap-4 px-4 py-3 rounded-lg text-onSurfaceVariant hover:bg-surfaceVariant/30" href="/system"><span class="material-symbols-outlined">settings</span>System</a></nav>
-<div class="p-4"><button onclick="logout()" class="w-full py-3 bg-primaryContainer text-onPrimaryContainer font-bold rounded-xl active:scale-95 transition-all flex items-center justify-center gap-2"><span class="material-symbols-outlined">logout</span>Sair</button></div>
-</aside>
-<main class="lg:pl-64 pt-24 pb-16 px-6 max-w-7xl mx-auto space-y-6">
+
+
+<main class="pt-24 pb-16 px-6 max-w-7xl mx-auto space-y-6">
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 <div class="glass p-6 rounded-2xl text-center"><div class="text-[10px] text-onSurfaceVariant uppercase">Disco Container</div><div id="disk" class="text-2xl font-bold text-primary font-mono mt-1">--</div><div class="text-xs text-onSurfaceVariant mt-1" id="disk-det"></div></div>
 <div class="glass p-6 rounded-2xl text-center"><div class="text-[10px] text-onSurfaceVariant uppercase">Histórico (meta)</div><div id="hc" class="text-2xl font-bold text-primaryContainer font-mono mt-1">--</div><div class="text-xs text-onSurfaceVariant mt-1">máx 100 entradas</div></div>
@@ -35,7 +28,7 @@
 function logout(){document.cookie='auth_session=; expires=Thu,01 Jan 1970 00:00:00 UTC; path=/;';location.href='/login';}
 function fmtSize(b){if(!b)return'0 B';const u=['B','KB','MB','GB'];let v=b,i=0;while(v>=1024&&i<3){v/=1024;i++;}return v.toFixed(1)+' '+u[i];}
 </script>
-</body></html>
+<script src="/static/nav.js"></script></body></html>
 async function load(){try{
 const r=await fetch('/api/history',{credentials:'include'});const items=await r.json();
 const done=items.filter(i=>i.status==='completed');const total=done.reduce((a,i)=>a+(i.size||0),0);

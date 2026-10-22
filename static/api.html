@@ -2,7 +2,7 @@
 <html class="dark" lang="pt-BR"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Sleek Media Downloader | Documentação API</title>
+<title>Lulu Downloader | Documentação API</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <style>
@@ -30,25 +30,12 @@
         },
     }
 </script>
-</head>
+<link href="/static/brand.css" rel="stylesheet"/></head>
 <body class="bg-background text-on-surface font-body min-h-screen selection:bg-primary selection:text-on-primary">
-<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-20 bg-surface/60 backdrop-blur-md border-b border-white/10 shadow-[0_0_20px_rgba(0,240,255,0.05)]">
-    <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow-[0_0_12px_rgba(0,240,255,0.4)]">
-            <span class="material-symbols-outlined text-on-primary text-sm">api</span>
-        </div>
-        <span class="text-lg font-bold text-primary tracking-tighter">Sleek Media Downloader</span>
-    </div>
-    <nav class="hidden md:flex items-center gap-6">
-        <a class="text-on-surface-variant hover:text-primary transition-all" href="/dashboard">Dashboard</a>
-        <a class="text-on-surface-variant hover:text-primary transition-all" href="/transfers">Transferências</a>
-        <a class="text-on-surface-variant hover:text-primary transition-all" href="/storage">Armazenamento</a>
-        <a class="text-on-surface-variant hover:text-primary transition-all" href="/system">Sistema</a>
-    </nav>
-    <a href="/" onclick="document.cookie='session=;max-age=0'" class="text-xs text-on-surface-variant hover:text-error transition-colors">Sair ✕</a>
-</header>
+<div id="app-nav"></div>
 
-<main class="lg:pl-64 pt-24 pb-20 px-6 md:px-12 min-h-screen">
+
+<main class="pt-24 pb-20 px-6 md:px-12 min-h-screen">
     <div class="max-w-6xl mx-auto space-y-12">
         <header class="mb-12">
             <div class="flex items-center gap-3 text-primary mb-2">
@@ -56,7 +43,7 @@
                 <span class="text-xs font-stats tracking-widest uppercase">Referência Técnica</span>
             </div>
             <h1 class="text-5xl font-bold tracking-tighter text-on-surface">Documentação da API</h1>
-            <p class="text-on-surface-variant font-body">Interface de integração para automação de downloads e monitoramento de node.</p>
+            <p class="text-on-surface-variant font-body">Interface de integração para automação de downloads e monitoramento do servidor.</p>
         </header>
 
         <div class="space-y-12">
@@ -65,9 +52,9 @@
                 <h2 class="text-2xl font-bold text-primary mb-6 flex items-center gap-3">
                     <span class="material-symbols-outlined">vpn_key</span> Autenticação
                 </h2>
-                <p class="text-on-surface-variant mb-6">Todas as requisições devem incluir a chave de API no cabeçalho HTTP.</p>
+                <p class="text-on-surface-variant mb-6">Todas as requisições devem incluir a chave de API no cabeçalho HTTP <code class="text-primary">X-API-Key</code> ou no parâmetro <code class="text-primary">?api_key=</code>. Sua chave atual:</p>
                 <div class="code-block p-6 rounded-xl text-primary text-sm leading-relaxed">
-                    X-API-Key: sua_chave_api_secreta_aqui
+                    X-API-Key: <span id="api-key-value">carregando...</span> <button id="api-key-copy" class="px-3 py-1 text-xs rounded-md bg-primary/20 text-primary hover:bg-primary/30 transition-all">Copiar</button>
                 </div>
             </section>
 
@@ -78,13 +65,13 @@
                     <div class="flex justify-between items-start mb-6">
                         <div>
                             <span class="px-2 py-1 bg-primary/20 text-primary text-[10px] font-bold rounded uppercase mb-2 inline-block">GET</span>
-                            <h3 class="text-xl font-bold text-on-surface">/info</h3>
+                            <h3 class="text-xl font-bold text-on-surface">/api/info</h3>
                         </div>
                         <span class="text-xs text-on-surface-variant font-stats">Analisa URL</span>
                     </div>
                     <p class="text-on-surface-variant mb-6">Retorna metadados do vídeo (Título, Duração, Thumbnail) e valida a disponibilidade via proxy.</p>
                     <div class="code-block p-4 rounded-xl text-xs text-on-surface-variant">
-                        GET /info?url=https://youtube.com/watch?v=...&net=auto
+                        GET /api/info?url=https://youtube.com/watch?v=...
                     </div>
                 </div>
 
@@ -93,13 +80,13 @@
                     <div class="flex justify-between items-start mb-6">
                         <div>
                             <span class="px-2 py-1 bg-primary/20 text-primary text-[10px] font-bold rounded uppercase mb-2 inline-block">GET</span>
-                            <h3 class="text-xl font-bold text-on-surface">/download</h3>
+                            <h3 class="text-xl font-bold text-on-surface">/api/download</h3>
                         </div>
                         <span class="text-xs text-on-surface-variant font-stats">Processa Arquivo</span>
                     </div>
                     <p class="text-on-surface-variant mb-6">Inicia o stream de download do arquivo no formato especificado.</p>
                     <div class="code-block p-4 rounded-xl text-xs text-on-surface-variant">
-                        GET /download?url=...&fmt=mp4&net=auto
+                        GET /api/download?url=...&fmt=mp3
                     </div>
                 </div>
 
@@ -108,13 +95,13 @@
                     <div class="flex justify-between items-start mb-6">
                         <div>
                             <span class="px-2 py-1 bg-primary/20 text-primary text-[10px] font-bold rounded uppercase mb-2 inline-block">GET</span>
-                            <h3 class="text-xl font-bold text-on-surface">/api/system/stats</h3>
+                            <h3 class="text-xl font-bold text-on-surface">/api/stats</h3>
                         </div>
                         <span class="text-xs text-on-surface-variant font-stats">Saúde do Node</span>
                     </div>
                     <p class="text-on-surface-variant mb-6">Retorna a utilização de CPU, RAM, Disco e Uptime do servidor em tempo real.</p>
                     <div class="code-block p-4 rounded-xl text-xs text-on-surface-variant">
-                        GET /api/system/stats
+                        GET /api/stats
                     </div>
                 </div>
             </div>
@@ -123,12 +110,16 @@
 </main>
 
 <footer class="w-full py-8 px-6 md:px-12 flex justify-between items-center bg-surface-dim border-t border-white/10 mt-auto">
-    <div class="font-stats text-primary font-bold">Sleek Media Downloader</div>
+    <div class="font-stats text-primary font-bold">Lulu Downloader</div>
     <div class="flex gap-6 text-on-surface-variant/60 text-xs font-stats">
-        <a class="hover:text-primary transition-colors" href="#">Documentação API</a>
-        <a class="hover:text-primary transition-colors" href="#">Status do Sistema</a>
-        <a class="hover:text-primary transition-colors" href="#">Suporte</a>
+        <a class="hover:text-primary transition-colors" href="/api">Documentação API</a>
+        <a class="hover:text-primary transition-colors" href="/system">Status do Sistema</a>
+        <a class="hover:text-primary transition-colors" href="/dashboard">Dashboard</a>
     </div>
-    <div class="text-xs text-on-surface-variant/40 font-stats">© 2026 Sleek Media. v3.0.0-stable</div>
+    <div class="text-xs text-on-surface-variant/40 font-stats">© 2026 Lulu Downloader</div>
 </footer>
-</body></html>
+<script>
+async function loadApiKey(){try{const r=await fetch('/api/config/api',{credentials:'include'});const d=await r.json();document.getElementById('api-key-value').textContent=d.api_key||'(indisponivel)';}catch(e){document.getElementById('api-key-value').textContent='(erro ao carregar)';}}
+document.getElementById('api-key-copy').addEventListener('click',async()=>{const k=document.getElementById('api-key-value').textContent;try{await navigator.clipboard.writeText(k);}catch(e){}const b=document.getElementById('api-key-copy');const o=b.textContent;b.textContent='Copiado!';setTimeout(()=>{b.textContent=o;},1500);});
+loadApiKey();
+</script><script src="/static/brand.js"></script><script src="/static/nav.js"></script></body></html>

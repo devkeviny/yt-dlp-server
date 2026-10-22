@@ -286,6 +286,8 @@ async def me(request: Request):
 async def api_download(request: Request, url: str, fmt: str = 'mp4', q: int = 0, api_key: str = None):
     if not api_token_enabled():
         raise HTTPException(status_code=403, detail="API token desativada nas configuracoes")
+    if not api_key:
+        api_key = request.headers.get('x-api-key')
     if api_key != API_KEY:
         raise HTTPException(status_code=403, detail="API Key invalida")
     ext = 'mp3' if fmt == 'mp3' else 'mp4'
@@ -337,6 +339,12 @@ async def get_proxies(request: Request):
         "quarantined": proxy_pool.quarantined_snapshot(),
         "total": len(proxy_pool.all_proxies),
         "stats": proxy_pool.stats,
+        "detailed": (
+            [{"proxy": p, "status": "operational", "latency": proxy_pool.latency_ms.get(p, 0)}
+             for p in proxy_pool.active_snapshot()]
+            + [{"proxy": p, "status": "blocked", "latency": 0}
+               for p in proxy_pool.quarantined_snapshot()]
+        )[:300],
     })
 
 @app.get('/api/info')
@@ -432,3 +440,13 @@ async def storage_page(request: Request):
 async def system_page(request: Request):
     if not is_authenticated(request): return RedirectResponse(url='/login')
     return _serve_page('system.html')
+
+@app.get('/proxies')
+async def proxies_page(request: Request):
+    if not is_authenticated(request): return RedirectResponse(url='/login')
+    return _serve_page('proxies.html')
+
+@app.get('/api')
+async def api_page(request: Request):
+    if not is_authenticated(request): return RedirectResponse(url='/login')
+    return _serve_page('api.html')
