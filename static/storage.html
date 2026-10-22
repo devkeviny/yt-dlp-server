@@ -28,7 +28,7 @@
 function logout(){document.cookie='auth_session=; expires=Thu,01 Jan 1970 00:00:00 UTC; path=/;';location.href='/login';}
 function fmtSize(b){if(!b)return'0 B';const u=['B','KB','MB','GB'];let v=b,i=0;while(v>=1024&&i<3){v/=1024;i++;}return v.toFixed(1)+' '+u[i];}
 </script>
-<script src="/static/nav.js"></script></body></html>
+<script>
 async function load(){try{
 const r=await fetch('/api/history',{credentials:'include'});const items=await r.json();
 const done=items.filter(i=>i.status==='completed');const total=done.reduce((a,i)=>a+(i.size||0),0);
@@ -40,3 +40,5 @@ load();setInterval(load,10000);
 </script>
 <script src="/static/brand.js"></script>
 <script>renderLogo('horizontal','md',document.getElementById('logo'));</script>
+<script src="/static/nav.js"></script>
+</body></html>

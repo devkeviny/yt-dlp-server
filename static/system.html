@@ -47,6 +47,7 @@ document.getElementById('proxy-tbody').innerHTML=nodes.map(n=>`<tr class="border
 }catch(e){}}
 async function copyApiKey(){const k=document.getElementById('api-key').textContent;if(!k||k==='--')return;try{await navigator.clipboard.writeText(k);}catch(e){const t=document.createElement('textarea');t.value=k;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();}const b=document.getElementById('api-copy-btn');if(b){const o=b.textContent;b.textContent='Copiado!';setTimeout(()=>{b.textContent=o;},1500);}}
 async function loadApi(){try{const r=await fetch('/api/config/api',{credentials:'include'});const d=await r.json();setToggle(d.enabled);document.getElementById('api-key').textContent=d.api_key||'--';}catch(e){}}
+loadDiag();loadProxies();loadApi();setInterval(loadDiag,5000);setInterval(loadProxies,15000);
 </script>
 <script src="/static/brand.js"></script>
 <script>renderLogo('horizontal','md',document.getElementById('logo'));</script>
