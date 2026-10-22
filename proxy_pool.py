@@ -58,6 +58,10 @@ class SmartProxyPool:
         self.data_dir = data_dir
         self.active_file = os.path.join(data_dir, "proxies_active.json")
         self.single_proxy = (os.getenv("PROXY_URL") or os.getenv("PROXY_SINGLE_URL") or "").strip() or None
+        # Fallback dedicado (ex.: tunel FRP p/ o celular): tentado depois dos
+        # candidatos do pool e antes da conexao direta. URL completa na env,
+        # ex.: socks5h://user:pass@host:11001
+        self.frp_proxy = (os.getenv("FRP_PROXY_URL") or "").strip() or None
 
         self.all_proxies = []
         self.active_proxies = []
@@ -66,6 +70,7 @@ class SmartProxyPool:
             "requests_total": 0,
             "requests_proxied": 0,
             "requests_fallback": 0,
+            "requests_frp": 0,
             "failovers": 0,
             "quarantines": 0,
             "health_cycles": 0,
@@ -251,6 +256,9 @@ class SmartProxyPool:
                 self.stats["requests_proxied"] += 1
             else:
                 self.stats["requests_fallback"] += 1
+        if self.frp_proxy and self.frp_proxy not in candidates:
+            candidates.append(self.frp_proxy)
+            self.stats["requests_frp"] += 1
         if ALLOW_DIRECT_FALLBACK and None not in candidates:
             candidates.append(None)
         return candidates

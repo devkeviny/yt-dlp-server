@@ -338,6 +338,7 @@ async def get_stats(request: Request):
 async def get_proxies(request: Request):
     if not is_authenticated(request): raise HTTPException(status_code=401)
     return JSONResponse(content={
+        "frp_fallback_configured": bool(proxy_pool.frp_proxy),
         "active": proxy_pool.active_snapshot(),
         "active_count": len(proxy_pool.active_snapshot()),
         "quarantined": proxy_pool.quarantined_snapshot(),
