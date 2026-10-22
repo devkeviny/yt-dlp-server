@@ -407,7 +407,7 @@ async def get_transcript(url: str):
 @app.get('/api/config/api')
 async def get_api_config(request: Request):
     if not is_authenticated(request): raise HTTPException(status_code=401)
-    return {"enabled": api_token_enabled()}
+    return {"enabled": api_token_enabled(), "api_key": API_KEY}
 
 @app.post('/api/config/api')
 async def post_api_config(request: Request, enabled: bool = Form(...)):

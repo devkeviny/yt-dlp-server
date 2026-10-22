@@ -29,7 +29,7 @@
 <p class="text-sm text-onSurfaceVariant mb-4">Permite ou bloqueia o uso da API via X-API-Key em /api/download.</p>
 <div class="flex items-center justify-between bg-surfaceContainerLow p-4 rounded-lg"><span class="text-sm">Status da API</span>
 <button id="api-toggle" onclick="toggleApi()" class="relative w-14 h-8 rounded-full bg-surfaceVariant transition-all"><span id="api-knob" class="absolute top-1 left-1 w-6 h-6 rounded-full bg-primary transition-all"></span></button></div>
-<div id="api-key-box" class="mt-4 p-4 rounded-lg bg-surfaceContainerLowest border border-white/10"><div class="text-xs text-onSurfaceVariant uppercase mb-1">Sua API Key</div><code id="api-key" class="text-primary font-mono text-sm break-all">--</code></div>
+<div id="api-key-box" class="mt-4 p-4 rounded-lg bg-surfaceContainerLowest border border-white/10"><div class="text-xs text-onSurfaceVariant uppercase mb-1">Sua API Key</div><code id="api-key" class="text-primary font-mono text-sm break-all">--</code><button id="api-copy-btn" onclick="copyApiKey()" class="ml-3 px-3 py-1 text-xs rounded-md bg-primaryContainer text-onSurface hover:opacity-80 transition-all align-middle">Copiar</button></div>
 </div>
 </div>
 <div class="glass p-6 rounded-2xl"><h3 class="text-primary text-sm uppercase tracking-widest mb-4">Matriz de Rotacao de Proxies</h3>
@@ -49,18 +49,11 @@ document.getElementById('diag').innerHTML=
 '<div class="flex justify-between"><span class="text-onSurfaceVariant">Snapshots (30d)</span><span class="text-primary">'+(d.count||0)+'</span></div>';
 }catch(e){}}
 async function loadProxies(){try{const r=await fetch('/api/proxies',{credentials:'include'});const d=await r.json();
-const nodes=[['BR-SAO-01','Sao Paulo',d.br_count>0?'OK':'VAZIO','BR '+d.br_count],['US-VA-09','Virginia',d.global_count>0?'OK':'VAZIO','GLOBAL '+d.global_count],['EU-FRA-02','Frankfurt',d.global_count>0?'OK':'VAZIO','GLOBAL '+d.global_count]];
+const nodes=[['POOL-ATIVOS','Validados (health check)',d.active_count>0?'OK':'VAZIO','ATIVOS '+d.active_count],['POOL-QUARENTENA','Cooldown 300s',(d.quarantined||[]).length>=0?'OK':'OK','EM QUARENTENA '+(d.quarantined||[]).length],['POOL-TOTAL','Listas agregadoras',d.total>0?'OK':'VAZIO','TOTAL '+d.total]];
 document.getElementById('proxy-tbody').innerHTML=nodes.map(n=>`<tr class="border-t border-white/5"><td class="px-4 py-2 text-onSurface">${n[0]}</td><td class="px-4 py-2 text-onSurfaceVariant">${n[1]}</td><td class="px-4 py-2"><span class="${n[2]==='OK'?'text-tertiaryContainer':'text-error'}">${n[2]==='OK'?'● ATIVO':'○ OFF'}</span></td><td class="px-4 py-2 text-onSurfaceVariant">${n[3]}</td></tr>`).join('');
 }catch(e){}}
-async function loadApi(){try{const r=await fetch('/api/config/api',{credentials:'include'});const d=await r.json();setToggle(d.enabled);document.getElementById('api-key').textContent=API_KEY_PLACEHOLDER();}catch(e){}}
-function API_KEY_PLACEHOLDER(){return (window.STITCH_API_KEY?window.STITCH_API_KEY:'KEY')===''? 'KEY' : 'X-API-Key header';}
-function setToggle(on){const k=document.getElementById('api-knob');const b=document.getElementById('api-toggle');
-if(on){k.className='absolute top-1 left-7 w-6 h-6 rounded-full bg-primary transition-all';b.className='relative w-14 h-8 rounded-full bg-primaryContainer transition-all';}
-else{k.className='absolute top-1 left-1 w-6 h-6 rounded-full bg-onSurfaceVariant transition-all';b.className='relative w-14 h-8 rounded-full bg-surfaceVariant transition-all';}}
-async function toggleApi(){const cur=document.getElementById('api-knob').style.left==='28px';
-const nv=!cur;const fd=new FormData();fd.append('enabled',nv);
-try{await fetch('/api/config/api',{method:'POST',body:fd,credentials:'include'});setToggle(nv);}catch(e){}}
-loadDiag();loadProxies();loadApi();setInterval(loadDiag,5000);setInterval(loadProxies,15000);
+async function copyApiKey(){const k=document.getElementById('api-key').textContent;if(!k||k==='--')return;try{await navigator.clipboard.writeText(k);}catch(e){const t=document.createElement('textarea');t.value=k;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();}const b=document.getElementById('api-copy-btn');if(b){const o=b.textContent;b.textContent='Copiado!';setTimeout(()=>{b.textContent=o;},1500);}}
+async function loadApi(){try{const r=await fetch('/api/config/api',{credentials:'include'});const d=await r.json();setToggle(d.enabled);document.getElementById('api-key').textContent=d.api_key||'--';}catch(e){}}
 </script>
 <script src="/static/brand.js"></script>
 <script>renderLogo('horizontal','md',document.getElementById('logo'));</script>
