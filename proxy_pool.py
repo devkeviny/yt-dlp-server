@@ -229,7 +229,8 @@ class SmartProxyPool:
 
     # ------------------------------------------------------------- selecao (OFM: round-robin)
     def get_candidates(self, limit: int = 5):
-        """Proximos `limit` candidatos em round-robin + direto (None) por ultimo.
+        """Candidatos em ordem: FRP (celular, PRIMARIO) -> pool publico em
+        round-robin -> direto (None) por ultimo.
 
         Compativel com o antigo get_candidate_proxies(limit): PROXY_URL tem
         prioridade absoluta; sem ativos, cai para uma amostra das listas.
@@ -256,12 +257,17 @@ class SmartProxyPool:
                 self.stats["requests_proxied"] += 1
             else:
                 self.stats["requests_fallback"] += 1
-        if self.frp_proxy and self.frp_proxy not in candidates:
-            candidates.append(self.frp_proxy)
+        # FRP PRIMARIO (decisao do usuario, 22/out): o celular entrega em
+        # segundos; com o FRP por ultimo, o download queimava o timeout do
+        # cliente (600s) tentando proxies publicos mortos do pool.
+        ordered = []
+        if self.frp_proxy:
+            ordered.append(self.frp_proxy)
             self.stats["requests_frp"] += 1
-        if ALLOW_DIRECT_FALLBACK and None not in candidates:
-            candidates.append(None)
-        return candidates
+        ordered.extend(c for c in candidates if c != self.frp_proxy)
+        if ALLOW_DIRECT_FALLBACK and None not in ordered:
+            ordered.append(None)
+        return ordered
 
     def get_candidate(self):
         """Um unico candidato (round-robin), como no OFM."""
