@@ -8,6 +8,13 @@ Substitui o par ProxyManager + SmartProxyTester por um unico componente:
 
 - Fontes: as 5 listas agregadoras historicas deste servidor + PROXY_SOURCE_URLS
   extras (txt/json) + PROXY_POOL_URLS fixos.
+- Listas buscadas DIRETO do link a cada uso (TTL curto, padrao 60s): nada de
+  copia embutida nem cache longo. Cada fetch tem timeout curto (padrao 5s)
+  e as listas sao buscadas em paralelo, para uma lista morta nao travar o
+  uso. Se TODAS as fontes falharem num refresh, o pool anterior e mantido
+  (nunca esvaziar o pool por falha transitoria de rede).
+- Residencial primeiro: FRP_PROXY_URL (Tailscale SOCKS) e sempre o
+  candidato #1, inclusive quando PROXY_URL (proxy unico fixo) esta setado.
 - Health check neutro periodico (alvo configuravel, padrao generate_204 do Google),
   em thread de fundo, com teto de verificacoes por ciclo.
 - Quarentena com cooldown: proxy que falha sai por PROXY_COOLDOWN_SECONDS e volta
@@ -48,6 +55,13 @@ BUILTIN_SOURCES = [
 CHECK_INTERVAL = int(os.getenv("PROXY_CHECK_INTERVAL", "300"))
 CHECK_TIMEOUT = int(os.getenv("PROXY_CHECK_TIMEOUT", "8"))
 COOLDOWN_SECONDS = int(os.getenv("PROXY_COOLDOWN_SECONDS", "300"))
+# Timeout curto por lista: lista morta nao pode travar o uso (antes: 15s
+# sequencial por lista, ate 90s travando o boot/refresh).
+LIST_FETCH_TIMEOUT = int(os.getenv("PROXY_LIST_FETCH_TIMEOUT", "5"))
+# TTL curto das listas: get_candidates() re-busca as listas DIRETO do link
+# quando o ultimo refresh e mais velho que isso (padrao 60s). As listas sao
+# de terceiros e mudam em minutos: nada de copia embutida ou cache longo.
+LIST_TTL_SECONDS = int(os.getenv("PROXY_LIST_TTL_SECONDS", "60"))
 HEALTH_TARGET = os.getenv("PROXY_HEALTH_TARGET", "http://www.gstatic.com/generate_204")
 HEALTH_MAX_CHECKS = int(os.getenv("PROXY_HEALTH_MAX_CHECKS", "150"))
 ALLOW_DIRECT_FALLBACK = os.getenv("PROXY_ALLOW_DIRECT_FALLBACK", "true").lower() in ("true", "1", "yes")
@@ -80,12 +94,43 @@ class SmartProxyPool:
         self._lock = threading.RLock()
         self._running = False
         self._thread = None
+        self._last_refresh_ts = 0.0  # monotonic: ultimo refresh das listas
         self._load_state()
         self.refresh_sources()
 
     # ------------------------------------------------------------- fontes
+    def _fetch_builtin_source(self, name, url, ptype):
+        """Busca UMA lista agregadora com timeout curto; retorna set (vazio
+        em falha — uma lista morta nao derruba as demais)."""
+        found = set()
+        try:
+            resp = urllib.request.urlopen(
+                urllib.request.Request(url, headers={"User-Agent": "yt-dlp-server-proxy-pool/1.0"}),
+                timeout=LIST_FETCH_TIMEOUT)
+            raw = resp.read().decode("utf-8", errors="ignore")
+            if ptype == "json":
+                for item in json.loads(raw):
+                    if isinstance(item, dict) and item.get("proxy"):
+                        found.add(item["proxy"])
+            else:
+                scheme = "socks5" if ptype == "socks5" else "http"
+                for line in raw.splitlines():
+                    line = line.strip()
+                    if line and re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d+$", line):
+                        found.add(f"{scheme}://{line}")
+            logger.info(f"[ProxyPool] fonte {name}: ok ({len(found)} proxies)")
+        except Exception as e:
+            logger.warning(f"[ProxyPool] fonte {name} falhou: {e}")
+        return found
+
     def refresh_sources(self):
-        """(Re)carrega as listas agregadoras + fontes extras do ambiente."""
+        """(Re)carrega as listas agregadoras + fontes extras do ambiente,
+        buscando cada lista DIRETO do link, em paralelo, com timeout curto.
+
+        Guarda anti-esvaziamento: se TODAS as fontes falharem (rede fora,
+        GitHub fora), o pool anterior e mantido — nunca zerar os proxies
+        por uma falha transitoria.
+        """
         proxies = set()
 
         raw_fixed = os.getenv("PROXY_POOL_URLS", "")
@@ -94,44 +139,45 @@ class SmartProxyPool:
             if p:
                 proxies.add(p)
 
-        for name, url, ptype in BUILTIN_SOURCES:
-            try:
-                resp = urllib.request.urlopen(
-                    urllib.request.Request(url, headers={"User-Agent": "yt-dlp-server-proxy-pool/1.0"}),
-                    timeout=15)
-                raw = resp.read().decode("utf-8", errors="ignore")
-                if ptype == "json":
-                    for item in json.loads(raw):
-                        if isinstance(item, dict) and item.get("proxy"):
-                            proxies.add(item["proxy"])
-                else:
-                    scheme = "socks5" if ptype == "socks5" else "http"
-                    for line in raw.splitlines():
-                        line = line.strip()
-                        if line and re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d+$", line):
-                            proxies.add(f"{scheme}://{line}")
-                logger.info(f"[ProxyPool] fonte {name}: ok")
-            except Exception as e:
-                logger.warning(f"[ProxyPool] fonte {name} falhou: {e}")
+        # Paralelo: uma lista lenta/morta nao serializa o refresh.
+        with ThreadPoolExecutor(max_workers=len(BUILTIN_SOURCES)) as ex:
+            futs = [ex.submit(self._fetch_builtin_source, n, u, t)
+                    for n, u, t in BUILTIN_SOURCES]
+            for f in futs:
+                proxies.update(f.result())
 
         extra = os.getenv("PROXY_SOURCE_URLS", "")
         for url in [u.strip() for u in extra.split(",") if u.strip()]:
             proxies.update(self._fetch_remote_source(url))
 
         with self._lock:
-            self.all_proxies = sorted(proxies)
-            # Ativo = somente quem ja passou no health check (semantica do antigo
-            # SmartProxyTester). Nao-testados ficam no pool bruto ate serem validados.
-            self.active_proxies = [p for p in self.active_proxies if p in proxies]
+            if not proxies and self.all_proxies:
+                logger.warning("[ProxyPool] refresh sem nenhuma fonte ok: mantendo pool anterior "
+                               f"({len(self.all_proxies)} proxies).")
+            else:
+                self.all_proxies = sorted(proxies)
+                # Ativo = somente quem ja passou no health check (semantica do antigo
+                # SmartProxyTester). Nao-testados ficam no pool bruto ate serem validados.
+                self.active_proxies = [p for p in self.active_proxies if p in proxies]
+            self._last_refresh_ts = time.monotonic()
         logger.info(f"[ProxyPool] {len(self.all_proxies)} proxies carregados ({len(self.active_proxies)} ativos).")
         self.save_state()
+
+    def _refresh_if_stale(self):
+        """Re-busca as listas ao vivo quando o ultimo refresh passou do TTL
+        curto. Chamado a cada uso (get_candidates): a lista vista por um
+        download nunca e mais velha que LIST_TTL_SECONDS."""
+        if time.monotonic() - self._last_refresh_ts >= LIST_TTL_SECONDS:
+            with self._lock:
+                if time.monotonic() - self._last_refresh_ts >= LIST_TTL_SECONDS:
+                    self.refresh_sources()
 
     def _fetch_remote_source(self, url: str):
         """Busca uma lista remota (txt ou json) — mesmo parser do OFM."""
         discovered = set()
         try:
             req = urllib.request.Request(url, headers={"User-Agent": "egress-proxy-fetcher/1.0"})
-            with urllib.request.urlopen(req, timeout=12) as resp:
+            with urllib.request.urlopen(req, timeout=LIST_FETCH_TIMEOUT) as resp:
                 raw = resp.read().decode("utf-8", errors="ignore").strip()
                 if raw.startswith("[") or raw.startswith("{"):
                     data = json.loads(raw)
@@ -229,14 +275,27 @@ class SmartProxyPool:
 
     # ------------------------------------------------------------- selecao (OFM: round-robin)
     def get_candidates(self, limit: int = 5):
-        """Candidatos em ordem: FRP (celular, PRIMARIO) -> pool publico em
+        """Candidatos em ordem: FRP (residencial, PRIMARIO) -> pool publico em
         round-robin -> direto (None) por ultimo.
 
-        Compativel com o antigo get_candidate_proxies(limit): PROXY_URL tem
-        prioridade absoluta; sem ativos, cai para uma amostra das listas.
+        As listas sao re-buscadas DIRETO do link quando o ultimo refresh
+        passou do TTL curto (LIST_TTL_SECONDS, padrao 60s): cada uso ve
+        listas frescas, sem copia embutida nem cache longo.
+
+        PROXY_URL (proxy unico fixo) continua valendo, mas o residencial
+        passa na frente dele quando configurado.
         """
+        # Listas ao vivo a cada uso (limitado pelo TTL curto).
+        self._refresh_if_stale()
         if self.single_proxy:
-            return [self.single_proxy]
+            ordered = []
+            if self.frp_proxy:
+                ordered.append(self.frp_proxy)
+            if self.single_proxy != self.frp_proxy:
+                ordered.append(self.single_proxy)
+            if ALLOW_DIRECT_FALLBACK and None not in ordered:
+                ordered.append(None)
+            return ordered
         self._revive_expired()
         with self._lock:
             self.stats["requests_total"] += 1

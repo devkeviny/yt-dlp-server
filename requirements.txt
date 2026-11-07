@@ -1,6 +1,6 @@
 fastapi
 uvicorn[standard]
-yt-dlp
+yt-dlp==2026.10.26
 requests
 pydantic
 psutil
