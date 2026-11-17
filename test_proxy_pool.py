@@ -215,6 +215,7 @@ class ContentErrorTestCase(unittest.TestCase):
     def test_video_indisponivel_e_conteudo(self):
         for msg in (
             "Video unavailable",
+            "ERROR: [youtube] AAAAAAAAAAA: This video is unavailable",
             "ERROR: This video is no longer available",
             "This video is not available",
             "Private video",
@@ -222,6 +223,7 @@ class ContentErrorTestCase(unittest.TestCase):
             "This video has been removed",
             "The account associated with this video has been terminated",
             "Join this channel to get access to members-only content",
+            "This video is only available to Music Premium members",
         ):
             with self.subTest(msg=msg):
                 self.assertTrue(is_content_error(msg))
