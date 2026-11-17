@@ -66,6 +66,33 @@ HEALTH_TARGET = os.getenv("PROXY_HEALTH_TARGET", "http://www.gstatic.com/generat
 HEALTH_MAX_CHECKS = int(os.getenv("PROXY_HEALTH_MAX_CHECKS", "150"))
 ALLOW_DIRECT_FALLBACK = os.getenv("PROXY_ALLOW_DIRECT_FALLBACK", "true").lower() in ("true", "1", "yes")
 
+# Erros de CONTEUDO do yt-dlp (substrings, minusculas): o VIDEO em si esta
+# indisponivel — live encerrada sem VOD pronto, video privado/removido, conta
+# encerrada, conteudo so para membros. Nao e culpa do proxy: nao quarantena e
+# nao adianta tentar outro proxy (fail-fast). Todo o resto (reset, timeout,
+# refused, tunnel, bot-check) e falha de proxy/rede: quarantena + proximo.
+# Incidente 17/nov: "This live event has ended" quarantinou o residencial
+# (tailscale) e cada proxy publico tentado em seguida, esvaziando o pool por
+# um video que nenhum proxy podia baixar.
+CONTENT_ERROR_PATTERNS = (
+    "this live event has ended",
+    "this live event will begin",  # live futura: ainda nao ha VOD
+    "video unavailable",
+    "this video is no longer available",
+    "this video is not available",
+    "this video has been removed",
+    "private video",
+    "this video is private",
+    "account associated with this video has been terminated",
+    "join this channel to get access",  # so para membros
+)
+
+
+def is_content_error(message) -> bool:
+    """True se a mensagem indica que o VIDEO esta indisponivel (nao o proxy)."""
+    text = (str(message) if message is not None else "").lower()
+    return any(p in text for p in CONTENT_ERROR_PATTERNS)
+
 
 class SmartProxyPool:
     def __init__(self, data_dir: str):
