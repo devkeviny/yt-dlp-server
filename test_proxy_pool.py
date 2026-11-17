@@ -21,7 +21,7 @@ import urllib.request
 from unittest import mock
 
 import proxy_pool
-from proxy_pool import SmartProxyPool, BUILTIN_SOURCES
+from proxy_pool import SmartProxyPool, BUILTIN_SOURCES, is_content_error
 
 FRP = "socks5h://tailscale:1080"
 
@@ -199,5 +199,50 @@ class PoolTestCase(unittest.TestCase):
                          "refresh falho nao pode zerar o pool")
 
 
+class ContentErrorTestCase(unittest.TestCase):
+    """is_content_error: erro do VIDEO (fail-fast, sem quarantena) vs erro de proxy/rede.
+
+    Regressao de 17/nov: 'This live event has ended' quarantinou o proxy
+    residencial (tailscale) e cada proxy publico tentado em seguida — o video
+    e que estava indisponivel (live recem-encerrada, VOD ainda nao processado),
+    nenhum proxy tinha culpa.
+    """
+
+    def test_live_ended_e_conteudo(self):
+        self.assertTrue(is_content_error(
+            "[youtube] 9B3bTXLHgQE: This live event has ended."))
+
+    def test_video_indisponivel_e_conteudo(self):
+        for msg in (
+            "Video unavailable",
+            "ERROR: This video is no longer available",
+            "This video is not available",
+            "Private video",
+            "This video is private",
+            "This video has been removed",
+            "The account associated with this video has been terminated",
+            "Join this channel to get access to members-only content",
+        ):
+            with self.subTest(msg=msg):
+                self.assertTrue(is_content_error(msg))
+
+    def test_erro_de_proxy_nao_e_conteudo(self):
+        for msg in (
+            "Unable to download API page: ('Connection aborted.', "
+            "ConnectionResetError(104, 'Connection reset by peer'))",
+            "Unable to connect to proxy: Tunnel connection failed: 500 Internal Server Error",
+            "Failed to establish a new connection: [Errno 111] Connection refused",
+            "Connection to www.youtube.com timed out. (connect timeout=10.0)",
+            "Sign in to confirm you're not a bot",
+        ):
+            with self.subTest(msg=msg[:40]):
+                self.assertFalse(is_content_error(msg))
+
+    def test_vazio_e_none_nao_sao_conteudo(self):
+        self.assertFalse(is_content_error(""))
+        self.assertFalse(is_content_error(None))
+
+
 if __name__ == "__main__":
     unittest.main()
+

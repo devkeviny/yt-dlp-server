@@ -37,11 +37,19 @@ def _serve_page(filename):
 
 executor = ThreadPoolExecutor(max_workers=10)
 
+# ffmpeg checado UMA VEZ no boot: o /test-health e chamado pelo healthcheck do
+# Docker a cada 5s e nao pode spawnar um processo (bloqueante) por chamada.
+try:
+    _FFMPEG_OK = subprocess.run(
+        ['ffmpeg', '-version'], capture_output=True, timeout=10).returncode == 0
+except Exception:
+    _FFMPEG_OK = False
+
 # ============================================================
 # Proxy pool (port do SmartProxyPool do OFM — quarentena com cooldown,
 # health check neutro, rotacao round-robin). Ver proxy_pool.py.
 # ============================================================
-from proxy_pool import SmartProxyPool
+from proxy_pool import SmartProxyPool, is_content_error
 
 proxy_pool = SmartProxyPool(DATA_DIR)
 proxy_pool.start_background()
@@ -205,6 +213,7 @@ def stream_download(url, fmt, q=0, meta=None):
     start = time.time()
     title = (meta or {}).get('title') if meta else None
     thumb = (meta or {}).get('thumbnail') if meta else None
+    content_error = None
     for attempt_proxy in candidates:
         bytes_sent = 0
         try:
@@ -219,6 +228,16 @@ def stream_download(url, fmt, q=0, meta=None):
             proc.wait()
             dur = round(time.time() - start, 1)
             if bytes_sent == 0:
+                err_text = ""
+                try:
+                    err_text = (proc.stderr.read() or b"").decode("utf-8", errors="ignore")
+                except Exception:
+                    pass
+                if is_content_error(err_text):
+                    # O video em si esta indisponivel: fail-fast, sem quarantena
+                    # e sem tentar outros proxies (nenhum proxy revive um video morto).
+                    content_error = err_text.strip()[:300]
+                    break
                 if attempt_proxy:
                     proxy_pool.mark_failure(attempt_proxy)
                 continue
@@ -237,18 +256,29 @@ def stream_download(url, fmt, q=0, meta=None):
             continue
     dur = round(time.time() - start, 1)
     data_manager.add_download({
-        'url': url, 'format': fmt, 'status': 'failed', 'error': 'sem bytes produzidos',
+        'url': url, 'format': fmt, 'status': 'failed',
+        'error': (f'conteudo indisponivel: {content_error}' if content_error
+                  else 'sem bytes produzidos'),
         'timestamp': time.time(), 'duration_s': dur, 'platform': _detect_platform(url),
         'title': title, 'thumbnail': thumb, 'quality': q,
     })
+
+
+def _extract_info_sync(url, proxy, ydl_kwargs):
+    """Extracao sincrona do yt-dlp — SEMPRE via run_in_executor: extract_info
+    bloqueia por segundos/minutos e nunca pode rodar no event loop (trava o
+    /test-health e derruba o healthcheck do container — incidente 17/nov)."""
+    opts = {'proxy': proxy, 'quiet': True, 'no_warnings': True, 'noplaylist': True}
+    opts.update(ydl_kwargs)
+    with yt_dlp.YoutubeDL(opts) as ydl:
+        return ydl.extract_info(url, download=False)
 
 # ============================================================
 # Routes
 # ============================================================
 @app.get('/test-health')
 async def health():
-    return {"status": "healthy",
-            "ffmpeg": subprocess.run(['ffmpeg', '-version'], capture_output=True).returncode == 0}
+    return {"status": "healthy", "ffmpeg": _FFMPEG_OK}
 
 @app.get('/')
 async def root(request: Request):
@@ -305,7 +335,8 @@ def _fetch_meta(url):
     """Busca titulo/thumbnail rapidamente (sem proxy) para o historico."""
     try:
         with yt_dlp.YoutubeDL({'proxy': None, 'quiet': True, 'no_warnings': True,
-                               'noplaylist': True, 'format': 'best'}) as ydl:
+                               'noplaylist': True, 'format': 'best',
+                               'socket_timeout': 10}) as ydl:
             info = ydl.extract_info(url, download=False)
             if info.get('entries'): info = info['entries'][0]
             return {'title': info.get('title'), 'thumbnail': info.get('thumbnail'),
@@ -319,7 +350,8 @@ async def stream(request: Request, url: str, fmt: str = 'mp4', q: int = 0):
         raise HTTPException(status_code=401, detail="Not authenticated")
     ext = 'mp3' if fmt == 'mp3' else 'mp4'
     fn = f"media_{int(time.time())}.{ext}"
-    meta = _fetch_meta(url)
+    loop = asyncio.get_running_loop()
+    meta = await loop.run_in_executor(executor, _fetch_meta, url)
     return StreamingResponse(stream_download(url, fmt, q, meta),
         media_type=("audio/mpeg" if fmt == 'mp3' else "video/mp4"),
         headers={"Content-Disposition": f'attachment; filename="{fn}"',
@@ -356,38 +388,43 @@ async def get_proxies(request: Request):
 async def get_info(url: str):
     candidates = proxy_pool.get_candidates(limit=5)
     last_err = None
+    loop = asyncio.get_running_loop()
     for px in candidates:
         try:
-            with yt_dlp.YoutubeDL({'proxy': px, 'quiet': True, 'no_warnings': True,
-                                   'noplaylist': True, 'format': 'best',
-                                   'socket_timeout': 10,
-                                   'extractor_args': {'youtube': {'player_client': ['android', 'mweb', 'web']}}}) as ydl:
-                info = ydl.extract_info(url, download=False)
-                if info.get('entries'): info = info['entries'][0]
-                safe = {k: info.get(k) for k in ('title', 'duration', 'thumbnail',
-                         'uploader', 'view_count', 'webpage_url') if k in info}
-                # Lista de qualidades para o usuario escolher
-                fmts = []
-                seen = set()
-                for f in info.get('formats', []):
-                    if f.get('vcodec') != 'none' and f.get('acodec') != 'none':
-                        h = f.get('height')
-                        if h and h not in seen:
-                            seen.add(h)
-                            fmts.append({'height': h, 'note': f.get('format_note', f'{h}p'),
-                                         'ext': f.get('ext', 'mp4')})
-                    elif f.get('vcodec') != 'none' and f.get('acodec') == 'none':
-                        h = f.get('height')
-                        if h and h not in seen:
-                            seen.add(h)
-                            fmts.append({'height': h, 'note': f.get('format_note', f'{h}p'),
-                                         'ext': f.get('ext', 'mp4'), 'video_only': True})
-                fmts.sort(key=lambda x: x['height'], reverse=True)
-                safe['formats'] = fmts[:12]
-                safe['has_audio'] = any(f.get('acodec') != 'none' for f in info.get('formats', []))
-                return safe
+            info = await loop.run_in_executor(
+                executor, _extract_info_sync, url, px,
+                {'format': 'best', 'socket_timeout': 10,
+                 'extractor_args': {'youtube': {'player_client': ['android', 'mweb', 'web']}}})
+            if info.get('entries'): info = info['entries'][0]
+            safe = {k: info.get(k) for k in ('title', 'duration', 'thumbnail',
+                     'uploader', 'view_count', 'webpage_url') if k in info}
+            # Lista de qualidades para o usuario escolher
+            fmts = []
+            seen = set()
+            for f in info.get('formats', []):
+                if f.get('vcodec') != 'none' and f.get('acodec') != 'none':
+                    h = f.get('height')
+                    if h and h not in seen:
+                        seen.add(h)
+                        fmts.append({'height': h, 'note': f.get('format_note', f'{h}p'),
+                                     'ext': f.get('ext', 'mp4')})
+                elif f.get('vcodec') != 'none' and f.get('acodec') == 'none':
+                    h = f.get('height')
+                    if h and h not in seen:
+                        seen.add(h)
+                        fmts.append({'height': h, 'note': f.get('format_note', f'{h}p'),
+                                     'ext': f.get('ext', 'mp4'), 'video_only': True})
+            fmts.sort(key=lambda x: x['height'], reverse=True)
+            safe['formats'] = fmts[:12]
+            safe['has_audio'] = any(f.get('acodec') != 'none' for f in info.get('formats', []))
+            return safe
         except Exception as e:
             last_err = e
+            if is_content_error(e):
+                # O video em si esta indisponivel: fail-fast, sem quarantena e
+                # sem tentar outros proxies (nenhum proxy revive um video morto).
+                raise HTTPException(status_code=404,
+                                    detail=f"Video indisponivel: {str(e)[:200]}")
             if px:
                 proxy_pool.mark_failure(px)
     raise HTTPException(status_code=500, detail=f"Falha ao obter informacoes: {str(last_err)[:100]}")
@@ -396,23 +433,26 @@ async def get_info(url: str):
 @app.get('/api/transcript')
 async def get_transcript(url: str):
     candidates = proxy_pool.get_candidates(limit=5)
+    loop = asyncio.get_running_loop()
     for px in candidates:
         try:
-            with yt_dlp.YoutubeDL({'proxy': px, 'quiet': True, 'no_warnings': True,
-                                   'noplaylist': True, 'writesubtitles': True,
-                                   'writeautomaticsub': True, 'skip_download': True,
-                                   'subtitlesformat': 'json3', 'outtmpl': '/tmp/tr_%(id)s',
-                                   'socket_timeout': 10,
-                                   'extractor_args': {'youtube': {'player_client': ['android', 'mweb']}}}) as ydl:
-                info = ydl.extract_info(url, download=False)
-                subs = info.get('subtitles', {}) or info.get('automatic_captions', {}) or {}
-                if not subs:
-                    return {'available': False, 'message': 'Sem transcricao disponivel'}
-                lang = 'pt' if 'pt' in subs else (list(subs.keys())[0] if subs else None)
-                if not lang:
-                    return {'available': False, 'message': 'Sem transcricao disponivel'}
-                return {'available': True, 'lang': lang, 'languages': list(subs.keys())}
-        except Exception:
+            info = await loop.run_in_executor(
+                executor, _extract_info_sync, url, px,
+                {'writesubtitles': True, 'writeautomaticsub': True, 'skip_download': True,
+                 'subtitlesformat': 'json3', 'outtmpl': '/tmp/tr_%(id)s',
+                 'socket_timeout': 10,
+                 'extractor_args': {'youtube': {'player_client': ['android', 'mweb']}}})
+            subs = info.get('subtitles', {}) or info.get('automatic_captions', {}) or {}
+            if not subs:
+                return {'available': False, 'message': 'Sem transcricao disponivel'}
+            lang = 'pt' if 'pt' in subs else (list(subs.keys())[0] if subs else None)
+            if not lang:
+                return {'available': False, 'message': 'Sem transcricao disponivel'}
+            return {'available': True, 'lang': lang, 'languages': list(subs.keys())}
+        except Exception as e:
+            if is_content_error(e):
+                return {'available': False,
+                        'message': f'Video indisponivel: {str(e)[:200]}'}
             if px:
                 proxy_pool.mark_failure(px)
     return {'available': False, 'message': 'Falha ao verificar transcricao'}
