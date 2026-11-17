@@ -78,6 +78,8 @@ CONTENT_ERROR_PATTERNS = (
     "this live event has ended",
     "this live event will begin",  # live futura: ainda nao ha VOD
     "video unavailable",
+    "video is unavailable",  # yt-dlp p/ ID inexistente: "This video is unavailable"
+    "only available to",  # ex.: "only available to Music Premium members"
     "this video is no longer available",
     "this video is not available",
     "this video has been removed",
